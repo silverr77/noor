@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 export default function CategoriesScreen() {
   const router = useRouter();
@@ -34,12 +34,10 @@ export default function CategoriesScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={6} totalSteps={9} showSkip={true} />
+      
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Candle Icon */}
-        <View style={styles.iconContainer}>
-          <CandleIcon size={100} />
-        </View>
-
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
           الفئات
@@ -102,11 +100,7 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     padding: 24,
-    paddingTop: 60,
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
+    paddingTop: 20,
   },
   title: {
     fontSize: 32,

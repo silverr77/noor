@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 export default function NameScreen() {
   const router = useRouter();
@@ -28,12 +28,10 @@ export default function NameScreen() {
     >
       <StatusBar style="auto" />
       
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={1} totalSteps={9} showSkip={false} />
+      
       <View style={styles.content}>
-        {/* Candle Icon */}
-        <View style={styles.iconContainer}>
-          <CandleIcon size={120} />
-        </View>
-
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
           ما اسمك؟
@@ -84,9 +82,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-  },
-  iconContainer: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,

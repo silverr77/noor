@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 const familiarityOptions = [
   { value: 'new', label: 'هذا جديد بالنسبة لي' },
@@ -31,12 +31,10 @@ export default function FamiliarityScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={5} totalSteps={9} showSkip={true} />
+      
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Candle Icon */}
-        <View style={styles.iconContainer}>
-          <CandleIcon size={120} />
-        </View>
-
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
           ما مدى معرفتك بالأذكار، {user?.name}؟
@@ -102,9 +100,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-  },
-  iconContainer: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,

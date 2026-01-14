@@ -2,9 +2,9 @@ import React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 export default function WidgetsScreen() {
   const router = useRouter();
@@ -15,11 +15,9 @@ export default function WidgetsScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
-      {/* Candle Icon */}
-      <View style={styles.iconContainer}>
-        <CandleIcon size={120} />
-      </View>
-
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={7} totalSteps={9} showSkip={true} />
+      
       {/* Title */}
       <Text style={[styles.title, { color: colors.text }]}>
         لا تنسى الودجات!
@@ -47,9 +45,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-  },
-  iconContainer: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,

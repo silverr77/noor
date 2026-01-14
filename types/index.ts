@@ -3,7 +3,7 @@ export interface User {
   name: string;
   age?: string;
   gender?: 'female' | 'male' | 'others' | 'prefer-not-to-say';
-  relationshipStatus?: string;
+  dailyTimeEstimate?: string;
   familiarity?: 'new' | 'occasional' | 'regular';
   selectedCategories: string[];
   hasCompletedOnboarding: boolean;

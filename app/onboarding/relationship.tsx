@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
-const relationshipStatuses = [
-  'أعزب ومفتوح للتواصل',
-  'معقد',
-  'أعزب بسعادة',
-  'في علاقة سعيدة',
-  'أمر بفترة انفصال',
-  'غير مهتم بهذا الموضوع',
+const timeOptions = [
+  { value: '5', label: '5 دقائق', minutes: 5 },
+  { value: '10', label: '10 دقائق', minutes: 10 },
+  { value: '15', label: '15 دقيقة', minutes: 15 },
+  { value: '20', label: '20 دقيقة', minutes: 20 },
+  { value: '30', label: '30 دقيقة', minutes: 30 },
 ];
 
 export default function RelationshipScreen() {
@@ -21,11 +20,11 @@ export default function RelationshipScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const { updateUser } = useUser();
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [selectedTime, setSelectedTime] = useState<string>('');
 
   const handleNext = () => {
-    if (selectedStatus) {
-      updateUser({ relationshipStatus: selectedStatus });
+    if (selectedTime) {
+      updateUser({ dailyTimeEstimate: selectedTime });
       router.push('/onboarding/familiarity');
     }
   };
@@ -34,48 +33,44 @@ export default function RelationshipScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={4} totalSteps={9} showSkip={true} />
+      
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Candle Icon */}
-        <View style={styles.iconContainer}>
-          <CandleIcon size={120} />
-        </View>
-
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
-          ما هي حالة علاقتك؟
+          كم وقت تقدر تقضيه في التطبيق يومياً؟
         </Text>
 
         {/* Subtitle */}
         <Text style={[styles.subtitle, { color: colors.text }]}>
-          اختر ما يصفك بشكل أفضل
+          اختر الوقت المناسب لك
         </Text>
 
-        {/* Status Options */}
+        {/* Time Options */}
         <View style={styles.optionsContainer}>
-          {relationshipStatuses.map((status) => (
+          {timeOptions.map((option) => (
             <TouchableOpacity
-              key={status}
+              key={option.value}
               style={[
                 styles.option,
                 {
-                  backgroundColor: colors.cardBackground,
-                  borderColor: selectedStatus === status ? colors.primary : '#E5E7EB',
-                  borderWidth: selectedStatus === status ? 2 : 1,
+                  backgroundColor: selectedTime === option.value ? colors.primary : colors.cardBackground,
+                  borderColor: selectedTime === option.value ? colors.primary : '#E5E7EB',
+                  borderWidth: selectedTime === option.value ? 2 : 1,
                 }
               ]}
-              onPress={() => setSelectedStatus(status)}
+              onPress={() => setSelectedTime(option.value)}
             >
-              <Text style={[styles.optionText, { color: colors.text }]}>
-                {status}
-              </Text>
-              <View style={[
-                styles.radio,
-                { borderColor: selectedStatus === status ? colors.primary : '#D1D5DB' }
+              <Text style={[
+                styles.optionText,
+                { 
+                  color: selectedTime === option.value ? '#FFFFFF' : colors.text,
+                  fontWeight: selectedTime === option.value ? '600' : '400',
+                }
               ]}>
-                {selectedStatus === status && (
-                  <View style={[styles.radioInner, { backgroundColor: colors.primary }]} />
-                )}
-              </View>
+                {option.label}
+              </Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -84,10 +79,10 @@ export default function RelationshipScreen() {
         <TouchableOpacity
           style={[
             styles.button,
-            { backgroundColor: selectedStatus ? colors.primary : '#D1D5DB' }
+            { backgroundColor: selectedTime ? colors.primary : '#D1D5DB' }
           ]}
           onPress={handleNext}
-          disabled={!selectedStatus}
+          disabled={!selectedTime}
         >
           <Text style={styles.buttonText}>التالي</Text>
         </TouchableOpacity>
@@ -106,9 +101,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 24,
   },
-  iconContainer: {
-    marginBottom: 32,
-  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -126,28 +118,16 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   option: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
+    padding: 20,
+    borderRadius: 16,
     marginBottom: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 60,
   },
   optionText: {
-    fontSize: 18,
-  },
-  radio: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  radioInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    fontSize: 20,
+    textAlign: 'center',
   },
   button: {
     paddingHorizontal: 48,

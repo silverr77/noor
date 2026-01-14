@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 const genders = [
   { value: 'female', label: 'أنثى' },
   { value: 'male', label: 'ذكر' },
-  { value: 'others', label: 'آخر' },
-  { value: 'prefer-not-to-say', label: 'أفضل عدم الإفصاح' },
 ];
 
 export default function GenderScreen() {
@@ -32,12 +30,10 @@ export default function GenderScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={3} totalSteps={9} showSkip={true} />
+      
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Candle Icon */}
-        <View style={styles.iconContainer}>
-          <CandleIcon size={120} />
-        </View>
-
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
           كيف تعرّف نفسك؟
@@ -103,9 +99,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-  },
-  iconContainer: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,

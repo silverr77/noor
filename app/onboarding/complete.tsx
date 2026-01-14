@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { CandleIcon } from '@/components/CandleIcon';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { registerForPushNotificationsAsync, scheduleDailyNotification } from '@/services/notifications';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 export default function CompleteScreen() {
   const router = useRouter();
@@ -28,11 +28,9 @@ export default function CompleteScreen() {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <StatusBar style="auto" />
       
-      {/* Candle Icon */}
-      <View style={styles.iconContainer}>
-        <CandleIcon size={120} />
-      </View>
-
+      {/* Progress Bar */}
+      <OnboardingProgress currentStep={9} totalSteps={9} showSkip={false} />
+      
       {/* Title */}
       <Text style={[styles.title, { color: colors.text }]}>
         هذا كل شيء مني!
@@ -65,9 +63,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-  },
-  iconContainer: {
-    marginBottom: 32,
   },
   title: {
     fontSize: 28,
