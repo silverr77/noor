@@ -28,7 +28,7 @@ export default function AgeScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={2} totalSteps={6} showSkip={true} />
+      <OnboardingProgress currentStep={2} totalSteps={7} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
@@ -71,7 +71,10 @@ export default function AgeScreen() {
           ))}
         </View>
 
-        {/* Next Button */}
+      </ScrollView>
+
+      {/* Fixed Bottom Button */}
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
             styles.button,
@@ -82,7 +85,7 @@ export default function AgeScreen() {
         >
           <Text style={styles.buttonText}>التالي</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -96,6 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+    paddingBottom: 100, // Extra padding for fixed button
   },
   title: {
     fontSize: 28,
@@ -137,11 +141,23 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
   },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 24,
+    paddingBottom: 40,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
   button: {
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 12,
     minWidth: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#FFFFFF',

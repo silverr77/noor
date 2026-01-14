@@ -1,4 +1,10 @@
 // User types
+export interface NotificationSettings {
+  count: number;
+  startTime: string; // ISO string
+  endTime: string; // ISO string
+}
+
 export interface User {
   name: string;
   age?: string;
@@ -6,6 +12,7 @@ export interface User {
   dailyTimeEstimate?: string;
   familiarity?: 'new' | 'occasional' | 'regular';
   selectedCategories?: string[];
+  notificationSettings?: NotificationSettings;
   hasCompletedOnboarding: boolean;
 }
 

@@ -44,7 +44,7 @@ export default function FamiliarityScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={6} totalSteps={6} showSkip={true} />
+      <OnboardingProgress currentStep={8} totalSteps={8} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

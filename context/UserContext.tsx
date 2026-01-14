@@ -6,6 +6,7 @@ interface UserContextType {
   user: User | null;
   updateUser: (userData: Partial<User>) => void;
   completeOnboarding: () => void;
+  resetOnboarding: () => void;
   isLoading: boolean;
 }
 
@@ -62,8 +63,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     return updatedUser;
   };
 
+  const resetOnboarding = async () => {
+    const resetUser = { 
+      ...user, 
+      hasCompletedOnboarding: false
+    } as User;
+    setUser(resetUser);
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(resetUser));
+    } catch (error) {
+      console.error('Error resetting onboarding:', error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, updateUser, completeOnboarding, isLoading }}>
+    <UserContext.Provider value={{ user, updateUser, completeOnboarding, resetOnboarding, isLoading }}>
       {children}
     </UserContext.Provider>
   );

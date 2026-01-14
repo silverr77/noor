@@ -39,7 +39,7 @@ export function OnboardingProgress({
     if (onSkip) {
       onSkip();
     } else {
-      // Default: skip to main app
+      // Default: skip to main app (completes onboarding)
       router.replace('/(tabs)');
     }
   };

@@ -7,6 +7,7 @@ import {
   Modal,
   ScrollView,
   Switch,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -15,6 +16,8 @@ import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { useRouter } from 'expo-router';
 
 interface ProfileModalProps {
   visible: boolean;
@@ -24,17 +27,84 @@ interface ProfileModalProps {
 export function ProfileModal({ visible, onClose }: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { user, updateUser } = useUser();
+  const router = useRouter();
+  const { user, updateUser, resetOnboarding } = useUser();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     user?.selectedCategories || []
+  );
+  const [notificationCount, setNotificationCount] = useState(
+    user?.notificationSettings?.count || 3
+  );
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [startTime, setStartTime] = useState(
+    user?.notificationSettings?.startTime
+      ? new Date(user.notificationSettings.startTime)
+      : new Date()
+  );
+  const [endTime, setEndTime] = useState(
+    user?.notificationSettings?.endTime
+      ? new Date(user.notificationSettings.endTime)
+      : new Date()
   );
 
   useEffect(() => {
     if (user?.selectedCategories) {
       setSelectedCategories(user.selectedCategories);
     }
+    if (user?.notificationSettings) {
+      setNotificationCount(user.notificationSettings.count);
+      setStartTime(new Date(user.notificationSettings.startTime));
+      setEndTime(new Date(user.notificationSettings.endTime));
+    } else {
+      // Set defaults
+      const defaultStart = new Date();
+      defaultStart.setHours(9, 0, 0, 0);
+      const defaultEnd = new Date();
+      defaultEnd.setHours(22, 0, 0, 0);
+      setStartTime(defaultStart);
+      setEndTime(defaultEnd);
+    }
   }, [user]);
+
+  const formatTime = (date: Date) => {
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+  };
+
+  const incrementCount = () => {
+    if (notificationCount < 10) {
+      const newCount = notificationCount + 1;
+      setNotificationCount(newCount);
+      updateNotificationSettings(newCount, startTime, endTime);
+    }
+  };
+
+  const decrementCount = () => {
+    if (notificationCount > 1) {
+      const newCount = notificationCount - 1;
+      setNotificationCount(newCount);
+      updateNotificationSettings(newCount, startTime, endTime);
+    }
+  };
+
+  const updateNotificationSettings = (
+    count: number,
+    start: Date,
+    end: Date
+  ) => {
+    updateUser({
+      notificationSettings: {
+        count,
+        startTime: start.toISOString(),
+        endTime: end.toISOString(),
+      },
+    });
+  };
 
   const toggleCategory = async (categoryId: string) => {
     const updated = selectedCategories.includes(categoryId)
@@ -188,8 +258,81 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 </View>
                 <Ionicons name="chevron-forward" size={20} color={colors.text} />
               </TouchableOpacity>
+
+              {/* Dev Mode: Reset Onboarding */}
+              {__DEV__ && (
+                <TouchableOpacity
+                  style={styles.settingRow}
+                  onPress={() => {
+                    resetOnboarding();
+                    onClose();
+                    router.replace('/onboarding/welcome');
+                  }}
+                >
+                  <View style={styles.settingInfo}>
+                    <Ionicons name="refresh-outline" size={20} color="#EF4444" />
+                    <Text style={[styles.settingLabel, { color: '#EF4444' }]}>
+                      إعادة تشغيل التعريف (Dev Mode)
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color={colors.text} />
+                </TouchableOpacity>
+              )}
             </View>
           </ScrollView>
+
+          {/* Time Pickers */}
+          {showStartTimePicker && (
+            <View style={styles.pickerContainer}>
+              <View style={styles.pickerHeader}>
+                <TouchableOpacity
+                  onPress={() => setShowStartTimePicker(false)}
+                  style={styles.pickerButton}
+                >
+                  <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={startTime}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                onChange={(event, selectedTime) => {
+                  if (selectedTime) {
+                    setStartTime(selectedTime);
+                    updateNotificationSettings(notificationCount, selectedTime, endTime);
+                  }
+                }}
+                style={styles.picker}
+              />
+            </View>
+          )}
+
+          {showEndTimePicker && (
+            <View style={styles.pickerContainer}>
+              <View style={styles.pickerHeader}>
+                <TouchableOpacity
+                  onPress={() => setShowEndTimePicker(false)}
+                  style={styles.pickerButton}
+                >
+                  <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={endTime}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                onChange={(event, selectedTime) => {
+                  if (selectedTime) {
+                    setEndTime(selectedTime);
+                    updateNotificationSettings(notificationCount, startTime, selectedTime);
+                  }
+                }}
+                style={styles.picker}
+              />
+            </View>
+          )}
         </Animated.View>
       </View>
     </Modal>
@@ -306,6 +449,48 @@ const styles = StyleSheet.create({
   categoryChipText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  notificationConfigRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  countContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  countButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  countText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    minWidth: 35,
+    textAlign: 'center',
+  },
+  timeButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+    minWidth: 100,
+  },
+  timeText: {
+    fontSize: 14,
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  summaryText: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginTop: 8,
+    opacity: 0.7,
+    lineHeight: 18,
   },
 });
 

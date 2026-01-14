@@ -26,7 +26,7 @@ export default function RelationshipScreen() {
   const handleNext = () => {
     if (selectedTime) {
       updateUser({ dailyTimeEstimate: selectedTime });
-      router.push('/onboarding/familiarity');
+      router.push('/onboarding/benefits');
     }
   };
 
@@ -35,7 +35,7 @@ export default function RelationshipScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={4} totalSteps={6} showSkip={true} />
+      <OnboardingProgress currentStep={4} totalSteps={7} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
@@ -76,7 +76,10 @@ export default function RelationshipScreen() {
           ))}
         </View>
 
-        {/* Next Button */}
+      </ScrollView>
+
+      {/* Fixed Bottom Button */}
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
             styles.button,
@@ -87,7 +90,7 @@ export default function RelationshipScreen() {
         >
           <Text style={styles.buttonText}>التالي</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -101,6 +104,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
+    paddingBottom: 100, // Extra padding for fixed button
   },
   title: {
     fontSize: 28,
@@ -130,11 +134,23 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
   },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 24,
+    paddingBottom: 40,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
   button: {
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 12,
     minWidth: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
