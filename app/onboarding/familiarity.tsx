@@ -28,11 +28,14 @@ export default function FamiliarityScreen() {
     scheduleDailyNotification();
   }, []);
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (selectedFamiliarity) {
-      updateUser({ familiarity: selectedFamiliarity as any });
-      completeOnboarding();
-      router.replace('/(tabs)');
+      await updateUser({ familiarity: selectedFamiliarity as any });
+      await completeOnboarding();
+      // Small delay to ensure state is saved before navigation
+      setTimeout(() => {
+        router.replace('/(tabs)');
+      }, 100);
     }
   };
 

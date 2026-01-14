@@ -44,16 +44,22 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       console.error('Error saving user:', error);
     }
+    return updatedUser;
   };
 
   const completeOnboarding = async () => {
-    const updatedUser = { ...user, hasCompletedOnboarding: true } as User;
+    const updatedUser = { 
+      ...user, 
+      hasCompletedOnboarding: true,
+      selectedCategories: user?.selectedCategories || []
+    } as User;
     setUser(updatedUser);
     try {
       await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (error) {
       console.error('Error completing onboarding:', error);
     }
+    return updatedUser;
   };
 
   return (

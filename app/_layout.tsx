@@ -25,10 +25,12 @@ function RootLayoutNav() {
     const inTabsGroup = segments[0] === '(tabs)';
     const inOnboardingGroup = segments[0] === 'onboarding';
 
-    // In development mode, always show onboarding
+    // In development mode, show onboarding only if not completed
     if (__DEV__) {
-      if (!inOnboardingGroup) {
+      if (!user?.hasCompletedOnboarding && !inOnboardingGroup) {
         router.replace('/onboarding/welcome');
+      } else if (user?.hasCompletedOnboarding && inOnboardingGroup) {
+        router.replace('/(tabs)');
       }
       return;
     }
