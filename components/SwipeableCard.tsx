@@ -189,11 +189,12 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     position: 'absolute',
     alignSelf: 'center',
+    top: 0,
+    left: 0,
   },
   contentContainer: {
     flex: 1,
     paddingHorizontal: 32,
-    paddingTop: 32,
     paddingBottom: 100, // Space for swipe indicator
     justifyContent: 'center',
   },

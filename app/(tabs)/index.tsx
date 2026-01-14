@@ -76,11 +76,8 @@ export default function HomeScreen() {
       <StatusBar style="auto" />
 
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton}>
-          <Ionicons name="crown-outline" size={24} color={colors.primary} />
-        </TouchableOpacity>
-        <View style={styles.likesContainer}>
+      <View style={styles.header} pointerEvents="box-none">
+        <View style={styles.likesContainer} pointerEvents="none">
           <Ionicons name="heart" size={16} color={colors.primary} />
           <Text style={[styles.likesText, { color: colors.text }]}>
             {likedCount}/5
@@ -97,12 +94,16 @@ export default function HomeScreen() {
             />
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => setProfileModalVisible(true)}
-        >
-          <Ionicons name="person-outline" size={24} color={colors.primary} />
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => setProfileModalVisible(true)}
+            activeOpacity={0.7}
+            pointerEvents="auto"
+          >
+            <Ionicons name="person-outline" size={24} color={colors.primary} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Cards Container */}
@@ -143,6 +144,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 20,
+    zIndex: 1000,
+    position: 'relative',
+  },
+  headerRight: {
+    width: 44,
+    height: 44,
   },
   headerButton: {
     width: 44,
