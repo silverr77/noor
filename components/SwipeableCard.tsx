@@ -32,13 +32,16 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(1);
 
-  // Reset card position when it becomes the top card
+  // Reset card position on mount
   useEffect(() => {
-    if (index === 0) {
-      translateY.value = 0;
-      opacity.value = 1;
-    }
-  }, [index]);
+    translateY.value = 0;
+    opacity.value = 1;
+  }, [quote.id]);
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    onLike(quote.id);
+  };
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
@@ -62,17 +65,23 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
       }
     });
 
+  // Double tap gesture for like - should work alongside pan
+  const doubleTapGesture = Gesture.Tap()
+    .numberOfTaps(2)
+    .maxDuration(300)
+    .onEnd(() => {
+      runOnJS(handleLike)();
+    });
+
+  // Use Simultaneous so both gestures can work - pan for swipe, double tap for like
+  const composedGesture = Gesture.Simultaneous(panGesture, doubleTapGesture);
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateY: translateY.value },
     ],
     opacity: opacity.value,
   }));
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    onLike(quote.id);
-  };
 
   const handleShare = async () => {
     try {
@@ -84,46 +93,52 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
     }
   };
 
+  // Only show the top card (index 0), hide others
+  if (index !== 0) {
+    return null;
+  }
+
   return (
-    <GestureDetector gesture={panGesture}>
+    <GestureDetector gesture={composedGesture}>
       <Animated.View
         style={[
           styles.card,
           animatedStyle,
-          {
-            backgroundColor: colors.cardBackground,
-            zIndex: 100 - index,
-          },
         ]}
       >
-        <View style={styles.content}>
-          <Text style={[styles.quoteText, { color: colors.text }]}>
-            {quote.text}
-          </Text>
-          {quote.translation && (
-            <Text style={[styles.translationText, { color: colors.text }]}>
-              {quote.translation}
+        <View style={styles.contentContainer}>
+          <View style={styles.textContainer}>
+            <Text style={[styles.quoteText, { color: colors.text }]}>
+              {quote.text}
             </Text>
-          )}
-        </View>
-
-        <View style={styles.actions}>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleShare}
-          >
-            <Ionicons name="share-outline" size={24} color={colors.primary} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.actionButton}
-            onPress={handleLike}
-          >
-            <Ionicons
-              name={isLiked ? 'heart' : 'heart-outline'}
-              size={24}
-              color={isLiked ? '#EF4444' : colors.primary}
-            />
-          </TouchableOpacity>
+            {quote.translation && (
+              <Text style={[styles.translationText, { color: colors.text }]}>
+                {quote.translation}
+              </Text>
+            )}
+            
+            {/* Actions right below the quote */}
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleShare}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="share-outline" size={24} color={colors.primary} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleLike}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={isLiked ? 'heart' : 'heart-outline'}
+                  size={24}
+                  color={isLiked ? '#EF4444' : colors.primary}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Animated.View>
     </GestureDetector>
@@ -170,22 +185,20 @@ const indicatorStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   card: {
-    width: CARD_WIDTH,
-    height: CARD_HEIGHT,
-    borderRadius: 20,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     position: 'absolute',
     alignSelf: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
   },
-  content: {
+  contentContainer: {
     flex: 1,
+    paddingHorizontal: 32,
+    paddingTop: 32,
+    paddingBottom: 100, // Space for swipe indicator
     justifyContent: 'center',
-    padding: 32,
-    paddingBottom: 16,
+  },
+  textContainer: {
+    justifyContent: 'center',
   },
   quoteText: {
     fontSize: 28,
@@ -204,11 +217,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 24,
-    paddingBottom: 24,
+    gap: 32,
+    marginTop: 32,
+    paddingVertical: 16,
   },
   actionButton: {
     padding: 12,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -69,7 +69,7 @@ export default function HomeScreen() {
     }
   };
 
-  const visibleCards = quotes.slice(currentIndex, currentIndex + 3);
+  const currentQuote = quotes[currentIndex];
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -107,15 +107,15 @@ export default function HomeScreen() {
 
       {/* Cards Container */}
       <View style={styles.cardsContainer}>
-        {visibleCards.map((quote, index) => (
+        {currentQuote && (
           <SwipeableCard
-            key={quote.id}
-            quote={quote}
+            key={currentQuote.id}
+            quote={currentQuote}
             onSwipe={handleSwipe}
             onLike={handleLike}
-            index={index}
+            index={0}
           />
-        ))}
+        )}
       </View>
 
       {/* Swipe Indicator - Fixed at bottom of screen */}
