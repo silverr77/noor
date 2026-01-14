@@ -5,25 +5,38 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+// Purple theme matching the logo
+const primaryPurple = '#8B5CF6'; // Main purple
+const darkPurple = '#6D28D9'; // Darker purple
+const lightPurple = '#A78BFA'; // Lighter purple
+const creamBackground = '#FEF3E2'; // Cream/beige background
+const white = '#FFFFFF';
+const darkBlue = '#1E3A8A'; // Dark blue for text/outlines
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: darkBlue,
+    background: creamBackground,
+    tint: primaryPurple,
+    icon: primaryPurple,
+    tabIconDefault: '#9CA3AF',
+    tabIconSelected: primaryPurple,
+    primary: primaryPurple,
+    secondary: lightPurple,
+    accent: darkBlue,
+    cardBackground: white,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    text: white,
+    background: darkPurple,
+    tint: lightPurple,
+    icon: lightPurple,
+    tabIconDefault: '#9CA3AF',
+    tabIconSelected: lightPurple,
+    primary: primaryPurple,
+    secondary: lightPurple,
+    accent: white,
+    cardBackground: '#7C3AED',
   },
 };
 

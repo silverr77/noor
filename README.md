@@ -1,50 +1,159 @@
-# Welcome to your Expo app 👋
+# أذكار – أقوال وأدعية يومية
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A beautiful Arabic iOS app for daily Islamic quotes (أذكار) and supplications (أدعية) with an Instagram-style swipeable card interface.
 
-## Get started
+## Features
 
-1. Install dependencies
+- 🕯️ **Beautiful UI** - Clean, modern design with purple theme matching the app logo
+- 📱 **Swipeable Cards** - Instagram-style card swiping to browse through daily quotes
+- ❤️ **Like & Share** - Like your favorite quotes and share them with others
+- 🔔 **Notifications** - Daily reminders for morning and evening supplications
+- 📋 **Categories** - Organize quotes by categories (Growth, Peace, Anxiety, Stress Relief, etc.)
+- 🎯 **Onboarding** - Personalized onboarding flow to customize your experience
+- 🌐 **RTL Support** - Full right-to-left layout support for Arabic language
+- 📊 **Widget Support** - Widget configuration for home screen (setup required)
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+- **React Native** with Expo
+- **TypeScript** for type safety
+- **React Navigation** for navigation
+- **Reanimated** for smooth animations
+- **Gesture Handler** for swipe gestures
+- **AsyncStorage** for local data persistence
+- **Expo Notifications** for push notifications
 
-   ```bash
-   npx expo start
-   ```
+## Installation
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Install dependencies:
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Start the development server:
+```bash
+npx expo start
+```
 
-## Learn more
+3. Run on iOS:
+```bash
+npx expo start --ios
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Run on Android:
+```bash
+npx expo start --android
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## App Structure
 
-## Join the community
+```
+app/
+├── (tabs)/           # Main app tabs
+│   ├── index.tsx     # Home screen with swipeable cards
+│   └── explore.tsx   # Categories explore screen
+├── onboarding/       # Onboarding flow
+│   ├── welcome.tsx
+│   ├── name.tsx
+│   ├── age.tsx
+│   ├── gender.tsx
+│   ├── relationship.tsx
+│   ├── familiarity.tsx
+│   ├── categories.tsx
+│   ├── widgets.tsx
+│   └── complete.tsx
+└── _layout.tsx       # Root layout with navigation
 
-Join our community of developers creating universal apps.
+components/
+├── CandleIcon.tsx    # Candle mascot icon component
+└── SwipeableCard.tsx # Swipeable card component for quotes
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+context/
+└── UserContext.tsx   # User state management
+
+data/
+├── categories.ts      # Category definitions
+└── quotes.ts         # Sample quotes/do3aa
+
+services/
+├── notifications.ts  # Notification setup and scheduling
+└── widgets.ts        # Widget configuration
+
+types/
+└── index.ts          # TypeScript type definitions
+```
+
+## Features in Detail
+
+### Onboarding Flow
+1. **Welcome** - Introduction to the app
+2. **Name** - User name input
+3. **Age** - Age range selection
+4. **Gender** - Gender identification
+5. **Relationship** - Relationship status
+6. **Familiarity** - Experience with affirmations/do3aa
+7. **Categories** - Select preferred categories
+8. **Widgets** - Widget setup information
+9. **Complete** - Onboarding completion
+
+### Main Features
+- **Swipeable Cards**: Swipe left/right to navigate through quotes
+- **Like System**: Tap heart icon to like quotes (saved locally)
+- **Share**: Share quotes via native share sheet
+- **Categories**: Browse and filter quotes by category
+- **Notifications**: Daily reminders at 8 AM and 8 PM
+
+## Configuration
+
+### Notifications
+Notifications are automatically set up during onboarding. To customize:
+- Edit `services/notifications.ts`
+- Modify `scheduleDailyNotification()` function
+
+### Widgets
+Widget setup requires native code:
+- iOS: Create Widget Extension in Xcode
+- Android: Implement App Widget using Android Widget API
+- See `services/widgets.ts` for configuration structure
+
+### Colors
+Theme colors are defined in `constants/theme.ts`:
+- Primary Purple: `#8B5CF6`
+- Dark Purple: `#6D28D9`
+- Light Purple: `#A78BFA`
+- Cream Background: `#FEF3E2`
+- Dark Blue: `#1E3A8A`
+
+## Adding More Quotes
+
+Edit `data/quotes.ts` to add more quotes/do3aa:
+
+```typescript
+{
+  id: 'unique-id',
+  text: 'Arabic text here',
+  translation: 'English translation',
+  category: 'category-id',
+  isLiked: false,
+  date: new Date().toISOString(),
+}
+```
+
+## Future Enhancements
+
+- [ ] Backend integration for quotes
+- [ ] User accounts and sync
+- [ ] More categories and quotes
+- [ ] Widget implementation (native code required)
+- [ ] Dark mode support
+- [ ] Font customization
+- [ ] Favorite quotes collection
+- [ ] Search functionality
+
+## License
+
+Private project
+
+## Support
+
+For issues or questions, please contact the development team.
