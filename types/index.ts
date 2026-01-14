@@ -5,7 +5,7 @@ export interface User {
   gender?: 'female' | 'male' | 'others' | 'prefer-not-to-say';
   dailyTimeEstimate?: string;
   familiarity?: 'new' | 'occasional' | 'regular';
-  selectedCategories: string[];
+  selectedCategories?: string[];
   hasCompletedOnboarding: boolean;
 }
 

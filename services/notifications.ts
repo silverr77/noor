@@ -30,12 +30,14 @@ export async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('فشل في الحصول على إذن الإشعارات!');
+      // Silently fail - user can enable notifications later
+      console.log('Notification permissions not granted');
       return;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
   } else {
-    alert('يجب استخدام جهاز حقيقي لدفع الإشعارات');
+    // Running on simulator - silently skip, don't show alert
+    console.log('Notifications require a real device');
   }
 
   return token;

@@ -6,6 +6,8 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
+import { registerForPushNotificationsAsync, scheduleDailyNotification } from '@/services/notifications';
+import { useEffect } from 'react';
 
 const familiarityOptions = [
   { value: 'new', label: 'هذا جديد بالنسبة لي' },
@@ -17,13 +19,20 @@ export default function FamiliarityScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const { user, updateUser } = useUser();
+  const { user, updateUser, completeOnboarding } = useUser();
   const [selectedFamiliarity, setSelectedFamiliarity] = useState<string>('');
+
+  useEffect(() => {
+    // Set up notifications when component mounts
+    registerForPushNotificationsAsync();
+    scheduleDailyNotification();
+  }, []);
 
   const handleNext = () => {
     if (selectedFamiliarity) {
       updateUser({ familiarity: selectedFamiliarity as any });
-      router.push('/onboarding/categories');
+      completeOnboarding();
+      router.replace('/(tabs)');
     }
   };
 
@@ -32,7 +41,7 @@ export default function FamiliarityScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={5} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={6} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

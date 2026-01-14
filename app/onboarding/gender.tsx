@@ -31,7 +31,7 @@ export default function GenderScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={3} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={3} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

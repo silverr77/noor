@@ -33,7 +33,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateUser = async (userData: Partial<User>) => {
-    const updatedUser = { ...user, ...userData } as User;
+    const updatedUser = { 
+      ...user, 
+      ...userData,
+      selectedCategories: userData.selectedCategories || user?.selectedCategories || []
+    } as User;
     setUser(updatedUser);
     try {
       await AsyncStorage.setItem('user', JSON.stringify(updatedUser));

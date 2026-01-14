@@ -29,7 +29,7 @@ export default function NameScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={1} totalSteps={9} showSkip={false} />
+      <OnboardingProgress currentStep={1} totalSteps={6} showSkip={false} />
       
       <View style={styles.content}>
         {/* Title */}

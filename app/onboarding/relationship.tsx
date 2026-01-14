@@ -13,6 +13,7 @@ const timeOptions = [
   { value: '15', label: '15 دقيقة', minutes: 15 },
   { value: '20', label: '20 دقيقة', minutes: 20 },
   { value: '30', label: '30 دقيقة', minutes: 30 },
+  { value: '30+', label: 'أكثر من 30 دقيقة', minutes: 45 },
 ];
 
 export default function RelationshipScreen() {
@@ -34,7 +35,7 @@ export default function RelationshipScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={4} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={4} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

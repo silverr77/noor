@@ -28,7 +28,7 @@ export default function AgeScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={2} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={2} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

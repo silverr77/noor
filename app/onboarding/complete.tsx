@@ -29,7 +29,7 @@ export default function CompleteScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={9} totalSteps={9} showSkip={false} />
+      <OnboardingProgress currentStep={7} totalSteps={7} showSkip={false} />
       
       {/* Title */}
       <Text style={[styles.title, { color: colors.text }]}>

@@ -39,9 +39,8 @@ export function OnboardingProgress({
     if (onSkip) {
       onSkip();
     } else {
-      // Default: skip to categories (last required step before widgets)
-      // Set default categories if none selected
-      router.push('/onboarding/categories');
+      // Default: skip to main app
+      router.replace('/(tabs)');
     }
   };
 

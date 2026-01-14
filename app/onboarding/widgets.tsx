@@ -16,7 +16,7 @@ export default function WidgetsScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={7} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={6} totalSteps={8} showSkip={true} />
       
       {/* Title */}
       <Text style={[styles.title, { color: colors.text }]}>
