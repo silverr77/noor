@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,16 +7,12 @@ import {
   Modal,
   ScrollView,
   Switch,
-  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
-import { categories } from '@/data/categories';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 
 interface ProfileModalProps {
@@ -42,98 +38,8 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
-  const { user, updateUser, resetOnboarding } = useUser();
+  const { user, resetOnboarding } = useUser();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    user?.selectedCategories || []
-  );
-  const [notificationCount, setNotificationCount] = useState(
-    user?.notificationSettings?.count || 3
-  );
-  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
-  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
-  const [startTime, setStartTime] = useState(
-    user?.notificationSettings?.startTime
-      ? new Date(user.notificationSettings.startTime)
-      : new Date()
-  );
-  const [endTime, setEndTime] = useState(
-    user?.notificationSettings?.endTime
-      ? new Date(user.notificationSettings.endTime)
-      : new Date()
-  );
-
-  useEffect(() => {
-    if (user?.selectedCategories) {
-      setSelectedCategories(user.selectedCategories);
-    }
-    if (user?.notificationSettings) {
-      setNotificationCount(user.notificationSettings.count);
-      setStartTime(new Date(user.notificationSettings.startTime));
-      setEndTime(new Date(user.notificationSettings.endTime));
-    } else {
-      // Set defaults
-      const defaultStart = new Date();
-      defaultStart.setHours(9, 0, 0, 0);
-      const defaultEnd = new Date();
-      defaultEnd.setHours(22, 0, 0, 0);
-      setStartTime(defaultStart);
-      setEndTime(defaultEnd);
-    }
-  }, [user]);
-
-  const formatTime = (date: Date) => {
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-  };
-
-  const incrementCount = () => {
-    if (notificationCount < 10) {
-      const newCount = notificationCount + 1;
-      setNotificationCount(newCount);
-      updateNotificationSettings(newCount, startTime, endTime);
-    }
-  };
-
-  const decrementCount = () => {
-    if (notificationCount > 1) {
-      const newCount = notificationCount - 1;
-      setNotificationCount(newCount);
-      updateNotificationSettings(newCount, startTime, endTime);
-    }
-  };
-
-  const updateNotificationSettings = (
-    count: number,
-    start: Date,
-    end: Date
-  ) => {
-    updateUser({
-      notificationSettings: {
-        count,
-        startTime: start.toISOString(),
-        endTime: end.toISOString(),
-      },
-    });
-  };
-
-  const toggleCategory = async (categoryId: string) => {
-    const updated = selectedCategories.includes(categoryId)
-      ? selectedCategories.filter(id => id !== categoryId)
-      : [...selectedCategories, categoryId];
-    
-    setSelectedCategories(updated);
-    updateUser({ selectedCategories: updated });
-    
-    try {
-      await AsyncStorage.setItem('selectedCategories', JSON.stringify(updated));
-    } catch (error) {
-      console.error('Error saving categories:', error);
-    }
-  };
 
   return (
     <Modal
@@ -197,46 +103,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
               </View>
             </View>
 
-            {/* Categories Section */}
-            <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
-                الفئات المفضلة
-              </Text>
-              <Text style={[styles.sectionDescription, { color: colors.text }]}>
-                اختر الفئات التي تريد رؤيتها في أذكارك اليومية
-              </Text>
-              <View style={styles.categoriesGrid}>
-                {categories.map((category) => {
-                  const isSelected = selectedCategories.includes(category.id);
-                  return (
-                    <TouchableOpacity
-                      key={category.id}
-                      style={[
-                        styles.categoryChip,
-                        {
-                          backgroundColor: isSelected ? colors.primary : colors.background,
-                          borderColor: isSelected ? colors.primary : '#E5E7EB',
-                        },
-                      ]}
-                      onPress={() => toggleCategory(category.id)}
-                    >
-                      <Text
-                        style={[
-                          styles.categoryChipText,
-                          {
-                            color: isSelected ? '#FFFFFF' : colors.text,
-                          },
-                        ]}
-                      >
-                        {category.nameAr}
-                      </Text>
-                      <Text style={styles.categoryIcon}>{category.icon}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            </View>
-
             {/* Other Settings */}
             <View style={styles.section}>
               <Text style={[styles.sectionTitle, { color: colors.text }]}>
@@ -292,58 +158,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
             </View>
           </ScrollView>
 
-          {/* Time Pickers */}
-          {showStartTimePicker && (
-            <View style={styles.pickerContainer}>
-              <View style={styles.pickerHeader}>
-                <TouchableOpacity
-                  onPress={() => setShowStartTimePicker(false)}
-                  style={styles.pickerButton}
-                >
-                  <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={startTime}
-                mode="time"
-                is24Hour={false}
-                display="spinner"
-                onChange={(event, selectedTime) => {
-                  if (selectedTime) {
-                    setStartTime(selectedTime);
-                    updateNotificationSettings(notificationCount, selectedTime, endTime);
-                  }
-                }}
-                style={styles.picker}
-              />
-            </View>
-          )}
-
-          {showEndTimePicker && (
-            <View style={styles.pickerContainer}>
-              <View style={styles.pickerHeader}>
-                <TouchableOpacity
-                  onPress={() => setShowEndTimePicker(false)}
-                  style={styles.pickerButton}
-                >
-                  <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={endTime}
-                mode="time"
-                is24Hour={false}
-                display="spinner"
-                onChange={(event, selectedTime) => {
-                  if (selectedTime) {
-                    setEndTime(selectedTime);
-                    updateNotificationSettings(notificationCount, startTime, selectedTime);
-                  }
-                }}
-                style={styles.picker}
-              />
-            </View>
-          )}
         </Animated.View>
       </View>
     </Modal>
@@ -424,12 +238,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'right',
   },
-  sectionDescription: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginBottom: 16,
-    textAlign: 'right',
-  },
   settingRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -444,29 +252,6 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     textAlign: 'right',
-  },
-  categoriesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginTop: 8,
-    justifyContent: 'flex-end',
-  },
-  categoryChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    borderWidth: 1,
-    gap: 8,
-  },
-  categoryIcon: {
-    fontSize: 18,
-  },
-  categoryChipText: {
-    fontSize: 14,
-    fontWeight: '600',
   },
   notificationConfigRow: {
     flexDirection: 'row',
@@ -509,36 +294,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
     opacity: 0.7,
     lineHeight: 18,
-  },
-  pickerContainer: {
-    borderRadius: 16,
-    marginTop: 16,
-    marginBottom: 16,
-    paddingBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  pickerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  pickerButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  pickerButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  picker: {
-    width: '100%',
-    height: 200,
   },
 });
