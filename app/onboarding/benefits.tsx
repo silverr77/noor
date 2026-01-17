@@ -6,6 +6,10 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_TEXT = '#1E3A8A';
+
 const benefits = [
   {
     icon: '🧘',
@@ -30,15 +34,15 @@ export default function BenefitsScreen() {
   const colors = Colors[colorScheme ?? 'light'];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: ONBOARDING_BG }]}>
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={4} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
           فوائد الأذكار اليومية
         </Text>
 
@@ -49,15 +53,15 @@ export default function BenefitsScreen() {
               key={index}
               style={[
                 styles.benefitCard,
-                { backgroundColor: colors.cardBackground }
+                { backgroundColor: '#FFFFFF' }
               ]}
             >
               <Text style={styles.benefitIcon}>{benefit.icon}</Text>
               <View style={styles.benefitContent}>
-                <Text style={[styles.benefitTitle, { color: colors.text }]}>
+                <Text style={[styles.benefitTitle, { color: ONBOARDING_TEXT }]}>
                   {benefit.title}
                 </Text>
-                <Text style={[styles.benefitDescription, { color: colors.text }]}>
+                <Text style={[styles.benefitDescription, { color: ONBOARDING_TEXT }]}>
                   {benefit.description}
                 </Text>
               </View>
@@ -102,7 +106,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   benefitCard: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     padding: 20,
     borderRadius: 16,
     gap: 16,
@@ -118,11 +122,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 8,
+    textAlign: 'right', // RTL text
   },
   benefitDescription: {
     fontSize: 16,
     lineHeight: 24,
     opacity: 0.8,
+    textAlign: 'right', // RTL text
   },
   buttonContainer: {
     position: 'absolute',

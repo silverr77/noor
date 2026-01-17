@@ -7,6 +7,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_TEXT = '#1E3A8A';
+
 const genders = [
   { value: 'female', label: 'أنثى' },
   { value: 'male', label: 'ذكر' },
@@ -27,20 +31,20 @@ export default function GenderScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: ONBOARDING_BG }]}>
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={2} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
           كيف تعرّف نفسك؟
         </Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.text }]}>
+        <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
           ساعدني في تخصيص رحلتك
         </Text>
 
@@ -52,14 +56,14 @@ export default function GenderScreen() {
               style={[
                 styles.option,
                 {
-                  backgroundColor: colors.cardBackground,
+                  backgroundColor: '#FFFFFF',
                   borderColor: selectedGender === gender.value ? colors.primary : '#E5E7EB',
                   borderWidth: selectedGender === gender.value ? 2 : 1,
                 }
               ]}
               onPress={() => setSelectedGender(gender.value)}
             >
-              <Text style={[styles.optionText, { color: colors.text }]}>
+              <Text style={[styles.optionText, { color: ONBOARDING_TEXT }]}>
                 {gender.label}
               </Text>
               <View style={[
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   option: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
@@ -130,6 +134,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 18,
+    textAlign: 'right',
   },
   radio: {
     width: 24,

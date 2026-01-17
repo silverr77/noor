@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -34,7 +35,20 @@ export async function registerForPushNotificationsAsync() {
       console.log('Notification permissions not granted');
       return;
     }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
+    
+    // Try to get push token, but handle gracefully if projectId is not configured
+    try {
+      const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? Constants.easConfig?.projectId;
+      if (projectId) {
+        token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+      } else {
+        // No projectId configured - skip push token (local notifications still work)
+        console.log('No projectId configured for push notifications. Local notifications will still work.');
+      }
+    } catch (error) {
+      // Push token failed but local notifications still work
+      console.log('Push token registration failed:', error);
+    }
   } else {
     // Running on simulator - silently skip, don't show alert
     console.log('Notifications require a real device');

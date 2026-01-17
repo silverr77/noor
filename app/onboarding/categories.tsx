@@ -8,6 +8,10 @@ import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_TEXT = '#1E3A8A';
+
 export default function CategoriesScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -31,20 +35,20 @@ export default function CategoriesScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: ONBOARDING_BG }]}>
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={5} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
           اختر الفئات المفضلة لديك
         </Text>
 
         {/* Description */}
-        <Text style={[styles.description, { color: colors.text }]}>
+        <Text style={[styles.description, { color: ONBOARDING_TEXT }]}>
           اختر الفئات التي تريد أن تراها في تطبيقك
         </Text>
 
@@ -58,7 +62,7 @@ export default function CategoriesScreen() {
                 style={[
                   styles.categoryCard,
                   {
-                    backgroundColor: isSelected ? colors.primary : colors.cardBackground,
+                    backgroundColor: isSelected ? colors.primary : '#FFFFFF',
                     borderColor: isSelected ? colors.primary : '#E5E7EB',
                     borderWidth: isSelected ? 2 : 1,
                   }
@@ -69,7 +73,7 @@ export default function CategoriesScreen() {
                 <Text style={[
                   styles.categoryName, 
                   { 
-                    color: isSelected ? '#FFFFFF' : colors.text,
+                    color: isSelected ? '#FFFFFF' : ONBOARDING_TEXT,
                     fontWeight: isSelected ? '600' : '400',
                   }
                 ]}>
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   categoryCard: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     alignItems: 'center',
     padding: 20,
     borderRadius: 16,
@@ -139,6 +143,7 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 18,
     flex: 1,
+    textAlign: 'right', // RTL text
   },
   buttonContainer: {
     position: 'absolute',

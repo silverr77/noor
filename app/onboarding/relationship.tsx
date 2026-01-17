@@ -7,6 +7,10 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_TEXT = '#1E3A8A';
+
 const timeOptions = [
   { value: '5', label: '5 دقائق', minutes: 5 },
   { value: '10', label: '10 دقائق', minutes: 10 },
@@ -31,20 +35,20 @@ export default function RelationshipScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: ONBOARDING_BG }]}>
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={3} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
           كم وقت تقدر تقضيه في التطبيق يومياً؟
         </Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.text }]}>
+        <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
           اختر الوقت المناسب لك
         </Text>
 
@@ -56,7 +60,7 @@ export default function RelationshipScreen() {
               style={[
                 styles.option,
                 {
-                  backgroundColor: selectedTime === option.value ? colors.primary : colors.cardBackground,
+                  backgroundColor: selectedTime === option.value ? colors.primary : '#FFFFFF',
                   borderColor: selectedTime === option.value ? colors.primary : '#E5E7EB',
                   borderWidth: selectedTime === option.value ? 2 : 1,
                 }
@@ -66,7 +70,7 @@ export default function RelationshipScreen() {
               <Text style={[
                 styles.optionText,
                 { 
-                  color: selectedTime === option.value ? '#FFFFFF' : colors.text,
+                  color: selectedTime === option.value ? '#FFFFFF' : ONBOARDING_TEXT,
                   fontWeight: selectedTime === option.value ? '600' : '400',
                 }
               ]}>

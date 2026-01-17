@@ -1,9 +1,11 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+
+// Onboarding theme colors
+const ONBOARDING_TEXT = '#1E3A8A';
 
 interface OnboardingProgressProps {
   currentStep: number;
@@ -11,18 +13,6 @@ interface OnboardingProgressProps {
   showSkip?: boolean;
   onSkip?: () => void;
 }
-
-const onboardingSteps = [
-  'welcome',
-  'name',
-  'age',
-  'gender',
-  'relationship',
-  'familiarity',
-  'categories',
-  'widgets',
-  'complete',
-];
 
 export function OnboardingProgress({ 
   currentStep, 
@@ -46,16 +36,19 @@ export function OnboardingProgress({
 
   return (
     <View style={styles.container}>
-      {/* Skip Button */}
+      {/* Skip Button - Left side for RTL */}
       {showSkip && (
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-          <Text style={[styles.skipText, { color: colors.text }]}>تخطي</Text>
+          <Text style={[styles.skipText, { color: ONBOARDING_TEXT }]}>تخطي</Text>
         </TouchableOpacity>
       )}
       
-      {/* Progress Bar */}
+      {/* Progress Bar - RTL layout */}
       <View style={styles.progressContainer}>
-        <View style={[styles.progressBar, { backgroundColor: '#E5E7EB' }]}>
+        <Text style={[styles.progressText, { color: ONBOARDING_TEXT }]}>
+          {currentStep} / {totalSteps}
+        </Text>
+        <View style={[styles.progressBar, { backgroundColor: 'rgba(30, 58, 138, 0.2)' }]}>
           <View
             style={[
               styles.progressFill,
@@ -66,9 +59,6 @@ export function OnboardingProgress({
             ]}
           />
         </View>
-        <Text style={[styles.progressText, { color: colors.text }]}>
-          {currentStep} / {totalSteps}
-        </Text>
       </View>
     </View>
   );
@@ -81,7 +71,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   skipButton: {
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-start', // Left side for RTL
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginBottom: 16,
@@ -92,7 +82,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   progressContainer: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     alignItems: 'center',
     gap: 12,
   },
@@ -101,6 +91,7 @@ const styles = StyleSheet.create({
     height: 4,
     borderRadius: 2,
     overflow: 'hidden',
+    transform: [{ scaleX: -1 }], // Fill from right to left
   },
   progressFill: {
     height: '100%',
@@ -110,7 +101,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     minWidth: 50,
-    textAlign: 'left',
+    textAlign: 'right', // RTL text alignment
   },
 });
 

@@ -7,6 +7,9 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+
 export default function NameScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
@@ -23,31 +26,32 @@ export default function NameScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: colors.background }]}
+      style={[styles.container, { backgroundColor: ONBOARDING_BG }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={1} totalSteps={6} showSkip={false} />
       
       <View style={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: '#1E3A8A' }]}>
           ما اسمك؟
         </Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: colors.text }]}>
+        <Text style={[styles.subtitle, { color: '#1E3A8A' }]}>
           أود أن أعرفك أكثر!
         </Text>
 
         {/* Input */}
         <TextInput
           style={[styles.input, { 
-            backgroundColor: colors.cardBackground,
+            backgroundColor: '#FFFFFF',
             borderColor: colors.primary,
-            color: colors.text 
+            color: '#1E3A8A' 
           }]}
           placeholder="أدخل اسمك"
           placeholderTextColor="#9CA3AF"
@@ -58,7 +62,7 @@ export default function NameScreen() {
         />
       </View>
 
-      {/* Fixed Bottom Button */}
+      {/* Bottom Button - will be pushed up by keyboard */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
@@ -84,7 +88,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
-    paddingBottom: 100, // Extra padding for fixed button
   },
   title: {
     fontSize: 28,
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginBottom: 32,
-    color: '#6B7280',
+    opacity: 0.8,
   },
   input: {
     width: '100%',
@@ -104,16 +107,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 2,
     fontSize: 18,
-    marginBottom: 24,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     padding: 24,
     paddingBottom: 40,
-    backgroundColor: 'transparent',
     alignItems: 'center',
   },
   button: {

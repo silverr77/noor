@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, ScrollView, Platform } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView, Platform, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Colors } from '@/constants/theme';
@@ -9,6 +9,10 @@ import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { registerForPushNotificationsAsync, scheduleDailyNotification } from '@/services/notifications';
+
+// Classic theme cream background
+const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_TEXT = '#1E3A8A';
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -72,32 +76,32 @@ export default function NotificationsScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, { backgroundColor: ONBOARDING_BG }]}>
+      <StatusBar style="dark" />
       
       {/* Progress Bar */}
       <OnboardingProgress currentStep={6} totalSteps={6} showSkip={false} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: colors.text }]}>
+        <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
           احصل على أذكار طوال اليوم
         </Text>
-        <Text style={[styles.subtitle, { color: colors.text }]}>
+        <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
           أخبرني متى تريد أن تسمع مني
         </Text>
 
         {/* Notification Preview */}
         <View style={styles.previewContainer}>
-          <View style={[styles.notificationCard, { backgroundColor: colors.cardBackground }]}>
+          <View style={[styles.notificationCard, { backgroundColor: '#FFFFFF' }]}>
             <View style={styles.notificationHeader}>
               <View style={[styles.notificationIcon, { backgroundColor: colors.primary }]}>
                 <Ionicons name="flame-outline" size={20} color="#FFFFFF" />
               </View>
-              <Text style={[styles.appName, { color: colors.text }]}>أذكار</Text>
+              <Text style={[styles.appName, { color: ONBOARDING_TEXT }]}>أذكار</Text>
               <Text style={styles.notificationTime}>الآن</Text>
             </View>
-            <Text style={[styles.notificationText, { color: colors.text }]}>
+            <Text style={[styles.notificationText, { color: ONBOARDING_TEXT }]}>
               حتى أصغر شعلة يمكنها إضاءة أغمق غرفة
             </Text>
           </View>
@@ -105,53 +109,53 @@ export default function NotificationsScreen() {
 
         {/* Notification Count */}
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: colors.text }]}>كم مرة</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>كم مرة</Text>
           <View style={styles.countContainer}>
             <TouchableOpacity
-              style={[styles.countButton, { backgroundColor: colors.cardBackground }]}
+              style={[styles.countButton, { backgroundColor: '#FFFFFF' }]}
               onPress={decrementCount}
             >
-              <Ionicons name="remove" size={20} color={colors.text} />
+              <Ionicons name="remove" size={20} color={ONBOARDING_TEXT} />
             </TouchableOpacity>
-            <Text style={[styles.countText, { color: colors.text }]}>
+            <Text style={[styles.countText, { color: ONBOARDING_TEXT }]}>
               {notificationCount}x
             </Text>
             <TouchableOpacity
-              style={[styles.countButton, { backgroundColor: colors.cardBackground }]}
+              style={[styles.countButton, { backgroundColor: '#FFFFFF' }]}
               onPress={incrementCount}
             >
-              <Ionicons name="add" size={20} color={colors.text} />
+              <Ionicons name="add" size={20} color={ONBOARDING_TEXT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Time Range */}
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: colors.text }]}>ابدأ من</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>ابدأ من</Text>
           <TouchableOpacity
-            style={[styles.timeButton, { backgroundColor: colors.cardBackground }]}
+            style={[styles.timeButton, { backgroundColor: '#FFFFFF' }]}
             onPress={() => setShowStartTimePicker(true)}
           >
-            <Text style={[styles.timeText, { color: colors.text }]}>
+            <Text style={[styles.timeText, { color: ONBOARDING_TEXT }]}>
               {formatTime(startTime)}
             </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: colors.text }]}>ينتهي في</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>ينتهي في</Text>
           <TouchableOpacity
-            style={[styles.timeButton, { backgroundColor: colors.cardBackground }]}
+            style={[styles.timeButton, { backgroundColor: '#FFFFFF' }]}
             onPress={() => setShowEndTimePicker(true)}
           >
-            <Text style={[styles.timeText, { color: colors.text }]}>
+            <Text style={[styles.timeText, { color: ONBOARDING_TEXT }]}>
               {formatTime(endTime)}
             </Text>
           </TouchableOpacity>
         </View>
 
         {/* Summary */}
-        <Text style={[styles.summary, { color: colors.text }]}>
+        <Text style={[styles.summary, { color: ONBOARDING_TEXT }]}>
           ستحصل على {notificationCount} إشعارات يومياً بين {formatTime(startTime)} و {formatTime(endTime)}
         </Text>
 
@@ -167,10 +171,22 @@ export default function NotificationsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Time Pickers */}
-      {showStartTimePicker && (
+      {/* Time Picker Modal - Start Time */}
+      <Modal
+        visible={showStartTimePicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowStartTimePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity 
+            style={styles.modalBackdrop} 
+            activeOpacity={1} 
+            onPress={() => setShowStartTimePicker(false)} 
+          />
           <View style={styles.pickerContainer}>
             <View style={styles.pickerHeader}>
+              <Text style={styles.pickerTitle}>وقت البداية</Text>
               <TouchableOpacity
                 onPress={() => setShowStartTimePicker(false)}
                 style={styles.pickerButton}
@@ -178,24 +194,42 @@ export default function NotificationsScreen() {
                 <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
               </TouchableOpacity>
             </View>
-            <DateTimePicker
-              value={startTime}
-              mode="time"
-              is24Hour={false}
-              display="spinner"
-              onChange={(event, selectedTime) => {
-                if (selectedTime) {
-                  setStartTime(selectedTime);
-                }
-              }}
-              style={styles.picker}
-            />
+            <View style={styles.pickerWrapper}>
+              <DateTimePicker
+                value={startTime}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                themeVariant="light"
+                textColor="#1E3A8A"
+                onChange={(event, selectedTime) => {
+                  if (selectedTime) {
+                    setStartTime(selectedTime);
+                  }
+                }}
+                style={styles.picker}
+              />
+            </View>
           </View>
-        )}
+        </View>
+      </Modal>
 
-        {showEndTimePicker && (
+      {/* Time Picker Modal - End Time */}
+      <Modal
+        visible={showEndTimePicker}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowEndTimePicker(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity 
+            style={styles.modalBackdrop} 
+            activeOpacity={1} 
+            onPress={() => setShowEndTimePicker(false)} 
+          />
           <View style={styles.pickerContainer}>
             <View style={styles.pickerHeader}>
+              <Text style={styles.pickerTitle}>وقت النهاية</Text>
               <TouchableOpacity
                 onPress={() => setShowEndTimePicker(false)}
                 style={styles.pickerButton}
@@ -203,20 +237,25 @@ export default function NotificationsScreen() {
                 <Text style={[styles.pickerButtonText, { color: colors.primary }]}>تم</Text>
               </TouchableOpacity>
             </View>
-            <DateTimePicker
-              value={endTime}
-              mode="time"
-              is24Hour={false}
-              display="spinner"
-              onChange={(event, selectedTime) => {
-                if (selectedTime) {
-                  setEndTime(selectedTime);
-                }
-              }}
-              style={styles.picker}
-            />
+            <View style={styles.pickerWrapper}>
+              <DateTimePicker
+                value={endTime}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                themeVariant="light"
+                textColor="#1E3A8A"
+                onChange={(event, selectedTime) => {
+                  if (selectedTime) {
+                    setEndTime(selectedTime);
+                  }
+                }}
+                style={styles.picker}
+              />
+            </View>
           </View>
-        )}
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -258,7 +297,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   notificationHeader: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     alignItems: 'center',
     marginBottom: 8,
     gap: 8,
@@ -274,6 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     flex: 1,
+    textAlign: 'right', // RTL text
   },
   notificationTime: {
     fontSize: 12,
@@ -282,9 +322,10 @@ const styles = StyleSheet.create({
   notificationText: {
     fontSize: 14,
     lineHeight: 20,
+    textAlign: 'right', // RTL text
   },
   section: {
-    flexDirection: 'row',
+    flexDirection: 'row-reverse', // RTL layout
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 24,
@@ -292,6 +333,7 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 16,
     fontWeight: '600',
+    textAlign: 'right', // RTL text
   },
   countContainer: {
     flexDirection: 'row',
@@ -353,36 +395,59 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     textAlign: 'center',
   },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
   pickerContainer: {
-    borderRadius: 16,
-    marginTop: 16,
-    marginBottom: 16,
-    paddingBottom: 16,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 40,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 10,
   },
   pickerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    flexDirection: 'row-reverse', // RTL layout
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
+  },
+  pickerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1E3A8A',
   },
   pickerButton: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    borderRadius: 8,
   },
   pickerButtonText: {
     fontSize: 16,
     fontWeight: '600',
   },
+  pickerWrapper: {
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
   picker: {
-    width: '100%',
-    height: 200,
+    width: 300,
+    height: 216,
+    backgroundColor: '#FFFFFF',
   },
 });
 
