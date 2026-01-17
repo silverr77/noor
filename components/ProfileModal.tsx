@@ -18,6 +18,7 @@ import { useRouter } from 'expo-router';
 interface ProfileModalProps {
   visible: boolean;
   onClose: () => void;
+  themeAccentColor?: string;
 }
 
 // Get greeting based on time of day
@@ -34,12 +35,15 @@ const getGreeting = (): string => {
   }
 };
 
-export function ProfileModal({ visible, onClose }: ProfileModalProps) {
+export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
   const { user, resetOnboarding } = useUser();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  
+  // Use theme accent color if provided, otherwise use default primary
+  const accentColor = themeAccentColor || colors.primary;
 
   return (
     <Modal
@@ -76,7 +80,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                     {getGreeting()}، {user?.name || 'المستخدم'}
                   </Text>
                 </View>
-                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                <View style={[styles.avatar, { backgroundColor: accentColor }]}>
                   <Ionicons name="person" size={32} color="#FFFFFF" />
                 </View>
               </View>
@@ -91,14 +95,14 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={setNotificationsEnabled}
-                  trackColor={{ false: '#D1D5DB', true: colors.primary }}
+                  trackColor={{ false: '#D1D5DB', true: accentColor }}
                   thumbColor="#FFFFFF"
                 />
                 <View style={styles.settingInfo}>
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     تفعيل الإشعارات اليومية
                   </Text>
-                  <Ionicons name="notifications-outline" size={20} color={colors.primary} />
+                  <Ionicons name="notifications-outline" size={20} color={accentColor} />
                 </View>
               </View>
             </View>
@@ -114,7 +118,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     اللغة
                   </Text>
-                  <Ionicons name="language-outline" size={20} color={colors.primary} />
+                  <Ionicons name="language-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
@@ -123,7 +127,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     الوضع الليلي
                   </Text>
-                  <Ionicons name="moon-outline" size={20} color={colors.primary} />
+                  <Ionicons name="moon-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
@@ -132,7 +136,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     حول التطبيق
                   </Text>
-                  <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
+                  <Ionicons name="information-circle-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
 

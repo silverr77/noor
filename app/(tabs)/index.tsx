@@ -376,12 +376,14 @@ export default function HomeScreen() {
         onToggleFavorites={handleToggleFavorites}
         showMyQuotes={showMyQuotes}
         onToggleMyQuotes={handleToggleMyQuotes}
+        themeAccentColor={currentTheme.accentColor}
       />
 
       {/* Profile Modal */}
       <ProfileModal
         visible={profileModalVisible}
         onClose={() => setProfileModalVisible(false)}
+        themeAccentColor={currentTheme.accentColor}
       />
 
       {/* Themes Modal */}

@@ -28,6 +28,7 @@ interface CategoriesModalProps {
   onToggleFavorites: (show: boolean) => void;
   showMyQuotes: boolean;
   onToggleMyQuotes: (show: boolean) => void;
+  themeAccentColor?: string;
 }
 
 export function CategoriesModal({ 
@@ -40,9 +41,13 @@ export function CategoriesModal({
   onToggleFavorites,
   showMyQuotes,
   onToggleMyQuotes,
+  themeAccentColor,
 }: CategoriesModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  
+  // Use theme accent color if provided, otherwise use default primary
+  const accentColor = themeAccentColor || colors.primary;
   const { user, updateUser } = useUser();
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
@@ -190,7 +195,7 @@ export function CategoriesModal({
 
             {/* Create My Own Quote Button */}
             <TouchableOpacity
-              style={[styles.createMixButton, { backgroundColor: colors.primary }]}
+              style={[styles.createMixButton, { backgroundColor: accentColor }]}
               onPress={() => setShowAddQuote(true)}
             >
               <Ionicons name="add-circle" size={24} color="#FFFFFF" />
@@ -211,7 +216,7 @@ export function CategoriesModal({
                 />
                 <View style={styles.addQuoteButtons}>
                   <TouchableOpacity
-                    style={[styles.addQuoteBtn, { backgroundColor: colors.primary }]}
+                    style={[styles.addQuoteBtn, { backgroundColor: accentColor }]}
                     onPress={handleAddQuote}
                   >
                     <Text style={styles.addQuoteBtnText}>إضافة</Text>
@@ -237,7 +242,7 @@ export function CategoriesModal({
                     styles.categoryCardFull,
                     { 
                       backgroundColor: colors.cardBackground,
-                      borderColor: showMyQuotes ? colors.primary : 'transparent',
+                      borderColor: showMyQuotes ? accentColor : 'transparent',
                       borderWidth: showMyQuotes ? 2 : 0,
                     }
                   ]}
@@ -247,14 +252,14 @@ export function CategoriesModal({
                   <Text style={[styles.categoryCount, { color: colors.text }]}>{customQuotes.length} اقتباس</Text>
                   <Ionicons name="pencil" size={20} color="#F97316" />
                   {showMyQuotes && (
-                    <View style={[styles.checkmark, { backgroundColor: colors.primary }]}>
+                    <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
                       <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                     </View>
                   )}
                 </TouchableOpacity>
                 {/* Settings button to manage quotes */}
                 <TouchableOpacity
-                  style={[styles.manageBtn, { backgroundColor: colors.primary }]}
+                  style={[styles.manageBtn, { backgroundColor: accentColor }]}
                   onPress={() => setShowQuotesManager(true)}
                 >
                   <Ionicons name="settings-outline" size={14} color="#FFFFFF" />
@@ -267,7 +272,7 @@ export function CategoriesModal({
                   styles.categoryCard,
                   { 
                     backgroundColor: colors.cardBackground,
-                    borderColor: showFavorites ? colors.primary : 'transparent',
+                    borderColor: showFavorites ? accentColor : 'transparent',
                     borderWidth: showFavorites ? 2 : 0,
                   }
                 ]}
@@ -277,7 +282,7 @@ export function CategoriesModal({
                 <Text style={[styles.categoryCount, { color: colors.text }]}>{likedCount} اقتباس</Text>
                 <Ionicons name="heart" size={20} color="#EF4444" />
                 {showFavorites && (
-                  <View style={[styles.checkmark, { backgroundColor: colors.primary }]}>
+                  <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
                     <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                   </View>
                 )}
@@ -297,7 +302,7 @@ export function CategoriesModal({
                       styles.categoryCard,
                       { 
                         backgroundColor: colors.cardBackground,
-                        borderColor: isSelected ? colors.primary : 'transparent',
+                        borderColor: isSelected ? accentColor : 'transparent',
                         borderWidth: isSelected ? 2 : 0,
                       }
                     ]}
@@ -306,7 +311,7 @@ export function CategoriesModal({
                     <Text style={[styles.categoryName, { color: colors.text }]}>{category.nameAr}</Text>
                     <Text style={styles.categoryIcon}>{category.icon}</Text>
                     {isSelected && (
-                      <View style={[styles.checkmark, { backgroundColor: colors.primary }]}>
+                      <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
                         <Ionicons name="checkmark" size={12} color="#FFFFFF" />
                       </View>
                     )}
