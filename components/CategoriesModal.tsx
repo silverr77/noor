@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  TextInput,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Quote } from '@/types';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 interface CategoriesModalProps {
   visible: boolean;
@@ -179,7 +179,6 @@ export function CategoriesModal({
             {/* Title with Icon */}
             <View style={styles.titleContainer}>
               <Text style={[styles.title, { color: colors.text }]}>الفئات</Text>
-              <Text style={styles.candleIcon}>🕯️</Text>
             </View>
 
             {/* Create My Own Quote Button */}
@@ -298,15 +297,6 @@ export function CategoriesModal({
                 );
               })}
             </View>
-
-            {/* Selected count indicator */}
-            {selectedCategories.length > 0 && (
-              <View style={styles.selectedIndicator}>
-                <Text style={[styles.selectedText, { color: colors.primary }]}>
-                  {selectedCategories.length} فئات مختارة
-                </Text>
-              </View>
-            )}
           </ScrollView>
         </Animated.View>
       </View>
