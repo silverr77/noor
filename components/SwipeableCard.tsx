@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, Dimensions } from 'react-native';
 import { GestureDetector, Gesture } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -7,12 +7,10 @@ import Animated, {
   withSpring,
   withRepeat,
   withSequence,
-  withDelay,
   withTiming,
   runOnJS,
   Easing,
 } from 'react-native-reanimated';
-import { Share } from 'react-native';
 import { Quote } from '@/types';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -26,15 +24,17 @@ interface SwipeableCardProps {
   quote: Quote;
   onSwipeUp: () => void;
   onSwipeDown: () => void;
-  onLike: (id: string) => void;
   index: number;
   canGoBack: boolean;
+  textColor?: string;
 }
 
-export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, canGoBack }: SwipeableCardProps) {
+export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, index, canGoBack, textColor }: SwipeableCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const [isLiked, setIsLiked] = useState(quote.isLiked);
+  
+  // Use theme colors if provided, otherwise use default colors
+  const quoteTextColor = textColor || colors.text;
 
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -44,11 +44,6 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
     translateY.value = 0;
     opacity.value = 1;
   }, [quote.id]);
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    onLike(quote.id);
-  };
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
@@ -83,17 +78,6 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
       }
     });
 
-  // Double tap gesture for like
-  const doubleTapGesture = Gesture.Tap()
-    .numberOfTaps(2)
-    .maxDuration(300)
-    .onEnd(() => {
-      runOnJS(handleLike)();
-    });
-
-  // Use Simultaneous so both gestures can work
-  const composedGesture = Gesture.Simultaneous(panGesture, doubleTapGesture);
-
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateY: translateY.value },
@@ -101,23 +85,13 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
     opacity: opacity.value,
   }));
 
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: `${quote.text}\n\n${quote.translation || ''}`,
-      });
-    } catch (error) {
-      console.error('Error sharing:', error);
-    }
-  };
-
   // Only show the top card (index 0), hide others
   if (index !== 0) {
     return null;
   }
 
   return (
-    <GestureDetector gesture={composedGesture}>
+    <GestureDetector gesture={panGesture}>
       <Animated.View
         style={[
           styles.card,
@@ -126,36 +100,14 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
       >
         <View style={styles.contentContainer}>
           <View style={styles.textContainer}>
-            <Text style={[styles.quoteText, { color: colors.text }]}>
+            <Text style={[styles.quoteText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }]}>
               {quote.text}
             </Text>
             {quote.translation && (
-              <Text style={[styles.translationText, { color: colors.text }]}>
+              <Text style={[styles.translationText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
                 {quote.translation}
               </Text>
             )}
-            
-            {/* Actions right below the quote */}
-            <View style={styles.actions}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleShare}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="share-outline" size={24} color={colors.primary} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleLike}
-                activeOpacity={0.7}
-              >
-                <Ionicons
-                  name={isLiked ? 'heart' : 'heart-outline'}
-                  size={24}
-                  color={isLiked ? '#EF4444' : colors.primary}
-                />
-              </TouchableOpacity>
-            </View>
           </View>
         </View>
       </Animated.View>
@@ -166,12 +118,15 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
 interface SwipeIndicatorProps {
   visible: boolean;
   quoteId: string; // Used to reset the timer when quote changes
+  accentColor?: string;
 }
 
-export function SwipeIndicator({ visible, quoteId }: SwipeIndicatorProps) {
+export function SwipeIndicator({ visible, quoteId, accentColor }: SwipeIndicatorProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [showIndicator, setShowIndicator] = useState(false);
+  
+  const indicatorColor = accentColor || colors.primary;
   
   // Animation values
   const translateY = useSharedValue(0);
@@ -216,8 +171,8 @@ export function SwipeIndicator({ visible, quoteId }: SwipeIndicatorProps) {
   return (
     <Animated.View style={[indicatorStyles.container, animatedStyle]}>
       <View style={indicatorStyles.indicator}>
-        <Ionicons name="chevron-up-outline" size={20} color={colors.primary} />
-        <Text style={[indicatorStyles.text, { color: colors.primary }]}>اسحب للأعلى</Text>
+        <Ionicons name="chevron-up-outline" size={20} color={indicatorColor} />
+        <Text style={[indicatorStyles.text, { color: indicatorColor }]}>اسحب للأعلى</Text>
       </View>
     </Animated.View>
   );
@@ -270,21 +225,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'right',
     lineHeight: 28,
-    opacity: 0.7,
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 32,
-    marginTop: 32,
-    paddingVertical: 16,
-  },
-  actionButton: {
-    padding: 12,
-    minWidth: 44,
-    minHeight: 44,
-    justifyContent: 'center',
-    alignItems: 'center',
+    opacity: 0.9,
   },
 });

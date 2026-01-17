@@ -1,6 +1,7 @@
 import { CategoriesModal } from '@/components/CategoriesModal';
 import { ProfileModal } from '@/components/ProfileModal';
 import { SwipeableCard, SwipeIndicator } from '@/components/SwipeableCard';
+import { getThemeById, Theme, ThemesModal } from '@/components/ThemesModal';
 import { Colors } from '@/constants/theme';
 import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
@@ -11,7 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
@@ -31,16 +32,37 @@ export default function HomeScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showMyQuotes, setShowMyQuotes] = useState(false);
   const [likedCount, setLikedCount] = useState(0);
+  const [themesModalVisible, setThemesModalVisible] = useState(false);
+  const [currentThemeId, setCurrentThemeId] = useState('classic');
+  const [currentTheme, setCurrentTheme] = useState<Theme>(getThemeById('classic'));
 
   useEffect(() => {
     loadLikedQuotes();
     loadCustomQuotes();
+    loadSavedTheme();
     
     // Load selected categories from user context
     if (user?.selectedCategories && user.selectedCategories.length > 0) {
       setSelectedCategories(user.selectedCategories);
     }
   }, [user?.selectedCategories]);
+
+  const loadSavedTheme = async () => {
+    try {
+      const savedTheme = await AsyncStorage.getItem('selectedTheme');
+      if (savedTheme) {
+        setCurrentThemeId(savedTheme);
+        setCurrentTheme(getThemeById(savedTheme));
+      }
+    } catch (error) {
+      console.error('Error loading theme:', error);
+    }
+  };
+
+  const handleThemeChange = (themeId: string) => {
+    setCurrentThemeId(themeId);
+    setCurrentTheme(getThemeById(themeId));
+  };
 
   // Reload custom quotes when modal closes
   useEffect(() => {
@@ -236,15 +258,33 @@ export default function HomeScreen() {
   // Calculate total liked count (from both regular and custom quotes)
   const totalLikedCount = likedCount + customQuotes.filter(q => q.isLiked).length;
 
+  // Determine status bar style based on theme
+  const statusBarStyle = currentTheme.image ? 'light' : (currentTheme.textColor === '#FFFFFF' ? 'light' : 'dark');
+
+  // Check if using classic theme (solid background)
+  const isClassicTheme = !currentTheme.image;
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <StatusBar style="auto" />
+    <View style={[styles.container, isClassicTheme && { backgroundColor: currentTheme.backgroundColor }]}>
+      {/* Background Image - only for image themes */}
+      {currentTheme.image && (
+        <>
+          <Image 
+            source={currentTheme.image} 
+            style={styles.backgroundImage}
+            resizeMode="cover"
+          />
+          {/* Dark overlay for better text readability */}
+          <View style={styles.backgroundOverlay} />
+        </>
+      )}
+      <StatusBar style={statusBarStyle} />
 
       {/* Header */}
       <View style={styles.header} pointerEvents="box-none">
         {/* Grid Button - Left */}
         <TouchableOpacity
-          style={styles.gridButton}
+          style={[styles.gridButton, { backgroundColor: currentTheme.headerBgColor }]}
           activeOpacity={0.7}
           onPress={() => setCategoriesModalVisible(true)}
         >
@@ -252,13 +292,13 @@ export default function HomeScreen() {
         </TouchableOpacity>
 
         {/* Category Tag - Center */}
-        <View style={[styles.categoryTag, { backgroundColor: colors.primary }]}>
+        <View style={[styles.categoryTag, { backgroundColor: currentTheme.headerBgColor }]}>
           <Text style={styles.categoryTagText}>{categoryName}</Text>
         </View>
 
         {/* Profile Button - Right */}
         <TouchableOpacity
-          style={styles.profileButton}
+          style={[styles.profileButton, { backgroundColor: currentTheme.headerBgColor }]}
           onPress={() => setProfileModalVisible(true)}
           activeOpacity={0.7}
         >
@@ -274,14 +314,14 @@ export default function HomeScreen() {
             quote={currentQuote}
             onSwipeUp={handleSwipeUp}
             onSwipeDown={handleSwipeDown}
-            onLike={handleLike}
             index={0}
             canGoBack={currentIndex > 0}
+            textColor={currentTheme.textColor}
           />
         ) : (
           <View style={styles.emptyState}>
-            <Ionicons name="document-text-outline" size={64} color={colors.primary} />
-            <Text style={[styles.emptyStateText, { color: colors.text }]}>
+            <Ionicons name="document-text-outline" size={64} color={currentTheme.accentColor} />
+            <Text style={[styles.emptyStateText, { color: currentTheme.textColor }]}>
               {showMyQuotes 
                 ? 'لا توجد اقتباسات خاصة بعد\nأضف اقتباسك الأول!'
                 : showFavorites
@@ -290,7 +330,7 @@ export default function HomeScreen() {
             </Text>
             {showMyQuotes && (
               <TouchableOpacity
-                style={[styles.addQuoteButton, { backgroundColor: colors.primary }]}
+                style={[styles.addQuoteButton, { backgroundColor: currentTheme.accentColor }]}
                 onPress={() => setCategoriesModalVisible(true)}
               >
                 <Text style={styles.addQuoteButtonText}>أضف اقتباس</Text>
@@ -300,15 +340,28 @@ export default function HomeScreen() {
         )}
       </View>
 
-      {/* Swipe Indicator - Fixed at bottom of screen */}
-      {currentQuote && (
-        <View style={styles.swipeIndicatorContainer}>
-          <SwipeIndicator 
-            visible={currentIndex < filteredQuotes.length - 1} 
-            quoteId={currentQuote?.id || ''} 
-          />
-        </View>
-      )}
+      {/* Bottom Area - Swipe Indicator and Theme Button */}
+      <View style={styles.bottomArea}>
+        {/* Swipe Indicator */}
+        {currentQuote && (
+          <View style={styles.swipeIndicatorContainer}>
+            <SwipeIndicator 
+              visible={currentIndex < filteredQuotes.length - 1} 
+              quoteId={currentQuote?.id || ''} 
+              accentColor={currentTheme.accentColor}
+            />
+          </View>
+        )}
+
+        {/* Theme Button */}
+        <TouchableOpacity
+          style={[styles.themeButton, { backgroundColor: currentTheme.headerBgColor }]}
+          onPress={() => setThemesModalVisible(true)}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="color-palette-outline" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
 
       {/* Categories Modal */}
       <CategoriesModal
@@ -328,6 +381,14 @@ export default function HomeScreen() {
         visible={profileModalVisible}
         onClose={() => setProfileModalVisible(false)}
       />
+
+      {/* Themes Modal */}
+      <ThemesModal
+        visible={themesModalVisible}
+        onClose={() => setThemesModalVisible(false)}
+        currentTheme={currentThemeId}
+        onThemeChange={handleThemeChange}
+      />
     </View>
   );
 }
@@ -335,6 +396,23 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  backgroundImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  backgroundOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   header: {
     flexDirection: 'row',
@@ -350,7 +428,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#374151',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -368,7 +445,6 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#374151',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -378,13 +454,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
   },
-  swipeIndicatorContainer: {
+  bottomArea: {
     position: 'absolute',
     bottom: 40,
     left: 0,
     right: 0,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+  swipeIndicatorContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  themeButton: {
+    position: 'absolute',
+    right: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   emptyState: {
     alignItems: 'center',
