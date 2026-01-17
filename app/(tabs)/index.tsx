@@ -213,23 +213,23 @@ export default function HomeScreen() {
   const filteredQuotes = getFilteredQuotes();
   const currentQuote = filteredQuotes[currentIndex];
 
-  // Get display category name - shows combined selections
+  // Get display category name - shows the current quote's category
   const getDisplayCategoryName = () => {
-    const parts: string[] = [];
+    if (!currentQuote) return 'عام';
     
-    if (showFavorites) parts.push('المفضلة');
-    if (showMyQuotes) parts.push('اقتباساتي');
-    
-    if (selectedCategories.length === 1) {
-      const cat = categories.find(c => c.id === selectedCategories[0]);
-      if (cat) parts.push(cat.nameAr);
-    } else if (selectedCategories.length > 1) {
-      parts.push(`${selectedCategories.length} فئات`);
+    // Check if it's a custom quote
+    if (currentQuote.id.startsWith('custom-')) {
+      return 'اقتباساتي';
     }
     
-    if (parts.length === 0) return 'عام';
-    if (parts.length === 1) return parts[0];
-    return `${parts.length} مختارة`;
+    // Check if it's a liked quote being shown in favorites view
+    if (showFavorites && currentQuote.isLiked) {
+      // Still show the actual category of the quote
+    }
+    
+    // Find the category name
+    const cat = categories.find(c => c.id === currentQuote.category);
+    return cat?.nameAr || 'عام';
   };
   const categoryName = getDisplayCategoryName();
 
