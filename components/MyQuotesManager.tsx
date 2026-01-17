@@ -20,11 +20,13 @@ interface MyQuotesManagerProps {
   visible: boolean;
   onClose: () => void;
   onQuotesChange: (quotes: Quote[]) => void;
+  accentColor?: string;
 }
 
-export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesManagerProps) {
+export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor: propAccentColor }: MyQuotesManagerProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const accentColor = propAccentColor || colors.primary;
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
   const [editingQuoteId, setEditingQuoteId] = useState<string | null>(null);
   const [editingQuoteText, setEditingQuoteText] = useState('');
@@ -173,8 +175,8 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={handleClose} style={styles.backButton}>
-              <Ionicons name="chevron-forward" size={24} color="#8B5CF6" />
-              <Text style={styles.backButtonTextFixed}>رجوع</Text>
+              <Ionicons name="chevron-forward" size={24} color={accentColor} />
+              <Text style={[styles.backButtonTextFixed, { color: accentColor }]}>رجوع</Text>
             </TouchableOpacity>
           </View>
 
@@ -187,7 +189,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
 
             {/* Add New Quote Button */}
             <TouchableOpacity
-              style={styles.addButtonFixed}
+              style={[styles.addButtonFixed, { backgroundColor: accentColor }]}
               onPress={() => setShowAddQuote(true)}
             >
               <Ionicons name="add-circle" size={24} color="#FFFFFF" />
@@ -209,7 +211,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                 />
                 <View style={styles.formButtons}>
                   <TouchableOpacity
-                    style={styles.formBtnPrimary}
+                    style={[styles.formBtnPrimary, { backgroundColor: accentColor }]}
                     onPress={handleAddQuote}
                   >
                     <Text style={styles.formBtnText}>إضافة</Text>
@@ -230,7 +232,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
             {/* Quotes List */}
             {customQuotes.length === 0 ? (
               <View style={styles.emptyState}>
-                <Ionicons name="document-text-outline" size={64} color="#8B5CF6" />
+                <Ionicons name="document-text-outline" size={64} color={accentColor} />
                 <Text style={styles.emptyTextFixed}>
                   لا توجد اقتباسات بعد
                 </Text>
@@ -258,7 +260,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                         />
                         <View style={styles.editButtons}>
                           <TouchableOpacity
-                            style={styles.iconBtnPrimary}
+                            style={[styles.iconBtnPrimary, { backgroundColor: accentColor }]}
                             onPress={handleSaveEdit}
                           >
                             <Ionicons name="checkmark" size={20} color="#FFFFFF" />
@@ -282,7 +284,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                             style={styles.actionBtn}
                             onPress={() => handleEditQuote(quote)}
                           >
-                            <Ionicons name="pencil-outline" size={20} color="#8B5CF6" />
+                            <Ionicons name="pencil-outline" size={20} color={accentColor} />
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={styles.actionBtn}

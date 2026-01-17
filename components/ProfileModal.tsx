@@ -80,7 +80,7 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                     {getGreeting()}، {user?.name || 'المستخدم'}
                   </Text>
                 </View>
-                <View style={styles.avatarFixed}>
+                <View style={[styles.avatarFixed, { backgroundColor: accentColor }]}>
                   <Ionicons name="person" size={32} color="#FFFFFF" />
                 </View>
               </View>
@@ -95,14 +95,14 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={setNotificationsEnabled}
-                  trackColor={{ false: '#D1D5DB', true: '#8B5CF6' }}
+                  trackColor={{ false: '#D1D5DB', true: accentColor }}
                   thumbColor="#FFFFFF"
                 />
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingLabelFixed}>
                     تفعيل الإشعارات اليومية
                   </Text>
-                  <Ionicons name="notifications-outline" size={20} color="#8B5CF6" />
+                  <Ionicons name="notifications-outline" size={20} color={accentColor} />
                 </View>
               </View>
             </View>
@@ -118,7 +118,7 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                   <Text style={styles.settingLabelFixed}>
                     اللغة
                   </Text>
-                  <Ionicons name="language-outline" size={20} color="#8B5CF6" />
+                  <Ionicons name="language-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
@@ -127,7 +127,7 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                   <Text style={styles.settingLabelFixed}>
                     الوضع الليلي
                   </Text>
-                  <Ionicons name="moon-outline" size={20} color="#8B5CF6" />
+                  <Ionicons name="moon-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
@@ -136,7 +136,7 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                   <Text style={styles.settingLabelFixed}>
                     حول التطبيق
                   </Text>
-                  <Ionicons name="information-circle-outline" size={20} color="#8B5CF6" />
+                  <Ionicons name="information-circle-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
 

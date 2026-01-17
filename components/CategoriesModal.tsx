@@ -195,7 +195,7 @@ export function CategoriesModal({
 
             {/* Create My Own Quote Button */}
             <TouchableOpacity
-              style={styles.createMixButtonLight}
+              style={[styles.createMixButtonLight, { backgroundColor: accentColor }]}
               onPress={() => setShowAddQuote(true)}
             >
               <Ionicons name="add-circle" size={24} color="#FFFFFF" />
@@ -241,7 +241,7 @@ export function CategoriesModal({
                     styles.categoryCard,
                     styles.categoryCardFull,
                     styles.categoryCardLight,
-                    showMyQuotes && styles.categoryCardSelected,
+                    showMyQuotes && [styles.categoryCardSelected, { borderColor: accentColor }],
                   ]}
                   onPress={() => onToggleMyQuotes(!showMyQuotes)}
                 >
@@ -268,7 +268,7 @@ export function CategoriesModal({
                 style={[
                   styles.categoryCard,
                   styles.categoryCardLight,
-                  showFavorites && styles.categoryCardSelected,
+                  showFavorites && [styles.categoryCardSelected, { borderColor: accentColor }],
                 ]}
                 onPress={() => onToggleFavorites(!showFavorites)}
               >
@@ -295,7 +295,7 @@ export function CategoriesModal({
                     style={[
                       styles.categoryCard,
                       styles.categoryCardLight,
-                      isSelected && styles.categoryCardSelected,
+                      isSelected && [styles.categoryCardSelected, { borderColor: accentColor }],
                     ]}
                     onPress={() => toggleCategory(category.id)}
                   >
@@ -319,6 +319,7 @@ export function CategoriesModal({
         visible={showQuotesManager}
         onClose={() => setShowQuotesManager(false)}
         onQuotesChange={handleQuotesManagerChange}
+        accentColor={accentColor}
       />
     </Modal>
   );

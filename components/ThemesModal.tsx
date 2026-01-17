@@ -100,6 +100,10 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
   const colors = Colors[colorScheme ?? 'light'];
   const [selectedTheme, setSelectedTheme] = useState(currentTheme);
 
+  // Get the accent color from the selected theme
+  const currentThemeData = themes.find(t => t.id === selectedTheme) || themes[0];
+  const accentColor = currentThemeData.accentColor;
+
   useEffect(() => {
     setSelectedTheme(currentTheme);
   }, [currentTheme, visible]);
@@ -154,7 +158,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
 
             {/* Section Title */}
             <View style={styles.sectionHeader}>
-              <Ionicons name="image-outline" size={20} color="#8B5CF6" />
+              <Ionicons name="image-outline" size={20} color={accentColor} />
               <Text style={styles.sectionTitleFixed}>الخلفيات</Text>
             </View>
 
@@ -167,7 +171,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                     <TouchableOpacity
                       style={[
                         styles.themeCard,
-                        isSelected && styles.themeCardSelectedFixed,
+                        isSelected && [styles.themeCardSelected, { borderColor: accentColor }],
                         theme.backgroundColor && { backgroundColor: theme.backgroundColor },
                       ]}
                       onPress={() => handleSelectTheme(theme.id)}
@@ -196,7 +200,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                         </View>
                       )}
                       {isSelected && (
-                        <View style={styles.selectedBadgeFixed}>
+                        <View style={[styles.selectedBadge, { backgroundColor: accentColor }]}>
                           <Ionicons name="checkmark" size={14} color="#FFFFFF" />
                         </View>
                       )}
