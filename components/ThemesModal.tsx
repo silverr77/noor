@@ -64,7 +64,7 @@ export const themes: Theme[] = [
     name: 'Forest',
     nameAr: 'الغابة',
     textColor: '#FFFFFF',
-    accentColor: '#86EFAC',
+    accentColor: '#4ADE80',
     headerBgColor: 'rgba(20, 83, 45, 0.7)', // Dark green
     image: require('@/assets/bg/forest.png'),
   },
@@ -82,7 +82,7 @@ export const themes: Theme[] = [
     name: 'Ice',
     nameAr: 'الجليد',
     textColor: '#FFFFFF',
-    accentColor: '#A5F3FC',
+    accentColor: '#22D3EE',
     headerBgColor: 'rgba(30, 58, 138, 0.7)', // Dark blue
     image: require('@/assets/bg/ice.png'),
   },
