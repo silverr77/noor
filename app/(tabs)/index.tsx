@@ -88,8 +88,13 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header} pointerEvents="box-none">
-        {/* Empty spacer for balance */}
-        <View style={styles.headerSpacer} />
+        {/* Grid Button - Left */}
+        <TouchableOpacity
+          style={styles.gridButton}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="grid-outline" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
 
         {/* Category Tag - Center */}
         <View style={[styles.categoryTag, { backgroundColor: colors.primary }]}>
@@ -98,10 +103,9 @@ export default function HomeScreen() {
 
         {/* Profile Button - Right */}
         <TouchableOpacity
-          style={[styles.profileButton, { backgroundColor: colors.primary }]}
+          style={styles.profileButton}
           onPress={() => setProfileModalVisible(true)}
           activeOpacity={0.7}
-          pointerEvents="auto"
         >
           <Ionicons name="person" size={20} color="#FFFFFF" />
         </TouchableOpacity>
@@ -153,9 +157,13 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     position: 'relative',
   },
-  headerSpacer: {
+  gridButton: {
     width: 44,
     height: 44,
+    borderRadius: 22,
+    backgroundColor: '#374151',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   categoryTag: {
     paddingHorizontal: 16,
@@ -171,6 +179,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
+    backgroundColor: '#374151',
     justifyContent: 'center',
     alignItems: 'center',
   },
