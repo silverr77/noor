@@ -20,6 +20,10 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
 const CARD_HEIGHT = SCREEN_HEIGHT * 0.6;
 
+// Swipe settings - more sensitive like Instagram
+const SWIPE_THRESHOLD = 80; // Distance in pixels to trigger swipe
+const VELOCITY_THRESHOLD = 500; // Velocity to trigger swipe even with small movement
+
 interface SwipeableCardProps {
   quote: Quote;
   onSwipeUp: () => void;
@@ -73,31 +77,39 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
     .onUpdate((event) => {
       // Allow upward swipes (negative translationY)
       if (event.translationY < 0) {
-        translateY.value = event.translationY;
-        opacity.value = 1 + event.translationY / 500;
+        // Apply some resistance for smoother feel
+        translateY.value = event.translationY * 0.8;
+        opacity.value = 1 + event.translationY / 400;
       }
       // Allow downward swipes only if can go back (positive translationY)
       else if (event.translationY > 0 && canGoBack) {
-        translateY.value = event.translationY;
-        opacity.value = 1 - event.translationY / 500;
+        translateY.value = event.translationY * 0.8;
+        opacity.value = 1 - event.translationY / 400;
       }
     })
     .onEnd((event) => {
-      const threshold = SCREEN_HEIGHT / 4;
+      const distance = Math.abs(event.translationY);
+      const velocity = Math.abs(event.velocityY);
       
-      if (event.translationY < -threshold) {
-        // Swipe up completed - go to next
-        translateY.value = withSpring(-SCREEN_HEIGHT);
-        opacity.value = withSpring(0);
+      // Trigger swipe if: distance > threshold OR velocity is high enough
+      const shouldSwipeUp = event.translationY < 0 && 
+        (distance > SWIPE_THRESHOLD || velocity > VELOCITY_THRESHOLD);
+      const shouldSwipeDown = event.translationY > 0 && canGoBack && 
+        (distance > SWIPE_THRESHOLD || velocity > VELOCITY_THRESHOLD);
+      
+      if (shouldSwipeUp) {
+        // Swipe up completed - go to next with smooth animation
+        translateY.value = withTiming(-SCREEN_HEIGHT, { duration: 250 });
+        opacity.value = withTiming(0, { duration: 200 });
         runOnJS(onSwipeUp)();
-      } else if (event.translationY > threshold && canGoBack) {
+      } else if (shouldSwipeDown) {
         // Swipe down completed - go to previous
-        translateY.value = withSpring(SCREEN_HEIGHT);
-        opacity.value = withSpring(0);
+        translateY.value = withTiming(SCREEN_HEIGHT, { duration: 250 });
+        opacity.value = withTiming(0, { duration: 200 });
         runOnJS(onSwipeDown)();
       } else {
-        // Return to original position
-        translateY.value = withSpring(0);
+        // Return to original position with spring bounce
+        translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
         opacity.value = withSpring(1);
       }
     });
