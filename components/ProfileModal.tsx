@@ -24,6 +24,20 @@ interface ProfileModalProps {
   onClose: () => void;
 }
 
+// Get greeting based on time of day
+const getGreeting = (): string => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) {
+    return 'صباح الخير';
+  } else if (hour >= 12 && hour < 17) {
+    return 'مساء الخير';
+  } else if (hour >= 17 && hour < 21) {
+    return 'مساء النور';
+  } else {
+    return 'مساء الخير';
+  }
+};
+
 export function ProfileModal({ visible, onClose }: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
@@ -139,28 +153,28 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
           exiting={SlideOutDown.springify()}
           style={styles.modalContent}
         >
-          {/* Header */}
+          {/* Header - RTL: Title on right, X on left */}
           <View style={styles.header}>
-            <Text style={styles.title}>الإعدادات</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={24} color="#1E3A8A" />
             </TouchableOpacity>
+            <Text style={styles.title}>الإعدادات</Text>
           </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-            {/* User Info */}
+            {/* User Info - RTL: Avatar on right, text on left */}
             <View style={styles.section}>
               <View style={styles.userInfo}>
-                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                  <Ionicons name="person" size={32} color="#FFFFFF" />
-                </View>
-                <View>
+                <View style={styles.userTextContainer}>
                   <Text style={[styles.userName, { color: colors.text }]}>
-                    {user?.name || 'المستخدم'}
+                    {getGreeting()}، {user?.name || 'المستخدم'}
                   </Text>
                   <Text style={[styles.userSubtext, { color: colors.text }]}>
                     {user?.age || 'غير محدد'}
                   </Text>
+                </View>
+                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                  <Ionicons name="person" size={32} color="#FFFFFF" />
                 </View>
               </View>
             </View>
@@ -171,18 +185,18 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 الإشعارات
               </Text>
               <View style={styles.settingRow}>
-                <View style={styles.settingInfo}>
-                  <Ionicons name="notifications-outline" size={20} color={colors.primary} />
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>
-                    تفعيل الإشعارات اليومية
-                  </Text>
-                </View>
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={setNotificationsEnabled}
                   trackColor={{ false: '#D1D5DB', true: colors.primary }}
                   thumbColor="#FFFFFF"
                 />
+                <View style={styles.settingInfo}>
+                  <Text style={[styles.settingLabel, { color: colors.text }]}>
+                    تفعيل الإشعارات اليومية
+                  </Text>
+                  <Ionicons name="notifications-outline" size={20} color={colors.primary} />
+                </View>
               </View>
             </View>
 
@@ -209,7 +223,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                       ]}
                       onPress={() => toggleCategory(category.id)}
                     >
-                      <Text style={styles.categoryIcon}>{category.icon}</Text>
                       <Text
                         style={[
                           styles.categoryChipText,
@@ -220,6 +233,7 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                       >
                         {category.nameAr}
                       </Text>
+                      <Text style={styles.categoryIcon}>{category.icon}</Text>
                     </TouchableOpacity>
                   );
                 })}
@@ -232,31 +246,31 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                 إعدادات أخرى
               </Text>
               <TouchableOpacity style={styles.settingRow}>
+                <Ionicons name="chevron-back" size={20} color={colors.text} />
                 <View style={styles.settingInfo}>
-                  <Ionicons name="language-outline" size={20} color={colors.primary} />
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     اللغة
                   </Text>
+                  <Ionicons name="language-outline" size={20} color={colors.primary} />
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
+                <Ionicons name="chevron-back" size={20} color={colors.text} />
                 <View style={styles.settingInfo}>
-                  <Ionicons name="moon-outline" size={20} color={colors.primary} />
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     الوضع الليلي
                   </Text>
+                  <Ionicons name="moon-outline" size={20} color={colors.primary} />
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
+                <Ionicons name="chevron-back" size={20} color={colors.text} />
                 <View style={styles.settingInfo}>
-                  <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
                   <Text style={[styles.settingLabel, { color: colors.text }]}>
                     حول التطبيق
                   </Text>
+                  <Ionicons name="information-circle-outline" size={20} color={colors.primary} />
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={colors.text} />
               </TouchableOpacity>
 
               {/* Dev Mode: Reset Onboarding */}
@@ -269,13 +283,13 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                     router.replace('/onboarding/welcome');
                   }}
                 >
+                  <Ionicons name="chevron-back" size={20} color={colors.text} />
                   <View style={styles.settingInfo}>
-                    <Ionicons name="refresh-outline" size={20} color="#EF4444" />
                     <Text style={[styles.settingLabel, { color: '#EF4444' }]}>
                       إعادة تشغيل التعريف (Dev Mode)
                     </Text>
+                    <Ionicons name="refresh-outline" size={20} color="#EF4444" />
                   </View>
-                  <Ionicons name="chevron-forward" size={20} color={colors.text} />
                 </TouchableOpacity>
               )}
             </View>
@@ -352,9 +366,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '90%',
-    marginTop: 60,
-    flex: 1,
+    position: 'absolute',
+    top: 60,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   header: {
     flexDirection: 'row',
@@ -370,6 +386,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#1E3A8A',
+    textAlign: 'right',
   },
   closeButton: {
     padding: 4,
@@ -386,7 +403,11 @@ const styles = StyleSheet.create({
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     gap: 16,
+  },
+  userTextContainer: {
+    alignItems: 'flex-end',
   },
   avatar: {
     width: 64,
@@ -398,21 +419,25 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
+    textAlign: 'right',
   },
   userSubtext: {
     fontSize: 14,
     opacity: 0.7,
     marginTop: 4,
+    textAlign: 'right',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
+    textAlign: 'right',
   },
   sectionDescription: {
     fontSize: 14,
     opacity: 0.7,
     marginBottom: 16,
+    textAlign: 'right',
   },
   settingRow: {
     flexDirection: 'row',
@@ -427,12 +452,14 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
+    textAlign: 'right',
   },
   categoriesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
     marginTop: 8,
+    justifyContent: 'flex-end',
   },
   categoryChip: {
     flexDirection: 'row',
@@ -492,5 +519,35 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     lineHeight: 18,
   },
+  pickerContainer: {
+    borderRadius: 16,
+    marginTop: 16,
+    marginBottom: 16,
+    paddingBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  pickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  pickerButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  pickerButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  picker: {
+    width: '100%',
+    height: 200,
+  },
 });
-
