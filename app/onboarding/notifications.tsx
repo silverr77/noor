@@ -76,7 +76,7 @@ export default function NotificationsScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={7} totalSteps={7} showSkip={false} />
+      <OnboardingProgress currentStep={6} totalSteps={6} showSkip={false} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

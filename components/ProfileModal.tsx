@@ -169,9 +169,6 @@ export function ProfileModal({ visible, onClose }: ProfileModalProps) {
                   <Text style={[styles.userName, { color: colors.text }]}>
                     {getGreeting()}، {user?.name || 'المستخدم'}
                   </Text>
-                  <Text style={[styles.userSubtext, { color: colors.text }]}>
-                    {user?.age || 'غير محدد'}
-                  </Text>
                 </View>
                 <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
                   <Ionicons name="person" size={32} color="#FFFFFF" />
@@ -419,12 +416,6 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
-    textAlign: 'right',
-  },
-  userSubtext: {
-    fontSize: 14,
-    opacity: 0.7,
-    marginTop: 4,
     textAlign: 'right',
   },
   sectionTitle: {

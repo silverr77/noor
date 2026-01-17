@@ -17,7 +17,7 @@ export default function NameScreen() {
   const handleNext = () => {
     if (name.trim()) {
       updateUser({ name: name.trim() });
-      router.push('/onboarding/age');
+      router.push('/onboarding/gender');
     }
   };
 
@@ -29,7 +29,7 @@ export default function NameScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={1} totalSteps={7} showSkip={false} />
+      <OnboardingProgress currentStep={1} totalSteps={6} showSkip={false} />
       
       <View style={styles.content}>
         {/* Title */}

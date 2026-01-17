@@ -35,7 +35,7 @@ export default function RelationshipScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={4} totalSteps={7} showSkip={true} />
+      <OnboardingProgress currentStep={3} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

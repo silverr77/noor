@@ -35,7 +35,7 @@ export default function CategoriesScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={6} totalSteps={7} showSkip={true} />
+      <OnboardingProgress currentStep={5} totalSteps={6} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
