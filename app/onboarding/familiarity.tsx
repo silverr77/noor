@@ -31,11 +31,7 @@ export default function FamiliarityScreen() {
   const handleNext = async () => {
     if (selectedFamiliarity) {
       await updateUser({ familiarity: selectedFamiliarity as any });
-      await completeOnboarding();
-      // Small delay to ensure state is saved before navigation
-      setTimeout(() => {
-        router.replace('/(tabs)');
-      }, 100);
+      router.push('/onboarding/notifications');
     }
   };
 
@@ -44,7 +40,7 @@ export default function FamiliarityScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={8} totalSteps={8} showSkip={true} />
+      <OnboardingProgress currentStep={7} totalSteps={8} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}

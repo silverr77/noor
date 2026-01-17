@@ -26,7 +26,7 @@ export default function CategoriesScreen() {
   const handleNext = () => {
     if (selectedCategories.length > 0) {
       updateUser({ selectedCategories });
-      router.push('/onboarding/widgets');
+      router.push('/onboarding/notifications');
     }
   };
 
@@ -35,23 +35,20 @@ export default function CategoriesScreen() {
       <StatusBar style="auto" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={6} totalSteps={9} showSkip={true} />
+      <OnboardingProgress currentStep={6} totalSteps={7} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
         <Text style={[styles.title, { color: colors.text }]}>
-          الفئات
+          اختر الفئات المفضلة لديك
         </Text>
 
         {/* Description */}
         <Text style={[styles.description, { color: colors.text }]}>
-          في "لك"، اخترنا فئات بناءً على تفضيلاتك
-        </Text>
-        <Text style={[styles.instruction, { color: colors.primary }]}>
-          (اضغط على فئة للمتابعة)
+          اختر الفئات التي تريد أن تراها في تطبيقك
         </Text>
 
-        {/* Categories Grid */}
+        {/* Categories List */}
         <View style={styles.categoriesContainer}>
           {categories.map((category) => {
             const isSelected = selectedCategories.includes(category.id);
@@ -61,23 +58,32 @@ export default function CategoriesScreen() {
                 style={[
                   styles.categoryCard,
                   {
-                    backgroundColor: colors.cardBackground,
+                    backgroundColor: isSelected ? colors.primary : colors.cardBackground,
                     borderColor: isSelected ? colors.primary : '#E5E7EB',
                     borderWidth: isSelected ? 2 : 1,
                   }
                 ]}
                 onPress={() => toggleCategory(category.id)}
               >
-                <Text style={[styles.categoryName, { color: colors.text }]}>
+                <Text style={styles.categoryIcon}>{category.icon}</Text>
+                <Text style={[
+                  styles.categoryName, 
+                  { 
+                    color: isSelected ? '#FFFFFF' : colors.text,
+                    fontWeight: isSelected ? '600' : '400',
+                  }
+                ]}>
                   {category.nameAr}
                 </Text>
-                <Text style={styles.categoryIcon}>{category.icon}</Text>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        {/* Next Button */}
+      </ScrollView>
+
+      {/* Fixed Bottom Button */}
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[
             styles.button,
@@ -88,7 +94,7 @@ export default function CategoriesScreen() {
         >
           <Text style={styles.buttonText}>التالي</Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -101,9 +107,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 24,
     paddingTop: 20,
+    paddingBottom: 100, // Extra padding for fixed button
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
@@ -111,46 +118,45 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 16,
     textAlign: 'center',
-    marginBottom: 8,
-  },
-  instruction: {
-    fontSize: 14,
-    textAlign: 'center',
     marginBottom: 32,
+    opacity: 0.7,
   },
   categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    width: '100%',
     marginBottom: 32,
   },
   categoryCard: {
-    width: '48%',
-    aspectRatio: 1.5,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    justifyContent: 'space-between',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 12,
+    gap: 16,
+  },
+  categoryIcon: {
+    fontSize: 28,
   },
   categoryName: {
     fontSize: 18,
-    fontWeight: '600',
+    flex: 1,
   },
-  categoryIcon: {
-    fontSize: 24,
-    textAlign: 'right',
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 24,
+    paddingBottom: 40,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
   },
   button: {
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 12,
-    alignSelf: 'center',
     minWidth: 200,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#FFFFFF',

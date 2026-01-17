@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity, Text, KeyboardAvoidingView, Platform } from 'react-native';
+import { OnboardingProgress } from '@/components/OnboardingProgress';
+import { Colors } from '@/constants/theme';
+import { useUser } from '@/context/UserContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useUser } from '@/context/UserContext';
-import { OnboardingProgress } from '@/components/OnboardingProgress';
+import React, { useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function NameScreen() {
   const router = useRouter();

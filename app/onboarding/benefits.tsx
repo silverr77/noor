@@ -71,7 +71,7 @@ export default function BenefitsScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.button, { backgroundColor: colors.primary }]}
-          onPress={() => router.push('/onboarding/notifications')}
+          onPress={() => router.push('/onboarding/categories')}
         >
           <Text style={styles.buttonText}>التالي</Text>
         </TouchableOpacity>

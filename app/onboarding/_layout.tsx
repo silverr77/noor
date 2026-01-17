@@ -9,9 +9,8 @@ export default function OnboardingLayout() {
       <Stack.Screen name="gender" />
       <Stack.Screen name="relationship" />
       <Stack.Screen name="benefits" />
-      <Stack.Screen name="notifications" />
-      <Stack.Screen name="familiarity" />
       <Stack.Screen name="categories" />
+      <Stack.Screen name="notifications" />
       <Stack.Screen name="widgets" />
       <Stack.Screen name="complete" />
     </Stack>
