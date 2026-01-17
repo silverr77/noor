@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Dimensions } from 'react-native';
-import { GestureDetector, Gesture } from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withRepeat,
-  withSequence,
-  withTiming,
-  runOnJS,
-  Easing,
-} from 'react-native-reanimated';
-import { Quote } from '@/types';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Quote } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  Easing,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
@@ -125,6 +125,7 @@ export function SwipeIndicator({ visible, quoteId, accentColor }: SwipeIndicator
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [showIndicator, setShowIndicator] = useState(false);
+  const [currentQuoteId, setCurrentQuoteId] = useState(quoteId);
   
   const indicatorColor = accentColor || colors.primary;
   
@@ -132,17 +133,9 @@ export function SwipeIndicator({ visible, quoteId, accentColor }: SwipeIndicator
   const translateY = useSharedValue(0);
   const indicatorOpacity = useSharedValue(0);
 
-  // Reset and start timer when quote changes
+  // Start animation when indicator becomes visible
   useEffect(() => {
-    setShowIndicator(false);
-    indicatorOpacity.value = 0;
-    translateY.value = 0;
-
-    if (!visible) return;
-
-    // Show indicator after 3 seconds
-    const timer = setTimeout(() => {
-      setShowIndicator(true);
+    if (showIndicator) {
       // Fade in
       indicatorOpacity.value = withTiming(1, { duration: 300 });
       // Start jumping animation
@@ -154,7 +147,28 @@ export function SwipeIndicator({ visible, quoteId, accentColor }: SwipeIndicator
         -1, // Infinite repeat
         false
       );
-    }, 3000);
+    }
+  }, [showIndicator]);
+
+  // Handle quote change - reset timer but keep indicator if already showing
+  useEffect(() => {
+    // If quote changed, reset the timer
+    if (quoteId !== currentQuoteId) {
+      setCurrentQuoteId(quoteId);
+      setShowIndicator(false);
+      indicatorOpacity.value = 0;
+      translateY.value = 0;
+    }
+
+    if (!visible) {
+      setShowIndicator(false);
+      return;
+    }
+
+    // Show indicator after delay
+    const timer = setTimeout(() => {
+      setShowIndicator(true);
+    }, 2000);
 
     return () => {
       clearTimeout(timer);
@@ -166,7 +180,7 @@ export function SwipeIndicator({ visible, quoteId, accentColor }: SwipeIndicator
     opacity: indicatorOpacity.value,
   }));
 
-  if (!visible || !showIndicator) return null;
+  if (!showIndicator) return null;
 
   return (
     <Animated.View style={[indicatorStyles.container, animatedStyle]}>

@@ -346,7 +346,7 @@ export default function HomeScreen() {
         {currentQuote && (
           <View style={styles.swipeIndicatorContainer}>
             <SwipeIndicator 
-              visible={currentIndex < filteredQuotes.length - 1} 
+              visible={filteredQuotes.length > 1} 
               quoteId={currentQuote?.id || ''} 
               accentColor={currentTheme.accentColor}
             />
@@ -420,7 +420,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 80,
-    paddingBottom: 20,
+    paddingBottom: 0,
     zIndex: 1000,
     position: 'relative',
   },
