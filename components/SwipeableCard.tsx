@@ -3,7 +3,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Quote } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -24,26 +24,50 @@ interface SwipeableCardProps {
   quote: Quote;
   onSwipeUp: () => void;
   onSwipeDown: () => void;
+  onLike: (id: string) => void;
   index: number;
   canGoBack: boolean;
   textColor?: string;
+  accentColor?: string;
 }
 
-export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, index, canGoBack, textColor }: SwipeableCardProps) {
+export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, canGoBack, textColor, accentColor }: SwipeableCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const [isLiked, setIsLiked] = useState(quote.isLiked);
   
   // Use theme colors if provided, otherwise use default colors
   const quoteTextColor = textColor || colors.text;
+  const quoteAccentColor = accentColor || colors.primary;
 
   const translateY = useSharedValue(0);
   const opacity = useSharedValue(1);
+
+  // Sync isLiked state with quote prop
+  useEffect(() => {
+    setIsLiked(quote.isLiked);
+  }, [quote.isLiked]);
 
   // Reset card position on mount
   useEffect(() => {
     translateY.value = 0;
     opacity.value = 1;
   }, [quote.id]);
+
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+    onLike(quote.id);
+  };
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: `${quote.text}${quote.translation ? '\n\n' + quote.translation : ''}`,
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
@@ -78,6 +102,17 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, index, canGoBack,
       }
     });
 
+  // Double tap gesture for like
+  const doubleTapGesture = Gesture.Tap()
+    .numberOfTaps(2)
+    .maxDuration(300)
+    .onEnd(() => {
+      runOnJS(handleLike)();
+    });
+
+  // Combine gestures - both can work simultaneously
+  const composedGesture = Gesture.Simultaneous(panGesture, doubleTapGesture);
+
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [
       { translateY: translateY.value },
@@ -91,7 +126,7 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, index, canGoBack,
   }
 
   return (
-    <GestureDetector gesture={panGesture}>
+    <GestureDetector gesture={composedGesture}>
       <Animated.View
         style={[
           styles.card,
@@ -108,6 +143,28 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, index, canGoBack,
                 {quote.translation}
               </Text>
             )}
+            
+            {/* Actions - Like and Share */}
+            <View style={styles.actions}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleShare}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="share-outline" size={28} color={quoteAccentColor} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleLike}
+                activeOpacity={0.7}
+              >
+                <Ionicons
+                  name={isLiked ? 'heart' : 'heart-outline'}
+                  size={28}
+                  color={isLiked ? '#EF4444' : quoteAccentColor}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Animated.View>
@@ -240,5 +297,20 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     lineHeight: 28,
     opacity: 0.9,
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 40,
+    marginTop: 32,
+    paddingVertical: 16,
+  },
+  actionButton: {
+    padding: 12,
+    minWidth: 50,
+    minHeight: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

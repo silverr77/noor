@@ -314,9 +314,11 @@ export default function HomeScreen() {
             quote={currentQuote}
             onSwipeUp={handleSwipeUp}
             onSwipeDown={handleSwipeDown}
+            onLike={handleLike}
             index={0}
             canGoBack={currentIndex > 0}
             textColor={currentTheme.textColor}
+            accentColor={currentTheme.accentColor}
           />
         ) : (
           <View style={styles.emptyState}>
