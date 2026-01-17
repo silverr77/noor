@@ -16,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { MyQuotesManager } from './MyQuotesManager';
 
 interface CategoriesModalProps {
   visible: boolean;
@@ -47,6 +48,7 @@ export function CategoriesModal({
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
   const [showAddQuote, setShowAddQuote] = useState(false);
   const [newQuoteText, setNewQuoteText] = useState('');
+  const [showQuotesManager, setShowQuotesManager] = useState(false);
 
   // Load selected categories from user context when modal opens
   useEffect(() => {
@@ -150,6 +152,11 @@ export function CategoriesModal({
     onClose();
   };
 
+  const handleQuotesManagerChange = (quotes: Quote[]) => {
+    setCustomQuotes(quotes);
+    onCustomQuotesChange(quotes);
+  };
+
   return (
     <Modal
       visible={visible}
@@ -223,26 +230,36 @@ export function CategoriesModal({
             <Text style={[styles.sectionTitle, { color: colors.text }]}>الأكثر شيوعاً</Text>
             <View style={styles.categoriesGrid}>
               {/* My Own Quotes */}
-              <TouchableOpacity
-                style={[
-                  styles.categoryCard,
-                  { 
-                    backgroundColor: colors.cardBackground,
-                    borderColor: showMyQuotes ? colors.primary : 'transparent',
-                    borderWidth: showMyQuotes ? 2 : 0,
-                  }
-                ]}
-                onPress={() => onToggleMyQuotes(!showMyQuotes)}
-              >
-                <Text style={[styles.categoryName, { color: colors.text }]}>اقتباساتي</Text>
-                <Text style={[styles.categoryCount, { color: colors.text }]}>{customQuotes.length} اقتباس</Text>
-                <Ionicons name="pencil" size={20} color="#F97316" />
-                {showMyQuotes && (
-                  <View style={[styles.checkmark, { backgroundColor: colors.primary }]}>
-                    <Ionicons name="checkmark" size={12} color="#FFFFFF" />
-                  </View>
-                )}
-              </TouchableOpacity>
+              <View style={styles.categoryCardWrapper}>
+                <TouchableOpacity
+                  style={[
+                    styles.categoryCard,
+                    styles.categoryCardFull,
+                    { 
+                      backgroundColor: colors.cardBackground,
+                      borderColor: showMyQuotes ? colors.primary : 'transparent',
+                      borderWidth: showMyQuotes ? 2 : 0,
+                    }
+                  ]}
+                  onPress={() => onToggleMyQuotes(!showMyQuotes)}
+                >
+                  <Text style={[styles.categoryName, { color: colors.text }]}>اقتباساتي</Text>
+                  <Text style={[styles.categoryCount, { color: colors.text }]}>{customQuotes.length} اقتباس</Text>
+                  <Ionicons name="pencil" size={20} color="#F97316" />
+                  {showMyQuotes && (
+                    <View style={[styles.checkmark, { backgroundColor: colors.primary }]}>
+                      <Ionicons name="checkmark" size={12} color="#FFFFFF" />
+                    </View>
+                  )}
+                </TouchableOpacity>
+                {/* Settings button to manage quotes */}
+                <TouchableOpacity
+                  style={[styles.manageBtn, { backgroundColor: colors.primary }]}
+                  onPress={() => setShowQuotesManager(true)}
+                >
+                  <Ionicons name="settings-outline" size={14} color="#FFFFFF" />
+                </TouchableOpacity>
+              </View>
 
               {/* Favorites */}
               <TouchableOpacity
@@ -300,6 +317,13 @@ export function CategoriesModal({
           </ScrollView>
         </Animated.View>
       </View>
+
+      {/* My Quotes Manager Modal */}
+      <MyQuotesManager
+        visible={showQuotesManager}
+        onClose={() => setShowQuotesManager(false)}
+        onQuotesChange={handleQuotesManagerChange}
+      />
     </Modal>
   );
 }
@@ -410,6 +434,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     justifyContent: 'flex-end',
   },
+  categoryCardWrapper: {
+    width: '47%',
+    position: 'relative',
+  },
   categoryCard: {
     width: '47%',
     padding: 16,
@@ -418,6 +446,19 @@ const styles = StyleSheet.create({
     minHeight: 100,
     justifyContent: 'space-between',
     position: 'relative',
+  },
+  categoryCardFull: {
+    width: '100%',
+  },
+  manageBtn: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   categoryName: {
     fontSize: 16,
