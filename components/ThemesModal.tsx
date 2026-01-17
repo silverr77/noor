@@ -86,6 +86,15 @@ export const themes: Theme[] = [
     headerBgColor: 'rgba(30, 58, 138, 0.7)', // Dark blue
     image: require('@/assets/bg/ice.png'),
   },
+  {
+    id: 'mecca',
+    name: 'Mecca',
+    nameAr: 'مكة المكرمة',
+    textColor: '#FFFFFF',
+    accentColor: '#D4AF37', // Gold color matching the Kaaba's golden elements
+    headerBgColor: 'rgba(30, 30, 30, 0.8)', // Dark overlay
+    image: require('@/assets/bg/maka.jpg'),
+  },
 ];
 
 interface ThemesModalProps {
