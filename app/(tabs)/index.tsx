@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import { SwipeableCard, SwipeIndicator } from '@/components/SwipeableCard';
 import { ProfileModal } from '@/components/ProfileModal';
-import { sampleQuotes } from '@/data/quotes';
-import { Quote } from '@/types';
+import { SwipeableCard, SwipeIndicator } from '@/components/SwipeableCard';
 import { Colors } from '@/constants/theme';
+import { categories } from '@/data/categories';
+import { sampleQuotes } from '@/data/quotes';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Quote } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
@@ -76,6 +77,10 @@ export default function HomeScreen() {
   };
 
   const currentQuote = quotes[currentIndex];
+  
+  // Get category info for current quote
+  const currentCategory = categories.find(c => c.id === currentQuote?.category);
+  const categoryName = currentCategory?.nameAr || 'عام';
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -83,16 +88,23 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header} pointerEvents="box-none">
-        <View style={styles.headerRight}>
-          <TouchableOpacity
-            style={styles.headerButton}
-            onPress={() => setProfileModalVisible(true)}
-            activeOpacity={0.7}
-            pointerEvents="auto"
-          >
-            <Ionicons name="person-outline" size={24} color={colors.primary} />
-          </TouchableOpacity>
+        {/* Empty spacer for balance */}
+        <View style={styles.headerSpacer} />
+
+        {/* Category Tag - Center */}
+        <View style={[styles.categoryTag, { backgroundColor: colors.primary }]}>
+          <Text style={styles.categoryTagText}>{categoryName}</Text>
         </View>
+
+        {/* Profile Button - Right */}
+        <TouchableOpacity
+          style={[styles.profileButton, { backgroundColor: colors.primary }]}
+          onPress={() => setProfileModalVisible(true)}
+          activeOpacity={0.7}
+          pointerEvents="auto"
+        >
+          <Ionicons name="person" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
       </View>
 
       {/* Cards Container */}
@@ -133,23 +145,32 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 60,
+    paddingTop: 80,
     paddingBottom: 20,
     zIndex: 1000,
     position: 'relative',
   },
-  headerRight: {
+  headerSpacer: {
     width: 44,
     height: 44,
   },
-  headerButton: {
+  categoryTag: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  categoryTagText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  profileButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: '#FEF3E2',
     justifyContent: 'center',
     alignItems: 'center',
   },
