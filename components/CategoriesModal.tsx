@@ -190,12 +190,12 @@ export function CategoriesModal({
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Title with Icon */}
             <View style={styles.titleContainer}>
-              <Text style={[styles.title, { color: colors.text }]}>الفئات</Text>
+              <Text style={styles.titleFixed}>الفئات</Text>
             </View>
 
             {/* Create My Own Quote Button */}
             <TouchableOpacity
-              style={[styles.createMixButton, { backgroundColor: accentColor }]}
+              style={styles.createMixButtonLight}
               onPress={() => setShowAddQuote(true)}
             >
               <Ionicons name="add-circle" size={24} color="#FFFFFF" />
@@ -206,7 +206,7 @@ export function CategoriesModal({
             {showAddQuote && (
               <View style={styles.addQuoteForm}>
                 <TextInput
-                  style={[styles.quoteInput, { backgroundColor: colors.cardBackground, color: colors.text }]}
+                  style={styles.quoteInputLight}
                   placeholder="اكتب اقتباسك هنا..."
                   placeholderTextColor="#9CA3AF"
                   value={newQuoteText}
@@ -232,7 +232,7 @@ export function CategoriesModal({
             )}
 
             {/* Special Filters Section */}
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>الأكثر شيوعاً</Text>
+            <Text style={styles.sectionTitleFixed}>الأكثر شيوعاً</Text>
             <View style={styles.categoriesGrid}>
               {/* My Own Quotes */}
               <View style={styles.categoryCardWrapper}>
@@ -240,16 +240,13 @@ export function CategoriesModal({
                   style={[
                     styles.categoryCard,
                     styles.categoryCardFull,
-                    { 
-                      backgroundColor: colors.cardBackground,
-                      borderColor: showMyQuotes ? accentColor : 'transparent',
-                      borderWidth: showMyQuotes ? 2 : 0,
-                    }
+                    styles.categoryCardLight,
+                    showMyQuotes && styles.categoryCardSelected,
                   ]}
                   onPress={() => onToggleMyQuotes(!showMyQuotes)}
                 >
-                  <Text style={[styles.categoryName, { color: colors.text }]}>اقتباساتي</Text>
-                  <Text style={[styles.categoryCount, { color: colors.text }]}>{customQuotes.length} اقتباس</Text>
+                  <Text style={styles.categoryNameDark}>اقتباساتي</Text>
+                  <Text style={styles.categoryCountDark}>{customQuotes.length} اقتباس</Text>
                   <Ionicons name="pencil" size={20} color="#F97316" />
                   {showMyQuotes && (
                     <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
@@ -259,10 +256,10 @@ export function CategoriesModal({
                 </TouchableOpacity>
                 {/* Settings button to manage quotes */}
                 <TouchableOpacity
-                  style={[styles.manageBtn, { backgroundColor: accentColor }]}
+                  style={styles.manageBtnLight}
                   onPress={() => setShowQuotesManager(true)}
                 >
-                  <Ionicons name="settings-outline" size={14} color="#FFFFFF" />
+                  <Ionicons name="settings-outline" size={14} color="#6B7280" />
                 </TouchableOpacity>
               </View>
 
@@ -270,16 +267,13 @@ export function CategoriesModal({
               <TouchableOpacity
                 style={[
                   styles.categoryCard,
-                  { 
-                    backgroundColor: colors.cardBackground,
-                    borderColor: showFavorites ? accentColor : 'transparent',
-                    borderWidth: showFavorites ? 2 : 0,
-                  }
+                  styles.categoryCardLight,
+                  showFavorites && styles.categoryCardSelected,
                 ]}
                 onPress={() => onToggleFavorites(!showFavorites)}
               >
-                <Text style={[styles.categoryName, { color: colors.text }]}>المفضلة</Text>
-                <Text style={[styles.categoryCount, { color: colors.text }]}>{likedCount} اقتباس</Text>
+                <Text style={styles.categoryNameDark}>المفضلة</Text>
+                <Text style={styles.categoryCountDark}>{likedCount} اقتباس</Text>
                 <Ionicons name="heart" size={20} color="#EF4444" />
                 {showFavorites && (
                   <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
@@ -290,8 +284,8 @@ export function CategoriesModal({
             </View>
 
             {/* Categories Section */}
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>لك</Text>
-            <Text style={[styles.sectionSubtitle, { color: colors.text }]}>اختر فئة أو أكثر</Text>
+            <Text style={styles.sectionTitleFixed}>لك</Text>
+            <Text style={styles.sectionSubtitleFixed}>اختر فئة أو أكثر</Text>
             <View style={styles.categoriesGrid}>
               {categories.map((category) => {
                 const isSelected = selectedCategories.includes(category.id);
@@ -300,15 +294,12 @@ export function CategoriesModal({
                     key={category.id}
                     style={[
                       styles.categoryCard,
-                      { 
-                        backgroundColor: colors.cardBackground,
-                        borderColor: isSelected ? accentColor : 'transparent',
-                        borderWidth: isSelected ? 2 : 0,
-                      }
+                      styles.categoryCardLight,
+                      isSelected && styles.categoryCardSelected,
                     ]}
                     onPress={() => toggleCategory(category.id)}
                   >
-                    <Text style={[styles.categoryName, { color: colors.text }]}>{category.nameAr}</Text>
+                    <Text style={styles.categoryNameDark}>{category.nameAr}</Text>
                     <Text style={styles.categoryIcon}>{category.icon}</Text>
                     {isSelected && (
                       <View style={[styles.checkmark, { backgroundColor: accentColor }]}>
@@ -370,6 +361,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
+  titleFixed: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#1E3A8A',
+    marginBottom: 8,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -394,6 +392,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  createMixButtonLight: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 32,
+    backgroundColor: '#93C5FD',
+  },
   addQuoteForm: {
     marginBottom: 24,
     gap: 12,
@@ -404,6 +412,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     minHeight: 100,
     textAlignVertical: 'top',
+  },
+  quoteInputLight: {
+    padding: 16,
+    borderRadius: 12,
+    fontSize: 16,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    backgroundColor: '#FFFFFF',
+    color: '#1E3A8A',
+    textAlign: 'right',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   addQuoteButtons: {
     flexDirection: 'row',
@@ -426,11 +446,25 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     textAlign: 'right',
   },
+  sectionTitleFixed: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'right',
+    color: '#1E3A8A',
+  },
   sectionSubtitle: {
     fontSize: 14,
     marginBottom: 16,
     textAlign: 'right',
     opacity: 0.7,
+  },
+  sectionSubtitleFixed: {
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'right',
+    opacity: 0.7,
+    color: '#1E3A8A',
   },
   categoriesGrid: {
     flexDirection: 'row',
@@ -452,6 +486,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     position: 'relative',
   },
+  categoryCardLight: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  categoryCardSelected: {
+    borderWidth: 2,
+    borderColor: '#8B5CF6',
+    backgroundColor: '#F5F3FF',
+  },
   categoryCardFull: {
     width: '100%',
   },
@@ -465,15 +514,38 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  manageBtnLight: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3F4F6',
+  },
   categoryName: {
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'right',
   },
+  categoryNameDark: {
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'right',
+    color: '#1E3A8A',
+  },
   categoryCount: {
     fontSize: 12,
     opacity: 0.7,
     marginTop: 4,
+  },
+  categoryCountDark: {
+    fontSize: 12,
+    opacity: 0.7,
+    marginTop: 4,
+    color: '#6B7280',
   },
   categoryIcon: {
     fontSize: 24,

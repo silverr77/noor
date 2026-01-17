@@ -148,14 +148,14 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Title */}
             <View style={styles.titleContainer}>
-              <Text style={[styles.title, { color: colors.text }]}>تخصيص</Text>
+              <Text style={styles.titleFixed}>تخصيص</Text>
               <Text style={styles.candleIcon}>🕯️</Text>
             </View>
 
             {/* Section Title */}
             <View style={styles.sectionHeader}>
-              <Ionicons name="image-outline" size={20} color={colors.primary} />
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>الخلفيات</Text>
+              <Ionicons name="image-outline" size={20} color="#8B5CF6" />
+              <Text style={styles.sectionTitleFixed}>الخلفيات</Text>
             </View>
 
             {/* Themes Grid */}
@@ -167,7 +167,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                     <TouchableOpacity
                       style={[
                         styles.themeCard,
-                        isSelected && [styles.themeCardSelected, { borderColor: colors.primary }],
+                        isSelected && styles.themeCardSelectedFixed,
                         theme.backgroundColor && { backgroundColor: theme.backgroundColor },
                       ]}
                       onPress={() => handleSelectTheme(theme.id)}
@@ -196,13 +196,13 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                         </View>
                       )}
                       {isSelected && (
-                        <View style={[styles.selectedBadge, { backgroundColor: colors.primary }]}>
+                        <View style={styles.selectedBadgeFixed}>
                           <Ionicons name="checkmark" size={14} color="#FFFFFF" />
                         </View>
                       )}
                     </TouchableOpacity>
                     {/* Theme Name - under each card */}
-                    <Text style={[styles.themeNameText, { color: colors.text }]}>
+                    <Text style={styles.themeNameText}>
                       {theme.nameAr}
                     </Text>
                   </View>
@@ -264,6 +264,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 12,
   },
+  titleFixed: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 12,
+    color: '#1E3A8A',
+  },
   candleIcon: {
     fontSize: 48,
   },
@@ -278,6 +285,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
+  sectionTitleFixed: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1E3A8A',
+  },
   themesGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -288,7 +300,7 @@ const styles = StyleSheet.create({
   themeCardContainer: {
     width: CARD_WIDTH,
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 24,
   },
   themeCard: {
     width: '100%',
@@ -300,6 +312,10 @@ const styles = StyleSheet.create({
   },
   themeCardSelected: {
     borderWidth: 3,
+  },
+  themeCardSelectedFixed: {
+    borderWidth: 3,
+    borderColor: '#8B5CF6',
   },
   themeImage: {
     width: '100%',
@@ -340,10 +356,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  selectedBadgeFixed: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8B5CF6',
+  },
   themeNameText: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginTop: 8,
+    fontSize: 15,
+    fontWeight: '600',
+    marginTop: 10,
     textAlign: 'center',
+    color: '#1E3A8A',
   },
 });

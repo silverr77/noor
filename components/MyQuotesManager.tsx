@@ -173,21 +173,21 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={handleClose} style={styles.backButton}>
-              <Ionicons name="chevron-forward" size={24} color={colors.primary} />
-              <Text style={[styles.backButtonText, { color: colors.primary }]}>رجوع</Text>
+              <Ionicons name="chevron-forward" size={24} color="#8B5CF6" />
+              <Text style={styles.backButtonTextFixed}>رجوع</Text>
             </TouchableOpacity>
           </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Title */}
             <View style={styles.titleContainer}>
-              <Text style={[styles.title, { color: colors.text }]}>اقتباساتي</Text>
+              <Text style={styles.titleFixed}>اقتباساتي</Text>
               <Text style={styles.subtitle}>{customQuotes.length} اقتباس</Text>
             </View>
 
             {/* Add New Quote Button */}
             <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: colors.primary }]}
+              style={styles.addButtonFixed}
               onPress={() => setShowAddQuote(true)}
             >
               <Ionicons name="add-circle" size={24} color="#FFFFFF" />
@@ -198,7 +198,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
             {showAddQuote && (
               <View style={styles.addQuoteForm}>
                 <TextInput
-                  style={[styles.quoteInput, { backgroundColor: colors.cardBackground, color: colors.text }]}
+                  style={styles.quoteInputFixed}
                   placeholder="اكتب اقتباسك هنا..."
                   placeholderTextColor="#9CA3AF"
                   value={newQuoteText}
@@ -209,7 +209,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                 />
                 <View style={styles.formButtons}>
                   <TouchableOpacity
-                    style={[styles.formBtn, { backgroundColor: colors.primary }]}
+                    style={styles.formBtnPrimary}
                     onPress={handleAddQuote}
                   >
                     <Text style={styles.formBtnText}>إضافة</Text>
@@ -221,7 +221,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                       setNewQuoteText('');
                     }}
                   >
-                    <Text style={[styles.formBtnText, { color: colors.text }]}>إلغاء</Text>
+                    <Text style={styles.formBtnTextDark}>إلغاء</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -230,11 +230,11 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
             {/* Quotes List */}
             {customQuotes.length === 0 ? (
               <View style={styles.emptyState}>
-                <Ionicons name="document-text-outline" size={64} color={colors.primary} />
-                <Text style={[styles.emptyText, { color: colors.text }]}>
+                <Ionicons name="document-text-outline" size={64} color="#8B5CF6" />
+                <Text style={styles.emptyTextFixed}>
                   لا توجد اقتباسات بعد
                 </Text>
-                <Text style={[styles.emptySubtext, { color: colors.text }]}>
+                <Text style={styles.emptySubtextFixed}>
                   أضف اقتباسك الأول!
                 </Text>
               </View>
@@ -243,13 +243,13 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                 {customQuotes.map((quote) => (
                   <View 
                     key={quote.id} 
-                    style={[styles.quoteItem, { backgroundColor: colors.cardBackground }]}
+                    style={styles.quoteItemFixed}
                   >
                     {editingQuoteId === quote.id ? (
                       // Edit Mode
                       <View style={styles.editContainer}>
                         <TextInput
-                          style={[styles.editInput, { color: colors.text }]}
+                          style={styles.editInputFixed}
                           value={editingQuoteText}
                           onChangeText={setEditingQuoteText}
                           multiline
@@ -258,7 +258,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                         />
                         <View style={styles.editButtons}>
                           <TouchableOpacity
-                            style={[styles.iconBtn, { backgroundColor: colors.primary }]}
+                            style={styles.iconBtnPrimary}
                             onPress={handleSaveEdit}
                           >
                             <Ionicons name="checkmark" size={20} color="#FFFFFF" />
@@ -267,14 +267,14 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                             style={[styles.iconBtn, { backgroundColor: '#E5E7EB' }]}
                             onPress={handleCancelEdit}
                           >
-                            <Ionicons name="close" size={20} color={colors.text} />
+                            <Ionicons name="close" size={20} color="#1E3A8A" />
                           </TouchableOpacity>
                         </View>
                       </View>
                     ) : (
                       // View Mode
                       <>
-                        <Text style={[styles.quoteText, { color: colors.text }]}>
+                        <Text style={styles.quoteTextFixed}>
                           {quote.text}
                         </Text>
                         <View style={styles.quoteActions}>
@@ -282,7 +282,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange }: MyQuotesMa
                             style={styles.actionBtn}
                             onPress={() => handleEditQuote(quote)}
                           >
-                            <Ionicons name="pencil-outline" size={20} color={colors.primary} />
+                            <Ionicons name="pencil-outline" size={20} color="#8B5CF6" />
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={styles.actionBtn}
@@ -339,6 +339,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  backButtonTextFixed: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#8B5CF6',
+  },
   content: {
     flex: 1,
     paddingHorizontal: 20,
@@ -351,6 +356,12 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  titleFixed: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#1E3A8A',
   },
   subtitle: {
     fontSize: 14,
@@ -366,6 +377,17 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     gap: 8,
     marginBottom: 24,
+  },
+  addButtonFixed: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 30,
+    gap: 8,
+    marginBottom: 24,
+    backgroundColor: '#93C5FD',
   },
   addButtonText: {
     color: '#FFFFFF',
@@ -383,6 +405,17 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top',
   },
+  quoteInputFixed: {
+    padding: 16,
+    borderRadius: 12,
+    fontSize: 16,
+    minHeight: 100,
+    textAlignVertical: 'top',
+    backgroundColor: '#FFFFFF',
+    color: '#1E3A8A',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
   formButtons: {
     flexDirection: 'row',
     gap: 12,
@@ -393,8 +426,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 8,
   },
+  formBtnPrimary: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    backgroundColor: '#8B5CF6',
+  },
   formBtnText: {
     color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  formBtnTextDark: {
+    color: '#1E3A8A',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -408,10 +452,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 16,
   },
+  emptyTextFixed: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 16,
+    color: '#1E3A8A',
+  },
   emptySubtext: {
     fontSize: 14,
     opacity: 0.7,
     marginTop: 8,
+  },
+  emptySubtextFixed: {
+    fontSize: 14,
+    opacity: 0.7,
+    marginTop: 8,
+    color: '#6B7280',
   },
   quotesList: {
     gap: 12,
@@ -421,11 +477,25 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
   },
+  quoteItemFixed: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
   quoteText: {
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'right',
     marginBottom: 12,
+  },
+  quoteTextFixed: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'right',
+    marginBottom: 12,
+    color: '#1E3A8A',
   },
   quoteActions: {
     flexDirection: 'row',
@@ -446,6 +516,17 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
   },
+  editInputFixed: {
+    padding: 12,
+    borderRadius: 8,
+    fontSize: 16,
+    minHeight: 80,
+    textAlignVertical: 'top',
+    backgroundColor: '#FFFFFF',
+    color: '#1E3A8A',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
   editButtons: {
     flexDirection: 'row',
     gap: 8,
@@ -457,6 +538,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  iconBtnPrimary: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8B5CF6',
   },
 });
 

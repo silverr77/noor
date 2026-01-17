@@ -76,11 +76,11 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
             <View style={styles.section}>
               <View style={styles.userInfo}>
                 <View style={styles.userTextContainer}>
-                  <Text style={[styles.userName, { color: colors.text }]}>
+                  <Text style={styles.userNameFixed}>
                     {getGreeting()}، {user?.name || 'المستخدم'}
                   </Text>
                 </View>
-                <View style={[styles.avatar, { backgroundColor: accentColor }]}>
+                <View style={styles.avatarFixed}>
                   <Ionicons name="person" size={32} color="#FFFFFF" />
                 </View>
               </View>
@@ -88,55 +88,55 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
 
             {/* Notifications Section */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              <Text style={styles.sectionTitleFixed}>
                 الإشعارات
               </Text>
               <View style={styles.settingRow}>
                 <Switch
                   value={notificationsEnabled}
                   onValueChange={setNotificationsEnabled}
-                  trackColor={{ false: '#D1D5DB', true: accentColor }}
+                  trackColor={{ false: '#D1D5DB', true: '#8B5CF6' }}
                   thumbColor="#FFFFFF"
                 />
                 <View style={styles.settingInfo}>
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  <Text style={styles.settingLabelFixed}>
                     تفعيل الإشعارات اليومية
                   </Text>
-                  <Ionicons name="notifications-outline" size={20} color={accentColor} />
+                  <Ionicons name="notifications-outline" size={20} color="#8B5CF6" />
                 </View>
               </View>
             </View>
 
             {/* Other Settings */}
             <View style={styles.section}>
-              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+              <Text style={styles.sectionTitleFixed}>
                 إعدادات أخرى
               </Text>
               <TouchableOpacity style={styles.settingRow}>
-                <Ionicons name="chevron-back" size={20} color={colors.text} />
+                <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  <Text style={styles.settingLabelFixed}>
                     اللغة
                   </Text>
-                  <Ionicons name="language-outline" size={20} color={accentColor} />
+                  <Ionicons name="language-outline" size={20} color="#8B5CF6" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
-                <Ionicons name="chevron-back" size={20} color={colors.text} />
+                <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  <Text style={styles.settingLabelFixed}>
                     الوضع الليلي
                   </Text>
-                  <Ionicons name="moon-outline" size={20} color={accentColor} />
+                  <Ionicons name="moon-outline" size={20} color="#8B5CF6" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.settingRow}>
-                <Ionicons name="chevron-back" size={20} color={colors.text} />
+                <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
-                  <Text style={[styles.settingLabel, { color: colors.text }]}>
+                  <Text style={styles.settingLabelFixed}>
                     حول التطبيق
                   </Text>
-                  <Ionicons name="information-circle-outline" size={20} color={accentColor} />
+                  <Ionicons name="information-circle-outline" size={20} color="#8B5CF6" />
                 </View>
               </TouchableOpacity>
 
@@ -150,9 +150,9 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                     router.replace('/onboarding/welcome');
                   }}
                 >
-                  <Ionicons name="chevron-back" size={20} color={colors.text} />
+                  <Ionicons name="chevron-back" size={20} color="#6B7280" />
                   <View style={styles.settingInfo}>
-                    <Text style={[styles.settingLabel, { color: '#EF4444' }]}>
+                    <Text style={[styles.settingLabelFixed, { color: '#EF4444' }]}>
                       إعادة تشغيل التعريف (Dev Mode)
                     </Text>
                     <Ionicons name="refresh-outline" size={20} color="#EF4444" />
@@ -231,16 +231,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  avatarFixed: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#8B5CF6',
+  },
   userName: {
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'right',
+  },
+  userNameFixed: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    color: '#1E3A8A',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 12,
     textAlign: 'right',
+  },
+  sectionTitleFixed: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    textAlign: 'right',
+    color: '#1E3A8A',
   },
   settingRow: {
     flexDirection: 'row',
@@ -256,6 +277,11 @@ const styles = StyleSheet.create({
   settingLabel: {
     fontSize: 16,
     textAlign: 'right',
+  },
+  settingLabelFixed: {
+    fontSize: 16,
+    textAlign: 'right',
+    color: '#1E3A8A',
   },
   notificationConfigRow: {
     flexDirection: 'row',
