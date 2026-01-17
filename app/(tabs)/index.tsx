@@ -41,7 +41,7 @@ export default function HomeScreen() {
     }
   };
 
-  const handleSwipe = () => {
+  const handleSwipeUp = () => {
     // Small delay to allow animation to complete
     setTimeout(() => {
       if (currentIndex < quotes.length - 1) {
@@ -49,6 +49,15 @@ export default function HomeScreen() {
       } else {
         // Reset to beginning or load more quotes
         setCurrentIndex(0);
+      }
+    }, 300);
+  };
+
+  const handleSwipeDown = () => {
+    // Small delay to allow animation to complete
+    setTimeout(() => {
+      if (currentIndex > 0) {
+        setCurrentIndex(currentIndex - 1);
       }
     }, 300);
   };
@@ -112,16 +121,21 @@ export default function HomeScreen() {
           <SwipeableCard
             key={currentQuote.id}
             quote={currentQuote}
-            onSwipe={handleSwipe}
+            onSwipeUp={handleSwipeUp}
+            onSwipeDown={handleSwipeDown}
             onLike={handleLike}
             index={0}
+            canGoBack={currentIndex > 0}
           />
         )}
       </View>
 
       {/* Swipe Indicator - Fixed at bottom of screen */}
       <View style={styles.swipeIndicatorContainer}>
-        <SwipeIndicator visible={currentIndex < quotes.length} />
+        <SwipeIndicator 
+          visible={currentIndex < quotes.length} 
+          quoteId={currentQuote?.id || ''} 
+        />
       </View>
 
       {/* Profile Modal */}

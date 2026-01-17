@@ -5,7 +5,12 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  withRepeat,
+  withSequence,
+  withDelay,
+  withTiming,
   runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 import { Share } from 'react-native';
 import { Quote } from '@/types';
@@ -19,12 +24,14 @@ const CARD_HEIGHT = SCREEN_HEIGHT * 0.6;
 
 interface SwipeableCardProps {
   quote: Quote;
-  onSwipe: () => void;
+  onSwipeUp: () => void;
+  onSwipeDown: () => void;
   onLike: (id: string) => void;
   index: number;
+  canGoBack: boolean;
 }
 
-export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardProps) {
+export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, canGoBack }: SwipeableCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [isLiked, setIsLiked] = useState(quote.isLiked);
@@ -45,19 +52,30 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
 
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
-      // Only allow upward swipes (negative translationY)
+      // Allow upward swipes (negative translationY)
       if (event.translationY < 0) {
         translateY.value = event.translationY;
-        opacity.value = 1 + event.translationY / 500; // Fade out as swiping up
+        opacity.value = 1 + event.translationY / 500;
+      }
+      // Allow downward swipes only if can go back (positive translationY)
+      else if (event.translationY > 0 && canGoBack) {
+        translateY.value = event.translationY;
+        opacity.value = 1 - event.translationY / 500;
       }
     })
     .onEnd((event) => {
-      const threshold = SCREEN_HEIGHT / 4; // Swipe up threshold
+      const threshold = SCREEN_HEIGHT / 4;
+      
       if (event.translationY < -threshold) {
-        // Swipe up completed
+        // Swipe up completed - go to next
         translateY.value = withSpring(-SCREEN_HEIGHT);
         opacity.value = withSpring(0);
-        runOnJS(onSwipe)();
+        runOnJS(onSwipeUp)();
+      } else if (event.translationY > threshold && canGoBack) {
+        // Swipe down completed - go to previous
+        translateY.value = withSpring(SCREEN_HEIGHT);
+        opacity.value = withSpring(0);
+        runOnJS(onSwipeDown)();
       } else {
         // Return to original position
         translateY.value = withSpring(0);
@@ -65,7 +83,7 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
       }
     });
 
-  // Double tap gesture for like - should work alongside pan
+  // Double tap gesture for like
   const doubleTapGesture = Gesture.Tap()
     .numberOfTaps(2)
     .maxDuration(300)
@@ -73,7 +91,7 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
       runOnJS(handleLike)();
     });
 
-  // Use Simultaneous so both gestures can work - pan for swipe, double tap for like
+  // Use Simultaneous so both gestures can work
   const composedGesture = Gesture.Simultaneous(panGesture, doubleTapGesture);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -147,21 +165,61 @@ export function SwipeableCard({ quote, onSwipe, onLike, index }: SwipeableCardPr
 
 interface SwipeIndicatorProps {
   visible: boolean;
+  quoteId: string; // Used to reset the timer when quote changes
 }
 
-export function SwipeIndicator({ visible }: SwipeIndicatorProps) {
+export function SwipeIndicator({ visible, quoteId }: SwipeIndicatorProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
+  const [showIndicator, setShowIndicator] = useState(false);
+  
+  // Animation values
+  const translateY = useSharedValue(0);
+  const indicatorOpacity = useSharedValue(0);
 
-  if (!visible) return null;
+  // Reset and start timer when quote changes
+  useEffect(() => {
+    setShowIndicator(false);
+    indicatorOpacity.value = 0;
+    translateY.value = 0;
+
+    if (!visible) return;
+
+    // Show indicator after 3 seconds
+    const timer = setTimeout(() => {
+      setShowIndicator(true);
+      // Fade in
+      indicatorOpacity.value = withTiming(1, { duration: 300 });
+      // Start jumping animation
+      translateY.value = withRepeat(
+        withSequence(
+          withTiming(-8, { duration: 400, easing: Easing.out(Easing.ease) }),
+          withTiming(0, { duration: 400, easing: Easing.in(Easing.ease) })
+        ),
+        -1, // Infinite repeat
+        false
+      );
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [quoteId, visible]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+    opacity: indicatorOpacity.value,
+  }));
+
+  if (!visible || !showIndicator) return null;
 
   return (
-    <View style={indicatorStyles.container}>
+    <Animated.View style={[indicatorStyles.container, animatedStyle]}>
       <View style={indicatorStyles.indicator}>
         <Ionicons name="chevron-up-outline" size={20} color={colors.primary} />
         <Text style={[indicatorStyles.text, { color: colors.primary }]}>اسحب للأعلى</Text>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -230,4 +288,3 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-
