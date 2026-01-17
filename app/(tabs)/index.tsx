@@ -19,7 +19,6 @@ export default function HomeScreen() {
   const colors = Colors[colorScheme ?? 'light'];
   const [quotes, setQuotes] = useState<Quote[]>(sampleQuotes);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedCount, setLikedCount] = useState(0);
   const [profileModalVisible, setProfileModalVisible] = useState(false);
 
   useEffect(() => {
@@ -34,7 +33,6 @@ export default function HomeScreen() {
         setQuotes(prev =>
           prev.map(q => ({ ...q, isLiked: likedIds.includes(q.id) }))
         );
-        setLikedCount(likedIds.length);
       }
     } catch (error) {
       console.error('Error loading liked quotes:', error);
@@ -69,7 +67,6 @@ export default function HomeScreen() {
     setQuotes(updatedQuotes);
 
     const likedIds = updatedQuotes.filter(q => q.isLiked).map(q => q.id);
-    setLikedCount(likedIds.length);
 
     try {
       await AsyncStorage.setItem('likedQuotes', JSON.stringify(likedIds));
@@ -86,23 +83,6 @@ export default function HomeScreen() {
 
       {/* Header */}
       <View style={styles.header} pointerEvents="box-none">
-        <View style={styles.likesContainer} pointerEvents="none">
-          <Ionicons name="heart" size={16} color={colors.primary} />
-          <Text style={[styles.likesText, { color: colors.text }]}>
-            {likedCount}/5
-          </Text>
-          <View style={[styles.progressBar, { backgroundColor: '#E5E7EB' }]}>
-            <View
-              style={[
-                styles.progressFill,
-                {
-                  width: `${(likedCount / 5) * 100}%`,
-                  backgroundColor: colors.primary,
-                },
-              ]}
-            />
-          </View>
-        </View>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.headerButton}
@@ -153,7 +133,7 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 60,
@@ -172,25 +152,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEF3E2',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  likesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  likesText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  progressBar: {
-    width: 60,
-    height: 4,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
   },
   cardsContainer: {
     flex: 1,
