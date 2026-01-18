@@ -100,15 +100,18 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
               <View style={styles.dragHandle} />
             </View>
 
-            {/* Header - RTL: Title on right, X on left */}
+            {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                 <Ionicons name="close" size={24} color="#1E3A8A" />
               </TouchableOpacity>
-            <Text style={styles.title}>الإعدادات</Text>
-          </View>
+            </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            {/* Title - Centered */}
+            <View style={styles.titleContainer}>
+              <Text style={styles.titleFixed}>الإعدادات</Text>
+            </View>
             {/* User Info - RTL: Avatar on right, text on left */}
             <View style={styles.section}>
               <View style={styles.userInfo}>
@@ -238,19 +241,26 @@ const styles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+  },
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 24,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
     color: '#1E3A8A',
     textAlign: 'right',
+  },
+  titleFixed: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#1E3A8A',
   },
   closeButton: {
     padding: 4,
