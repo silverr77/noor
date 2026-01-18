@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Modal,
   ScrollView,
-  Switch,
   Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -23,8 +22,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { NotificationsModal } from './NotificationsModal';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
+
+// Days of the week in Arabic (starting from Saturday for Arabic calendar)
+const DAYS_AR = ['س', 'أ', 'إ', 'ث', 'أ', 'خ', 'ج'];
+const DAYS_FULL = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
 
 interface ProfileModalProps {
   visible: boolean;
@@ -51,10 +56,83 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
   const { user, resetOnboarding } = useUser();
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  
+  // Streak state
+  const [streakDays, setStreakDays] = useState<number[]>([]);
+  const [streakCount, setStreakCount] = useState(0);
+  
+  // Notifications modal state
+  const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   
   // Use theme accent color if provided, otherwise use default primary
   const accentColor = themeAccentColor || colors.primary;
+
+  // Load streak data when modal opens
+  useEffect(() => {
+    if (visible) {
+      loadStreakData();
+      recordVisit();
+    }
+  }, [visible]);
+
+  const loadStreakData = async () => {
+    try {
+      const data = await AsyncStorage.getItem('weeklyStreak');
+      if (data) {
+        const parsed = JSON.parse(data);
+        const weekStart = getWeekStart();
+        
+        // Check if it's a new week
+        if (parsed.weekStart !== weekStart) {
+          // Reset for new week
+          const newData = { weekStart, days: [], count: 0 };
+          await AsyncStorage.setItem('weeklyStreak', JSON.stringify(newData));
+          setStreakDays([]);
+          setStreakCount(0);
+        } else {
+          setStreakDays(parsed.days || []);
+          setStreakCount(parsed.days?.length || 0);
+        }
+      }
+    } catch (error) {
+      console.error('Error loading streak:', error);
+    }
+  };
+
+  const recordVisit = async () => {
+    try {
+      const today = new Date();
+      const dayOfWeek = (today.getDay() + 1) % 7; // Shift to start from Saturday
+      const weekStart = getWeekStart();
+      
+      const data = await AsyncStorage.getItem('weeklyStreak');
+      let parsed = data ? JSON.parse(data) : { weekStart, days: [] };
+      
+      // Reset if new week
+      if (parsed.weekStart !== weekStart) {
+        parsed = { weekStart, days: [] };
+      }
+      
+      // Add today if not already recorded
+      if (!parsed.days.includes(dayOfWeek)) {
+        parsed.days.push(dayOfWeek);
+        await AsyncStorage.setItem('weeklyStreak', JSON.stringify(parsed));
+        setStreakDays(parsed.days);
+        setStreakCount(parsed.days.length);
+      }
+    } catch (error) {
+      console.error('Error recording visit:', error);
+    }
+  };
+
+  const getWeekStart = () => {
+    const today = new Date();
+    const day = today.getDay();
+    const diff = (day + 1) % 7; // Days since Saturday
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - diff);
+    return weekStart.toISOString().split('T')[0];
+  };
 
   // Swipe to close gesture
   const translateY = useSharedValue(0);
@@ -112,6 +190,40 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
             <View style={styles.titleContainer}>
               <Text style={styles.titleFixed}>الإعدادات</Text>
             </View>
+
+            {/* Streak Section */}
+            <View style={styles.streakSection}>
+              <Text style={styles.streakTitle}>تقدمك الأسبوعي</Text>
+              <View style={styles.streakContainer}>
+                <View style={styles.streakCountContainer}>
+                  <Text style={[styles.streakNumber, { color: accentColor }]}>{streakCount}</Text>
+                  <Text style={styles.streakLabel}>أيام</Text>
+                </View>
+                <View style={styles.weekDaysContainer}>
+                  {DAYS_AR.map((day, index) => {
+                    const isActive = streakDays.includes(index);
+                    const isToday = index === (new Date().getDay() + 1) % 7;
+                    return (
+                      <View key={index} style={styles.dayColumn}>
+                        <Text style={styles.dayLabel}>{day}</Text>
+                        <View
+                          style={[
+                            styles.dayCircle,
+                            isActive && { backgroundColor: accentColor },
+                            isToday && !isActive && styles.todayCircle,
+                          ]}
+                        >
+                          {isActive && (
+                            <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                          )}
+                        </View>
+                      </View>
+                    );
+                  })}
+                </View>
+              </View>
+            </View>
+
             {/* User Info - RTL: Avatar on right, text on left */}
             <View style={styles.section}>
               <View style={styles.userInfo}>
@@ -126,32 +238,27 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
               </View>
             </View>
 
-            {/* Notifications Section */}
+            {/* Settings Section */}
             <View style={styles.section}>
               <Text style={styles.sectionTitleFixed}>
-                الإشعارات
+                الإعدادات
               </Text>
-              <View style={styles.settingRow}>
-                <Switch
-                  value={notificationsEnabled}
-                  onValueChange={setNotificationsEnabled}
-                  trackColor={{ false: '#D1D5DB', true: accentColor }}
-                  thumbColor="#FFFFFF"
-                />
+              
+              {/* Notifications */}
+              <TouchableOpacity 
+                style={styles.settingRow}
+                onPress={() => setShowNotificationsModal(true)}
+              >
+                <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingLabelFixed}>
-                    تفعيل الإشعارات اليومية
+                    الإشعارات
                   </Text>
                   <Ionicons name="notifications-outline" size={20} color={accentColor} />
                 </View>
-              </View>
-            </View>
+              </TouchableOpacity>
 
-            {/* Other Settings */}
-            <View style={styles.section}>
-              <Text style={styles.sectionTitleFixed}>
-                إعدادات أخرى
-              </Text>
+              {/* Language */}
               <TouchableOpacity style={styles.settingRow}>
                 <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
@@ -205,6 +312,13 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
           </Animated.View>
         </GestureDetector>
       </View>
+
+      {/* Notifications Modal */}
+      <NotificationsModal
+        visible={showNotificationsModal}
+        onClose={() => setShowNotificationsModal(false)}
+        accentColor={accentColor}
+      />
     </Modal>
   );
 }
@@ -248,7 +362,7 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 16,
   },
   title: {
     fontSize: 18,
@@ -268,6 +382,63 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 20,
+  },
+  // Streak styles
+  streakSection: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+  },
+  streakTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1E3A8A',
+    textAlign: 'right',
+    marginBottom: 16,
+  },
+  streakContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  streakCountContainer: {
+    alignItems: 'center',
+    paddingRight: 20,
+  },
+  streakNumber: {
+    fontSize: 36,
+    fontWeight: 'bold',
+  },
+  streakLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  weekDaysContainer: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  dayColumn: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  dayLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  dayCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  todayCircle: {
+    borderWidth: 2,
+    borderColor: '#6B7280',
+    backgroundColor: 'transparent',
   },
   section: {
     paddingVertical: 24,
@@ -342,46 +513,5 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     color: '#1E3A8A',
   },
-  notificationConfigRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  countContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  countButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  countText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    minWidth: 35,
-    textAlign: 'center',
-  },
-  timeButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    minWidth: 100,
-  },
-  timeText: {
-    fontSize: 14,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  summaryText: {
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 8,
-    opacity: 0.7,
-    lineHeight: 18,
-  },
 });
+
