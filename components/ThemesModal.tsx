@@ -14,15 +14,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, { 
-  SlideInDown, 
-  SlideOutDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  SlideInDown,
+  SlideOutDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_WIDTH = (SCREEN_WIDTH - 60) / 2;
@@ -196,12 +196,10 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
             {/* Title */}
             <View style={styles.titleContainer}>
               <Text style={styles.titleFixed}>تخصيص</Text>
-              <Text style={styles.candleIcon}>🕯️</Text>
             </View>
 
             {/* Section Title */}
             <View style={styles.sectionHeader}>
-              <Ionicons name="image-outline" size={20} color={accentColor} />
               <Text style={styles.sectionTitleFixed}>الخلفيات</Text>
             </View>
 
