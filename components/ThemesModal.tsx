@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { initializeAds, showInterstitialAd } from '@/services/ads';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
@@ -126,6 +127,12 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
   }, [currentTheme, visible]);
 
   const handleSelectTheme = async (themeId: string) => {
+    // Don't do anything if selecting the same theme
+    if (themeId === selectedTheme) {
+      onClose();
+      return;
+    }
+    
     setSelectedTheme(themeId);
     onThemeChange(themeId);
     
@@ -135,11 +142,25 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
       console.error('Error saving theme:', error);
     }
     
-    // Close modal smoothly after a short delay
-    setTimeout(() => {
-      onClose();
-    }, 300);
+    // Close modal first
+    onClose();
+    
+    // Show interstitial ad after theme change
+    setTimeout(async () => {
+      try {
+        await showInterstitialAd();
+      } catch (error) {
+        console.log('Interstitial ad not available:', error);
+      }
+    }, 500);
   };
+  
+  // Preload interstitial ad when modal opens
+  useEffect(() => {
+    if (visible) {
+      initializeAds();
+    }
+  }, [visible]);
 
   // Swipe to close gesture
   const translateY = useSharedValue(0);

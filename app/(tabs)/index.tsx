@@ -1,3 +1,4 @@
+import { AdCard } from '@/components/AdCard';
 import { CategoriesModal } from '@/components/CategoriesModal';
 import { ProfileModal } from '@/components/ProfileModal';
 import { SwipeableCard, SwipeIndicator } from '@/components/SwipeableCard';
@@ -7,6 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
 import { sampleQuotes } from '@/data/quotes';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { initializeAds } from '@/services/ads';
 import { Quote } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,11 +37,19 @@ export default function HomeScreen() {
   const [themesModalVisible, setThemesModalVisible] = useState(false);
   const [currentThemeId, setCurrentThemeId] = useState('classic');
   const [currentTheme, setCurrentTheme] = useState<Theme>(getThemeById('classic'));
+  
+  // Ad tracking - show ad every 3 swipes
+  const [swipeCount, setSwipeCount] = useState(0);
+  const [showingAd, setShowingAd] = useState(false);
+  const AD_FREQUENCY = 3; // Show ad every 3 swipes
 
   useEffect(() => {
     loadLikedQuotes();
     loadCustomQuotes();
     loadSavedTheme();
+    
+    // Preload interstitial ads
+    initializeAds();
     
     // Load selected categories from user context
     if (user?.selectedCategories && user.selectedCategories.length > 0) {
@@ -138,6 +148,28 @@ export default function HomeScreen() {
 
   const handleSwipeUp = () => {
     setTimeout(() => {
+      // If currently showing an ad, move to next quote after ad
+      if (showingAd) {
+        setShowingAd(false);
+        if (currentIndex < filteredQuotes.length - 1) {
+          setCurrentIndex(currentIndex + 1);
+        } else {
+          setCurrentIndex(0);
+        }
+        return;
+      }
+      
+      // Increment swipe count
+      const newSwipeCount = swipeCount + 1;
+      setSwipeCount(newSwipeCount);
+      
+      // Check if it's time to show an ad
+      if (newSwipeCount > 0 && newSwipeCount % AD_FREQUENCY === 0) {
+        setShowingAd(true);
+        return;
+      }
+      
+      // Normal quote navigation
       if (currentIndex < filteredQuotes.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
@@ -148,6 +180,12 @@ export default function HomeScreen() {
 
   const handleSwipeDown = () => {
     setTimeout(() => {
+      // If showing an ad, dismiss it and go back
+      if (showingAd) {
+        setShowingAd(false);
+        return;
+      }
+      
       if (currentIndex > 0) {
         setCurrentIndex(currentIndex - 1);
       }
@@ -237,6 +275,9 @@ export default function HomeScreen() {
 
   // Get display category name - shows the current quote's category
   const getDisplayCategoryName = () => {
+    // If showing an ad, show "إعلان"
+    if (showingAd) return 'إعلان';
+    
     if (!currentQuote) return 'عام';
     
     // Check if it's a custom quote
@@ -269,7 +310,7 @@ export default function HomeScreen() {
       {/* Background Image - only for image themes */}
       {currentTheme.image && (
         <>
-          <Image 
+        <Image
             source={currentTheme.image} 
             style={styles.backgroundImage}
             resizeMode="cover"
@@ -308,7 +349,17 @@ export default function HomeScreen() {
 
       {/* Cards Container */}
       <View style={styles.cardsContainer}>
-        {currentQuote ? (
+        {showingAd ? (
+          // Show Ad Card
+          <AdCard
+            key="ad-card"
+            onSwipeUp={handleSwipeUp}
+            onSwipeDown={handleSwipeDown}
+            canGoBack={true}
+            textColor={currentTheme.textColor}
+            accentColor={currentTheme.accentColor}
+          />
+        ) : currentQuote ? (
           <SwipeableCard
             key={currentQuote.id}
             quote={currentQuote}
@@ -347,11 +398,11 @@ export default function HomeScreen() {
       {/* Bottom Area - Swipe Indicator and Theme Button */}
       <View style={styles.bottomArea}>
         {/* Swipe Indicator */}
-        {currentQuote && (
+        {(currentQuote || showingAd) && (
           <View style={styles.swipeIndicatorContainer}>
             <SwipeIndicator 
-              visible={filteredQuotes.length > 1} 
-              quoteId={currentQuote?.id || ''} 
+              visible={filteredQuotes.length > 1 || showingAd} 
+              quoteId={showingAd ? 'ad-card' : (currentQuote?.id || '')} 
               accentColor={currentTheme.accentColor}
             />
           </View>
