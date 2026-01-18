@@ -15,7 +15,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  SlideInDown,
+  SlideOutDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { MyQuotesManager } from './MyQuotesManager';
 
 interface CategoriesModalProps {
@@ -162,6 +170,26 @@ export function CategoriesModal({
     onCustomQuotesChange(quotes);
   };
 
+  // Swipe to close gesture
+  const translateY = useSharedValue(0);
+  
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      if (event.translationY > 0) {
+        translateY.value = event.translationY;
+      }
+    })
+    .onEnd((event) => {
+      if (event.translationY > 100 || event.velocityY > 500) {
+        runOnJS(handleClose)();
+      }
+      translateY.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
   return (
     <Modal
       visible={visible}
@@ -175,17 +203,23 @@ export function CategoriesModal({
           activeOpacity={1}
           onPress={handleClose}
         />
-        <Animated.View
-          entering={SlideInDown.springify()}
-          exiting={SlideOutDown.springify()}
-          style={styles.modalContent}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#1E3A8A" />
-            </TouchableOpacity>
-          </View>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
+            entering={SlideInDown.springify()}
+            exiting={SlideOutDown.springify()}
+            style={[styles.modalContent, animatedStyle]}
+          >
+            {/* Drag Handle */}
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle} />
+            </View>
+
+            {/* Header */}
+            <View style={styles.header}>
+              <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="#1E3A8A" />
+              </TouchableOpacity>
+            </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Title with Icon */}
@@ -311,7 +345,8 @@ export function CategoriesModal({
               })}
             </View>
           </ScrollView>
-        </Animated.View>
+          </Animated.View>
+        </GestureDetector>
       </View>
 
       {/* My Quotes Manager Modal */}
@@ -333,6 +368,17 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  dragHandleContainer: {
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  dragHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#D1D5DB',
+    borderRadius: 2,
   },
   modalContent: {
     backgroundColor: '#FEF7ED',

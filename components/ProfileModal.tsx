@@ -7,13 +7,24 @@ import {
   Modal,
   ScrollView,
   Switch,
+  Dimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useUser } from '@/context/UserContext';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import Animated, { 
+  SlideInDown, 
+  SlideOutDown,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
 import { useRouter } from 'expo-router';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface ProfileModalProps {
   visible: boolean;
@@ -45,6 +56,26 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
   // Use theme accent color if provided, otherwise use default primary
   const accentColor = themeAccentColor || colors.primary;
 
+  // Swipe to close gesture
+  const translateY = useSharedValue(0);
+  
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      if (event.translationY > 0) {
+        translateY.value = event.translationY;
+      }
+    })
+    .onEnd((event) => {
+      if (event.translationY > 100 || event.velocityY > 500) {
+        runOnJS(onClose)();
+      }
+      translateY.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateY: translateY.value }],
+  }));
+
   return (
     <Modal
       visible={visible}
@@ -58,16 +89,22 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
           activeOpacity={1}
           onPress={onClose}
         />
-        <Animated.View
-          entering={SlideInDown.springify()}
-          exiting={SlideOutDown.springify()}
-          style={styles.modalContent}
-        >
-          {/* Header - RTL: Title on right, X on left */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={24} color="#1E3A8A" />
-            </TouchableOpacity>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
+            entering={SlideInDown.springify()}
+            exiting={SlideOutDown.springify()}
+            style={[styles.modalContent, animatedStyle]}
+          >
+            {/* Drag Handle */}
+            <View style={styles.dragHandleContainer}>
+              <View style={styles.dragHandle} />
+            </View>
+
+            {/* Header - RTL: Title on right, X on left */}
+            <View style={styles.header}>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Ionicons name="close" size={24} color="#1E3A8A" />
+              </TouchableOpacity>
             <Text style={styles.title}>الإعدادات</Text>
           </View>
 
@@ -162,7 +199,8 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
             </View>
           </ScrollView>
 
-        </Animated.View>
+          </Animated.View>
+        </GestureDetector>
       </View>
     </Modal>
   );
@@ -176,6 +214,17 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  dragHandleContainer: {
+    alignItems: 'center',
+    paddingTop: 12,
+    paddingBottom: 4,
+  },
+  dragHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#D1D5DB',
+    borderRadius: 2,
   },
   modalContent: {
     backgroundColor: '#F5F5F5',

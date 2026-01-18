@@ -14,7 +14,15 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import Animated, { SlideInRight, SlideOutRight } from 'react-native-reanimated';
+import Animated, { 
+  SlideInRight, 
+  SlideOutRight,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+} from 'react-native-reanimated';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 
 interface MyQuotesManagerProps {
   visible: boolean;
@@ -154,6 +162,26 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor:
     onClose();
   };
 
+  // Swipe to close gesture (swipe right to close since it slides from right)
+  const translateX = useSharedValue(0);
+  
+  const panGesture = Gesture.Pan()
+    .onUpdate((event) => {
+      if (event.translationX > 0) {
+        translateX.value = event.translationX;
+      }
+    })
+    .onEnd((event) => {
+      if (event.translationX > 100 || event.velocityX > 500) {
+        runOnJS(handleClose)();
+      }
+      translateX.value = withSpring(0);
+    });
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
   return (
     <Modal
       visible={visible}
@@ -167,18 +195,24 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor:
           activeOpacity={1}
           onPress={handleClose}
         />
-        <Animated.View
-          entering={SlideInRight.springify()}
-          exiting={SlideOutRight.springify()}
-          style={styles.modalContent}
-        >
-          {/* Header */}
-          <View style={styles.header}>
-            <TouchableOpacity onPress={handleClose} style={styles.backButton}>
-              <Ionicons name="chevron-forward" size={24} color={accentColor} />
-              <Text style={[styles.backButtonTextFixed, { color: accentColor }]}>رجوع</Text>
-            </TouchableOpacity>
-          </View>
+        <GestureDetector gesture={panGesture}>
+          <Animated.View
+            entering={SlideInRight.springify()}
+            exiting={SlideOutRight.springify()}
+            style={[styles.modalContent, animatedStyle]}
+          >
+            {/* Drag Handle - vertical for horizontal swipe */}
+            <View style={styles.dragHandleContainerVertical}>
+              <View style={styles.dragHandleVertical} />
+            </View>
+
+            {/* Header */}
+            <View style={styles.header}>
+              <TouchableOpacity onPress={handleClose} style={styles.backButton}>
+                <Ionicons name="chevron-forward" size={24} color={accentColor} />
+                <Text style={[styles.backButtonTextFixed, { color: accentColor }]}>رجوع</Text>
+              </TouchableOpacity>
+            </View>
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Title */}
@@ -300,7 +334,8 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor:
               </View>
             )}
           </ScrollView>
-        </Animated.View>
+          </Animated.View>
+        </GestureDetector>
       </View>
     </Modal>
   );
@@ -314,6 +349,20 @@ const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  dragHandleContainerVertical: {
+    position: 'absolute',
+    left: 8,
+    top: '45%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  dragHandleVertical: {
+    width: 4,
+    height: 40,
+    backgroundColor: '#D1D5DB',
+    borderRadius: 2,
   },
   modalContent: {
     backgroundColor: '#FEF7ED',
