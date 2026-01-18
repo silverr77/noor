@@ -2,8 +2,9 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Quote } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Dimensions, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import React, { useEffect, useRef, useState } from 'react';
+import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   Easing,
@@ -15,6 +16,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import ViewShot from 'react-native-view-shot';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
@@ -33,12 +35,26 @@ interface SwipeableCardProps {
   canGoBack: boolean;
   textColor?: string;
   accentColor?: string;
+  themeImage?: ImageSourcePropType;
+  themeBackgroundColor?: string;
 }
 
-export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, canGoBack, textColor, accentColor }: SwipeableCardProps) {
+export function SwipeableCard({ 
+  quote, 
+  onSwipeUp, 
+  onSwipeDown, 
+  onLike, 
+  index, 
+  canGoBack, 
+  textColor, 
+  accentColor,
+  themeImage,
+  themeBackgroundColor,
+}: SwipeableCardProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [isLiked, setIsLiked] = useState(quote.isLiked);
+  const viewShotRef = useRef<ViewShot>(null);
   
   // Use theme colors if provided, otherwise use default colors
   const quoteTextColor = textColor || colors.text;
@@ -65,9 +81,18 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
 
   const handleShare = async () => {
     try {
-      await Share.share({
-        message: `${quote.text}${quote.translation ? '\n\n' + quote.translation : ''}`,
-      });
+      if (viewShotRef.current) {
+        const uri = await viewShotRef.current.capture?.();
+        if (uri) {
+          const isAvailable = await Sharing.isAvailableAsync();
+          if (isAvailable) {
+            await Sharing.shareAsync(uri, {
+              mimeType: 'image/png',
+              dialogTitle: 'شارك الاقتباس',
+            });
+          }
+        }
+      }
     } catch (error) {
       console.error('Error sharing:', error);
     }
@@ -138,49 +163,85 @@ export function SwipeableCard({ quote, onSwipeUp, onSwipeDown, onLike, index, ca
   }
 
   return (
-    <GestureDetector gesture={composedGesture}>
-      <Animated.View
-        style={[
-          styles.card,
-          animatedStyle,
-        ]}
-      >
-        <View style={styles.contentContainer}>
-          <View style={styles.textContainer}>
-            <Text style={[styles.quoteText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }]}>
+    <>
+      {/* Hidden ViewShot for capturing share image */}
+      <View style={styles.hiddenCapture}>
+        <ViewShot 
+          ref={viewShotRef} 
+          options={{ format: 'png', quality: 1 }}
+          style={styles.shareImageContainer}
+        >
+          {/* Background */}
+          {themeImage ? (
+            <Image source={themeImage} style={styles.shareBackground} resizeMode="cover" />
+          ) : (
+            <View style={[styles.shareBackground, { backgroundColor: themeBackgroundColor || '#FEF3E2' }]} />
+          )}
+          
+          {/* Quote Content */}
+          <View style={styles.shareContent}>
+            <Text style={[styles.shareQuoteText, { color: quoteTextColor }]}>
               {quote.text}
             </Text>
             {quote.translation && (
-              <Text style={[styles.translationText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
+              <Text style={[styles.shareTranslationText, { color: quoteTextColor }]}>
                 {quote.translation}
               </Text>
             )}
-            
-            {/* Actions - Like and Share */}
-            <View style={styles.actions}>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleShare}
-                activeOpacity={0.7}
-              >
-                <Ionicons name="share-outline" size={28} color={quoteAccentColor} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={handleLike}
-                activeOpacity={0.7}
-              >
-                <Ionicons
-                  name={isLiked ? 'heart' : 'heart-outline'}
-                  size={28}
-                  color={isLiked ? '#EF4444' : quoteAccentColor}
-                />
-              </TouchableOpacity>
+          </View>
+
+          {/* App Branding at bottom */}
+          <View style={styles.shareBranding}>
+            <Text style={[styles.shareAppName, { color: quoteTextColor }]}>أذكار</Text>
+            <Text style={[styles.shareAppTagline, { color: quoteTextColor }]}>أقوال وأدعية يومية</Text>
+          </View>
+        </ViewShot>
+      </View>
+
+      <GestureDetector gesture={composedGesture}>
+        <Animated.View
+          style={[
+            styles.card,
+            animatedStyle,
+          ]}
+        >
+          <View style={styles.contentContainer}>
+            <View style={styles.textContainer}>
+              <Text style={[styles.quoteText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 3 }]}>
+                {quote.text}
+              </Text>
+              {quote.translation && (
+                <Text style={[styles.translationText, { color: quoteTextColor, textShadowColor: 'rgba(0, 0, 0, 0.3)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 2 }]}>
+                  {quote.translation}
+                </Text>
+              )}
+              
+              {/* Actions - Like and Share */}
+              <View style={styles.actions}>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={handleShare}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="share-outline" size={28} color={quoteAccentColor} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={handleLike}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons
+                    name={isLiked ? 'heart' : 'heart-outline'}
+                    size={28}
+                    color={isLiked ? '#EF4444' : quoteAccentColor}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Animated.View>
-    </GestureDetector>
+        </Animated.View>
+      </GestureDetector>
+    </>
   );
 }
 
@@ -324,5 +385,70 @@ const styles = StyleSheet.create({
     minHeight: 50,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  // Share image styles
+  hiddenCapture: {
+    position: 'absolute',
+    left: -9999,
+    top: -9999,
+  },
+  shareImageContainer: {
+    width: 1080, // Instagram story width
+    height: 1920, // Instagram story height
+    overflow: 'hidden',
+  },
+  shareBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  shareContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 80,
+    paddingTop: 200,
+    paddingBottom: 300,
+  },
+  shareQuoteText: {
+    fontSize: 64,
+    fontWeight: '700',
+    textAlign: 'center',
+    lineHeight: 96,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
+  shareTranslationText: {
+    fontSize: 36,
+    textAlign: 'center',
+    lineHeight: 54,
+    marginTop: 40,
+    opacity: 0.9,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  shareBranding: {
+    position: 'absolute',
+    bottom: 80,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+  },
+  shareAppName: {
+    fontSize: 48,
+    fontWeight: '800',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+  },
+  shareAppTagline: {
+    fontSize: 28,
+    marginTop: 8,
+    opacity: 0.9,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
 });

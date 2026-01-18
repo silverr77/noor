@@ -319,6 +319,8 @@ export default function HomeScreen() {
             canGoBack={currentIndex > 0}
             textColor={currentTheme.textColor}
             accentColor={currentTheme.accentColor}
+            themeImage={currentTheme.image}
+            themeBackgroundColor={currentTheme.backgroundColor}
           />
         ) : (
           <View style={styles.emptyState}>
