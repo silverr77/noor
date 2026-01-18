@@ -7,6 +7,8 @@ import {
   Modal,
   ScrollView,
   Dimensions,
+  Share,
+  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -25,6 +27,8 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationsModal } from './NotificationsModal';
 
+const APP_VERSION = '1.0.0';
+
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 // Days of the week in Arabic (starting from Saturday for Arabic calendar)
@@ -35,6 +39,8 @@ interface ProfileModalProps {
   visible: boolean;
   onClose: () => void;
   themeAccentColor?: string;
+  onOpenThemes?: () => void;
+  onOpenCategories?: () => void;
 }
 
 // Get greeting based on time of day
@@ -51,7 +57,13 @@ const getGreeting = (): string => {
   }
 };
 
-export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModalProps) {
+export function ProfileModal({ 
+  visible, 
+  onClose, 
+  themeAccentColor,
+  onOpenThemes,
+  onOpenCategories,
+}: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const router = useRouter();
@@ -64,8 +76,23 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
   // Notifications modal state
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   
+  // About modal state
+  const [showAboutModal, setShowAboutModal] = useState(false);
+  
   // Use theme accent color if provided, otherwise use default primary
   const accentColor = themeAccentColor || colors.primary;
+
+  // Share app with friends
+  const handleShareApp = async () => {
+    try {
+      await Share.share({
+        message: 'جرّب تطبيق أذكار - أقوال وأدعية يومية 🤲\nتطبيق رائع للأذكار والأدعية اليومية\n\nحمّله الآن!',
+        title: 'أذكار - أقوال وأدعية يومية',
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
 
   // Load streak data when modal opens
   useEffect(() => {
@@ -258,26 +285,66 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
                 </View>
               </TouchableOpacity>
 
-              {/* Language */}
-              <TouchableOpacity style={styles.settingRow}>
+              {/* Themes */}
+              <TouchableOpacity 
+                style={styles.settingRow}
+                onPress={() => {
+                  onClose();
+                  onOpenThemes?.();
+                }}
+              >
                 <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingLabelFixed}>
-                    اللغة
+                    الخلفيات
                   </Text>
-                  <Ionicons name="language-outline" size={20} color={accentColor} />
+                  <Ionicons name="color-palette-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.settingRow}>
+
+              {/* Categories */}
+              <TouchableOpacity 
+                style={styles.settingRow}
+                onPress={() => {
+                  onClose();
+                  onOpenCategories?.();
+                }}
+              >
                 <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingLabelFixed}>
-                    الوضع الليلي
+                    الفئات
                   </Text>
-                  <Ionicons name="moon-outline" size={20} color={accentColor} />
+                  <Ionicons name="grid-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.settingRow}>
+            </View>
+
+            {/* Share & About Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionTitleFixed}>
+                المزيد
+              </Text>
+
+              {/* Share App */}
+              <TouchableOpacity 
+                style={styles.settingRow}
+                onPress={handleShareApp}
+              >
+                <Ionicons name="chevron-back" size={20} color="#6B7280" />
+                <View style={styles.settingInfo}>
+                  <Text style={styles.settingLabelFixed}>
+                    شارك التطبيق مع أصدقائك
+                  </Text>
+                  <Ionicons name="share-social-outline" size={20} color={accentColor} />
+                </View>
+              </TouchableOpacity>
+
+              {/* About */}
+              <TouchableOpacity 
+                style={styles.settingRow}
+                onPress={() => setShowAboutModal(true)}
+              >
                 <Ionicons name="chevron-back" size={20} color="#6B7280" />
                 <View style={styles.settingInfo}>
                   <Text style={styles.settingLabelFixed}>
@@ -319,6 +386,66 @@ export function ProfileModal({ visible, onClose, themeAccentColor }: ProfileModa
         onClose={() => setShowNotificationsModal(false)}
         accentColor={accentColor}
       />
+
+      {/* About Modal */}
+      <Modal
+        visible={showAboutModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAboutModal(false)}
+      >
+        <View style={styles.aboutOverlay}>
+          <View style={styles.aboutContainer}>
+            {/* App Icon */}
+            <View style={[styles.aboutAppIcon, { backgroundColor: accentColor }]}>
+              <Text style={styles.aboutAppIconText}>🕯️</Text>
+            </View>
+
+            {/* App Name */}
+            <Text style={styles.aboutAppName}>أذكار</Text>
+            <Text style={styles.aboutAppTagline}>أقوال وأدعية يومية</Text>
+            <Text style={styles.aboutVersion}>الإصدار {APP_VERSION}</Text>
+
+            {/* Description */}
+            <Text style={styles.aboutDescription}>
+              تطبيق أذكار يقدم لك مجموعة مختارة من الأذكار والأدعية والحكم اليومية لتبدأ يومك بإيجابية وتقرب من الله.
+            </Text>
+
+            {/* Features */}
+            <View style={styles.aboutFeatures}>
+              <View style={styles.aboutFeatureItem}>
+                <Ionicons name="heart" size={20} color={accentColor} />
+                <Text style={styles.aboutFeatureText}>أذكار وأدعية متنوعة</Text>
+              </View>
+              <View style={styles.aboutFeatureItem}>
+                <Ionicons name="notifications" size={20} color={accentColor} />
+                <Text style={styles.aboutFeatureText}>تذكيرات يومية</Text>
+              </View>
+              <View style={styles.aboutFeatureItem}>
+                <Ionicons name="color-palette" size={20} color={accentColor} />
+                <Text style={styles.aboutFeatureText}>خلفيات جميلة</Text>
+              </View>
+              <View style={styles.aboutFeatureItem}>
+                <Ionicons name="share-social" size={20} color={accentColor} />
+                <Text style={styles.aboutFeatureText}>مشاركة الاقتباسات</Text>
+              </View>
+            </View>
+
+            {/* Made with love */}
+            <Text style={styles.aboutMadeWith}>
+              صُنع بـ ❤️ لإحياء ذكر الله
+            </Text>
+
+            {/* Close Button */}
+            <TouchableOpacity
+              style={[styles.aboutCloseButton, { backgroundColor: accentColor }]}
+              onPress={() => setShowAboutModal(false)}
+            >
+              <Text style={styles.aboutCloseButtonText}>حسناً</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
@@ -512,6 +639,87 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'right',
     color: '#1E3A8A',
+  },
+  // About Modal Styles
+  aboutOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  aboutContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 24,
+    padding: 28,
+    width: '100%',
+    maxWidth: 340,
+    alignItems: 'center',
+  },
+  aboutAppIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  aboutAppIconText: {
+    fontSize: 40,
+  },
+  aboutAppName: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1E3A8A',
+    marginBottom: 4,
+  },
+  aboutAppTagline: {
+    fontSize: 16,
+    color: '#6B7280',
+    marginBottom: 4,
+  },
+  aboutVersion: {
+    fontSize: 12,
+    color: '#9CA3AF',
+    marginBottom: 20,
+  },
+  aboutDescription: {
+    fontSize: 14,
+    color: '#374151',
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 20,
+  },
+  aboutFeatures: {
+    width: '100%',
+    marginBottom: 20,
+  },
+  aboutFeatureItem: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 8,
+  },
+  aboutFeatureText: {
+    fontSize: 14,
+    color: '#1E3A8A',
+    flex: 1,
+    textAlign: 'right',
+  },
+  aboutMadeWith: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 20,
+  },
+  aboutCloseButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 12,
+  },
+  aboutCloseButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
 });
 

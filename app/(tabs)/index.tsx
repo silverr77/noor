@@ -386,6 +386,8 @@ export default function HomeScreen() {
         visible={profileModalVisible}
         onClose={() => setProfileModalVisible(false)}
         themeAccentColor={currentTheme.accentColor}
+        onOpenThemes={() => setThemesModalVisible(true)}
+        onOpenCategories={() => setCategoriesModalVisible(true)}
       />
 
       {/* Themes Modal */}
