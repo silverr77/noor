@@ -7,7 +7,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 // Green theme - matches نور branding
-const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_BG = '#E8F5E9';
 const ONBOARDING_TEXT = '#1B5E20';
 
 const benefits = [

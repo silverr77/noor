@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#F5F5F0',
+    backgroundColor: '#E8F5E9',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     position: 'absolute',

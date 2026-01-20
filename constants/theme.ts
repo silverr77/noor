@@ -11,14 +11,14 @@ const darkGreen = '#0D3D14'; // Darker green
 const lightGreen = '#4CAF50'; // Light green
 const accentGreen = '#2E7D32'; // Medium green for accents
 const paleGreen = '#81C784'; // Pale green
-const creamBackground = '#F5F5F0'; // Subtle cream with green tint
+const mintBackground = '#E8F5E9'; // Very light mint green
 const white = '#FFFFFF';
 const darkText = '#1A1A1A'; // Almost black for text
 
 export const Colors = {
   light: {
     text: darkText,
-    background: creamBackground,
+    background: mintBackground,
     tint: primaryGreen,
     icon: primaryGreen,
     tabIconDefault: '#9CA3AF',

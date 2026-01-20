@@ -49,7 +49,7 @@ export const themes: Theme[] = [
     textColor: '#1B5E20', // Deep Islamic green - matches نور theme
     accentColor: '#2E7D32', // Medium green accent - matches نور branding
     headerBgColor: '#1B5E20', // Islamic green header
-    backgroundColor: '#F5F5F0', // Subtle cream background
+    backgroundColor: '#E8F5E9', // Very light mint green background
   },
   {
     id: 'sky',
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   modalContent: {
-    backgroundColor: '#F5F5F0',
+    backgroundColor: '#E8F5E9',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     position: 'absolute',

@@ -270,7 +270,7 @@ export default function WelcomeScreen() {
         >
           <Path
             d={`M 0 0 Q ${SCREEN_WIDTH / 2} 40 ${SCREEN_WIDTH} 0 L ${SCREEN_WIDTH} 60 L 0 60 Z`}
-            fill="#F5F5F0"
+            fill="#E8F5E9"
           />
         </Svg>
       </View>
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 0.4,
-    backgroundColor: '#F5F5F0',
+    backgroundColor: '#E8F5E9',
     marginTop: -1,
   },
   bottomContent: {

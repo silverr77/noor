@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   modalContent: {
-    backgroundColor: '#F5F5F0',
+    backgroundColor: '#E8F5E9',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     position: 'absolute',

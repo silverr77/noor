@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_BG = '#E8F5E9';
 
 export default function NameScreen() {
   const router = useRouter();

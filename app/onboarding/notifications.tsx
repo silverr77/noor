@@ -11,7 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { requestNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
 
 // Green theme - matches نور branding
-const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_BG = '#E8F5E9';
 const ONBOARDING_TEXT = '#1B5E20';
 
 export default function NotificationsScreen() {
