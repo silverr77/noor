@@ -355,7 +355,9 @@ export default function HomeScreen() {
   const totalLikedCount = likedCount + customQuotes.filter(q => q.isLiked).length;
 
   // Determine status bar style based on theme
-  const statusBarStyle = currentTheme.image ? 'light' : (currentTheme.textColor === '#FFFFFF' ? 'light' : 'dark');
+  // Classic theme (no image) = dark status bar (dark text on light background)
+  // Image themes = light status bar (white text on dark images)
+  const statusBarStyle: 'light' | 'dark' = currentTheme.image ? 'light' : 'dark';
 
   // Check if using classic theme (solid background)
   const isClassicTheme = !currentTheme.image;
