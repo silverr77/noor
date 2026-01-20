@@ -276,7 +276,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                           {/* Preview text overlay */}
                           <View style={styles.previewOverlay}>
                             <Text style={[styles.previewText, { color: theme.textColor }]}>
-                              أنا أستحق الحب
+                              نور على نور
                             </Text>
                           </View>
                         </>
@@ -284,7 +284,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
                         /* Classic theme - solid background */
                         <View style={styles.classicPreview}>
                           <Text style={[styles.previewText, { color: theme.textColor }]}>
-                            أنا أستحق الحب
+                            نور على نور
                           </Text>
                         </View>
                       )}
