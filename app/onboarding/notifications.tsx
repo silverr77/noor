@@ -80,15 +80,15 @@ export default function NotificationsScreen() {
       <StatusBar style="dark" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={6} totalSteps={6} showSkip={false} />
+      <OnboardingProgress currentStep={3} totalSteps={3} showSkip={false} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
         <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
-          احصل على أذكار طوال اليوم
+          تذكيرات يومية
         </Text>
         <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
-          أخبرني متى تريد أن تسمع مني
+          اختر أوقات التذكير المناسبة لك
         </Text>
 
         {/* Notification Preview */}
@@ -101,15 +101,15 @@ export default function NotificationsScreen() {
               <Text style={[styles.appName, { color: ONBOARDING_TEXT }]}>أذكار</Text>
               <Text style={styles.notificationTime}>الآن</Text>
             </View>
-            <Text style={[styles.notificationText, { color: ONBOARDING_TEXT }]}>
-              حتى أصغر شعلة يمكنها إضاءة أغمق غرفة
-            </Text>
+<Text style={[styles.notificationText, { color: ONBOARDING_TEXT }]}>
+            "ألا بذكر الله تطمئن القلوب" 💚
+          </Text>
           </View>
         </View>
 
         {/* Notification Count */}
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>كم مرة</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>عدد التذكيرات</Text>
           <View style={styles.countContainer}>
             <TouchableOpacity
               style={[styles.countButton, { backgroundColor: '#FFFFFF' }]}
@@ -131,7 +131,7 @@ export default function NotificationsScreen() {
 
         {/* Time Range */}
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>ابدأ من</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>من الساعة</Text>
           <TouchableOpacity
             style={[styles.timeButton, { backgroundColor: '#FFFFFF' }]}
             onPress={() => setShowStartTimePicker(true)}
@@ -143,7 +143,7 @@ export default function NotificationsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>ينتهي في</Text>
+          <Text style={[styles.sectionLabel, { color: ONBOARDING_TEXT }]}>إلى الساعة</Text>
           <TouchableOpacity
             style={[styles.timeButton, { backgroundColor: '#FFFFFF' }]}
             onPress={() => setShowEndTimePicker(true)}
@@ -156,7 +156,7 @@ export default function NotificationsScreen() {
 
         {/* Summary */}
         <Text style={[styles.summary, { color: ONBOARDING_TEXT }]}>
-          ستحصل على {notificationCount} إشعارات يومياً بين {formatTime(startTime)} و {formatTime(endTime)}
+          سيصلك {notificationCount} تذكير{notificationCount > 2 ? 'ات' : ''} يومياً من {formatTime(startTime)} إلى {formatTime(endTime)}
         </Text>
 
       </ScrollView>

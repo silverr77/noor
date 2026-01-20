@@ -12,19 +12,19 @@ const ONBOARDING_TEXT = '#1E3A8A';
 
 const benefits = [
   {
-    icon: '🧘',
-    title: 'تقليل التوتر',
-    description: 'لحظات تأملية طوال اليوم تساعدك على البقاء هادئاً وإدارة القلق',
+    icon: '🤲',
+    title: 'راحة البال والسكينة',
+    description: 'الأذكار تملأ قلبك بالطمأنينة وتبعد عنك الهموم والقلق',
   },
   {
-    icon: '✨',
-    title: 'زيادة الإيجابية',
-    description: 'التذكيرات اليومية تحول تفكيرك نحو الامتنان والتفاؤل',
+    icon: '💎',
+    title: 'تقوية الإيمان',
+    description: 'المداومة على ذكر الله تزيد إيمانك وتقربك من الله عز وجل',
   },
   {
-    icon: '🎯',
-    title: 'تحقيق أهدافك',
-    description: 'الكلام الإيجابي مع النفس يعزز قدراتك ويحفزك على العمل',
+    icon: '🛡️',
+    title: 'حماية وبركة',
+    description: 'الأذكار حصن للمسلم تحميه وتجلب البركة في يومه',
   },
 ];
 
@@ -38,12 +38,16 @@ export default function BenefitsScreen() {
       <StatusBar style="dark" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={4} totalSteps={6} showSkip={true} />
+      <OnboardingProgress currentStep={1} totalSteps={3} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
         <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
-          فوائد الأذكار اليومية
+          لماذا أذكار؟
+        </Text>
+        
+        <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
+          فوائد المداومة على الذكر
         </Text>
 
         {/* Benefits List */}
@@ -98,7 +102,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
     marginBottom: 32,
+    opacity: 0.7,
   },
   benefitsContainer: {
     flex: 1,

@@ -39,17 +39,17 @@ export default function CategoriesScreen() {
       <StatusBar style="dark" />
       
       {/* Progress Bar */}
-      <OnboardingProgress currentStep={5} totalSteps={6} showSkip={true} />
+      <OnboardingProgress currentStep={2} totalSteps={3} showSkip={true} />
       
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
         <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
-          اختر الفئات المفضلة لديك
+          ماذا تريد أن تقرأ؟
         </Text>
 
         {/* Description */}
         <Text style={[styles.description, { color: ONBOARDING_TEXT }]}>
-          اختر الفئات التي تريد أن تراها في تطبيقك
+          اختر المحتوى الذي يناسبك (يمكنك تغييرها لاحقاً)
         </Text>
 
         {/* Categories List */}

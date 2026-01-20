@@ -43,25 +43,25 @@ export default function WelcomeScreen() {
         <View style={styles.bottomContent}>
           {/* Title */}
           <Text style={styles.title}>
-            مرحباً، أنا أذكار!
+            مرحباً بك في أذكار
           </Text>
 
           {/* Subtitle */}
           <Text style={styles.subtitle}>
-            أنا هنا لإضاءة يومك
+            رفيقك اليومي للذكر والدعاء
           </Text>
 
           {/* Description */}
           <Text style={styles.description}>
-            لنبدأ رحلتك إلى الذكر مع تذكيرات يومية لطيفة تساعدك على البقاء حاضراً
+            اجعل يومك مليئاً بالبركة والسكينة مع تذكيرات يومية بالأذكار والأدعية
           </Text>
 
           {/* CTA Button */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push('/onboarding/name')}
+            onPress={() => router.push('/onboarding/benefits')}
           >
-            <Text style={styles.buttonText}>ابدأ</Text>
+            <Text style={styles.buttonText}>ابدأ الآن</Text>
           </TouchableOpacity>
         </View>
       </View>

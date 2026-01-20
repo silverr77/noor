@@ -256,7 +256,7 @@ export function ProfileModal({
               <View style={styles.userInfo}>
                 <View style={styles.userTextContainer}>
                   <Text style={styles.userNameFixed}>
-                    {getGreeting()}، {user?.name || 'المستخدم'}
+                    {getGreeting()} 👋
                   </Text>
                 </View>
                 <View style={[styles.avatarFixed, { backgroundColor: accentColor }]}>
