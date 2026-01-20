@@ -1,10 +1,11 @@
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { initializeAds, showInterstitialAd } from '@/services/ads';
+import { initializeAds, showInterstitialAd, showRewardedAd } from '@/services/ads';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Dimensions,
   Image,
   ImageSourcePropType,
@@ -154,6 +155,23 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
       }
     }, 500);
   };
+
+  // Support developers with rewarded ad
+  const handleSupportDevelopers = async () => {
+    try {
+      const result = await showRewardedAd();
+      
+      if (result.rewarded) {
+        Alert.alert(
+          'شكراً لدعمك! 💝',
+          'جزاك الله خيراً على دعمك لنا.',
+          [{ text: 'بارك الله فيك', style: 'default' }]
+        );
+      }
+    } catch (error) {
+      console.error('Error showing rewarded ad:', error);
+    }
+  };
   
   // Preload interstitial ad when modal opens
   useEffect(() => {
@@ -218,6 +236,15 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
             <View style={styles.titleContainer}>
               <Text style={styles.titleFixed}>تخصيص</Text>
             </View>
+
+            {/* Support Link - Subtle at top */}
+            <TouchableOpacity 
+              style={styles.supportLink}
+              onPress={handleSupportDevelopers}
+            >
+              <Ionicons name="heart" size={14} color="#D4AF37" />
+              <Text style={styles.supportLinkText}>ادعم التطبيق بمشاهدة إعلان</Text>
+            </TouchableOpacity>
 
             {/* Section Title */}
             <View style={styles.sectionHeader}>
@@ -451,5 +478,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: 'center',
     color: '#1E3A8A',
+  },
+  // Support Link - Subtle at top
+  supportLink: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    marginBottom: 8,
+  },
+  supportLinkText: {
+    fontSize: 13,
+    color: '#6B7280',
   },
 });

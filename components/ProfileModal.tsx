@@ -9,6 +9,7 @@ import {
   Dimensions,
   Share,
   Linking,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
@@ -26,6 +27,7 @@ import { useRouter } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NotificationsModal } from './NotificationsModal';
+import { showRewardedAd, isAdsAvailable } from '@/services/ads';
 
 const APP_VERSION = '1.0.0';
 
@@ -91,6 +93,32 @@ export function ProfileModal({
       });
     } catch (error) {
       console.error('Error sharing:', error);
+    }
+  };
+
+  // Support developers by watching a rewarded ad
+  const handleSupportDevelopers = async () => {
+    try {
+      const result = await showRewardedAd();
+      
+      if (result.rewarded) {
+        // User watched the full ad - show thank you message
+        Alert.alert(
+          'شكراً لدعمك! 💝',
+          'جزاك الله خيراً على دعمك لنا.\nدعمك يساعدنا في تطوير التطبيق وإضافة المزيد من المحتوى.',
+          [{ text: 'بارك الله فيك', style: 'default' }]
+        );
+      } else if (!result.success) {
+        // Ad failed to load
+        Alert.alert(
+          'عذراً',
+          'لم نتمكن من تحميل الإعلان. يرجى المحاولة لاحقاً.',
+          [{ text: 'حسناً', style: 'default' }]
+        );
+      }
+      // If success but not rewarded, user closed early - no message needed
+    } catch (error) {
+      console.error('Error showing rewarded ad:', error);
     }
   };
 
@@ -263,6 +291,16 @@ export function ProfileModal({
                   <Ionicons name="person" size={32} color="#FFFFFF" />
                 </View>
               </View>
+              
+              {/* Support Button - Compact version below greeting */}
+              <TouchableOpacity 
+                style={[styles.supportButtonCompact, { backgroundColor: accentColor }]}
+                onPress={handleSupportDevelopers}
+              >
+                <Ionicons name="play-circle" size={20} color="#FFFFFF" />
+                <Text style={styles.supportButtonCompactText}>ادعم التطبيق بمشاهدة إعلان</Text>
+                <Ionicons name="heart" size={18} color="#FFFFFF" />
+              </TouchableOpacity>
             </View>
 
             {/* Settings Section */}
@@ -737,6 +775,22 @@ const styles = StyleSheet.create({
   },
   aboutCloseButtonText: {
     fontSize: 16,
+    fontWeight: '600',
+    color: '#FFFFFF',
+  },
+  // Support Button Styles - Compact version
+  supportButtonCompact: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  supportButtonCompactText: {
+    fontSize: 14,
     fontWeight: '600',
     color: '#FFFFFF',
   },
