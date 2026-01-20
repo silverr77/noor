@@ -1,34 +1,33 @@
+import {
+  cancelAllNotifications,
+  getScheduledNotificationTimes,
+  requestNotificationPermissions,
+  scheduleNotifications,
+  sendTestNotification
+} from '@/services/notifications';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-    runOnJS,
-    SlideInRight,
-    SlideOutRight,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  runOnJS,
+  SlideInRight,
+  SlideOutRight,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from 'react-native-reanimated';
-import { 
-    requestNotificationPermissions, 
-    scheduleNotifications, 
-    cancelAllNotifications,
-    sendTestNotification,
-    checkNotificationPermissions 
-} from '@/services/notifications';
 
 interface NotificationsModalProps {
   visible: boolean;
@@ -43,6 +42,7 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
   const [endTime, setEndTime] = useState(new Date(2024, 0, 1, 22, 0));
   const [showStartPicker, setShowStartPicker] = useState(false);
   const [showEndPicker, setShowEndPicker] = useState(false);
+  const [scheduledTimes, setScheduledTimes] = useState<string[]>([]);
 
   useEffect(() => {
     if (visible) {
@@ -64,6 +64,9 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
           setEndTime(new Date(parsed.endTime));
         }
       }
+      // Load scheduled times
+      const times = await getScheduledNotificationTimes();
+      setScheduledTimes(times);
     } catch (error) {
       console.error('Error loading notification settings:', error);
     }
@@ -97,6 +100,9 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
       await saveNotificationSettings({ enabled: true });
       // Schedule notifications with current settings
       await scheduleNotifications();
+      // Reload scheduled times
+      const times = await getScheduledNotificationTimes();
+      setScheduledTimes(times);
       // Send test notification to confirm it works
       await sendTestNotification();
     } else {
@@ -104,6 +110,7 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
       await saveNotificationSettings({ enabled: false });
       // Cancel all notifications
       await cancelAllNotifications();
+      setScheduledTimes([]);
     }
   };
 
@@ -114,6 +121,8 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
     // Reschedule notifications with new count
     if (notificationsEnabled) {
       await scheduleNotifications();
+      const times = await getScheduledNotificationTimes();
+      setScheduledTimes(times);
     }
   };
 
@@ -179,15 +188,15 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
               <View style={styles.previewCard}>
                 <View style={styles.previewHeader}>
                   <View style={[styles.previewIcon, { backgroundColor: accentColor }]}>
-                    <Text style={styles.previewIconText}>🕯️</Text>
+                    <Text style={styles.previewIconText}>🌟</Text>
                   </View>
                   <View style={styles.previewTextContainer}>
-                    <Text style={styles.previewAppName}>أذكار</Text>
+                    <Text style={styles.previewAppName}>نور</Text>
                     <Text style={styles.previewTime}>الآن</Text>
                   </View>
                 </View>
                 <Text style={styles.previewMessage}>
-                  حان وقت الذكر والدعاء 🤲
+                  ألا بذكر الله تطمئن القلوب 💫
                 </Text>
               </View>
 
@@ -257,6 +266,13 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                   <Text style={styles.summaryText}>
                     سيتم إرسال {notificationCount} إشعارات يومياً بين {formatTime(startTime)} و {formatTime(endTime)}
                   </Text>
+
+                  {/* Scheduled Times Display */}
+                  <View style={styles.scheduledTimesContainer}>
+                    <Text style={styles.scheduledTimesNote}>
+                      ملاحظة: ستصل الإشعارات في هذه الأوقات كل يوم
+                    </Text>
+                  </View>
                 </View>
               )}
             </ScrollView>
@@ -283,6 +299,8 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                           // Reschedule notifications with new time
                           if (notificationsEnabled) {
                             await scheduleNotifications();
+                            const times = await getScheduledNotificationTimes();
+                            setScheduledTimes(times);
                           }
                         }
                         if (Platform.OS === 'android') {
@@ -319,6 +337,8 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                           // Reschedule notifications with new time
                           if (notificationsEnabled) {
                             await scheduleNotifications();
+                            const times = await getScheduledNotificationTimes();
+                            setScheduledTimes(times);
                           }
                         }
                         if (Platform.OS === 'android') {
@@ -439,6 +459,19 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     lineHeight: 22,
   },
+  testButton: {
+    borderWidth: 2,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  testButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   settingSection: {
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
@@ -512,6 +545,43 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 12,
     lineHeight: 20,
+  },
+  scheduledTimesContainer: {
+    marginTop: 5,
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+  },
+  scheduledTimesTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  scheduledTimesList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  scheduledTimeChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1.5,
+    backgroundColor: '#FFF',
+  },
+  scheduledTimeText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  scheduledTimesNote: {
+    fontSize: 11,
+    color: '#9CA3AF',
+    textAlign: 'center',
+    marginTop: 12,
+    fontStyle: 'italic',
   },
   pickerModal: {
     flex: 1,

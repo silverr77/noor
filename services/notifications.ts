@@ -129,14 +129,17 @@ export async function scheduleNotifications(): Promise<void> {
       return;
     }
 
-    // Safely parse hours with fallbacks
-    let startHour = 8; // default 8 AM
-    let endHour = 22;  // default 10 PM
+    // Safely parse times with fallbacks
+    let startHour = 8;  // default 8 AM
+    let startMinute = 0;
+    let endHour = 22;   // default 10 PM
+    let endMinute = 0;
     
     if (startTime) {
       const startDate = new Date(startTime);
       if (!isNaN(startDate.getTime())) {
         startHour = startDate.getHours();
+        startMinute = startDate.getMinutes();
       }
     }
     
@@ -144,40 +147,65 @@ export async function scheduleNotifications(): Promise<void> {
       const endDate = new Date(endTime);
       if (!isNaN(endDate.getTime())) {
         endHour = endDate.getHours();
+        endMinute = endDate.getMinutes();
       }
     }
     
-    const notificationCount = count || 3;
+    const notificationCount = Math.min(count || 3, 10); // Max 10 notifications
 
     // Validate hours are valid numbers
     if (isNaN(startHour) || isNaN(endHour)) {
       console.log('Invalid time values, using defaults');
       startHour = 8;
+      startMinute = 0;
       endHour = 22;
+      endMinute = 0;
     }
 
-    // Calculate intervals between notifications
-    const totalHours = endHour > startHour ? endHour - startHour : 24 - startHour + endHour;
-    const intervalHours = notificationCount > 1 ? totalHours / (notificationCount - 1) : totalHours;
+    // Convert to total minutes for precise calculation
+    const startTotalMinutes = startHour * 60 + startMinute;
+    let endTotalMinutes = endHour * 60 + endMinute;
+    
+    // Handle case where end is before start (cross midnight)
+    if (endTotalMinutes <= startTotalMinutes) {
+      endTotalMinutes += 24 * 60; // Add 24 hours
+    }
+    
+    const totalMinutes = endTotalMinutes - startTotalMinutes;
+    
+    // Calculate interval - respect user's time range
+    // Minimum 1 minute between notifications to avoid exact duplicates
+    const minInterval = 1; 
+    const calculatedInterval = notificationCount > 1 
+      ? totalMinutes / (notificationCount - 1) 
+      : 0;
+    const intervalMinutes = Math.max(calculatedInterval, minInterval);
 
     const channelId = Platform.OS === 'android' ? 'default' : undefined;
 
-    console.log(`Scheduling ${notificationCount} notifications from ${startHour}:00 to ${endHour}:00`);
+    console.log(`=== SCHEDULING NOTIFICATIONS ===`);
+    console.log(`Count: ${notificationCount}`);
+    console.log(`Start: ${startHour}:${startMinute.toString().padStart(2, '0')}`);
+    console.log(`End: ${endHour}:${endMinute.toString().padStart(2, '0')}`);
+    console.log(`Total minutes: ${totalMinutes}, Interval: ${intervalMinutes.toFixed(1)} min`);
 
     // Schedule each notification
     for (let i = 0; i < notificationCount; i++) {
-      let notificationHour: number;
+      let notificationMinutes: number;
       
       if (notificationCount === 1) {
         // Single notification at start time
-        notificationHour = startHour;
+        notificationMinutes = startTotalMinutes;
       } else {
         // Distribute notifications across the time range
-        notificationHour = Math.floor(startHour + (intervalHours * i)) % 24;
+        notificationMinutes = startTotalMinutes + (intervalMinutes * i);
       }
       
-      // Ensure hour is a valid integer
-      notificationHour = Math.max(0, Math.min(23, Math.floor(notificationHour)));
+      // Normalize to 24 hours
+      notificationMinutes = notificationMinutes % (24 * 60);
+      
+      const notificationHour = Math.floor(notificationMinutes / 60);
+      const notificationMinute = Math.floor(notificationMinutes % 60);
       
       const message = notificationMessages[i % notificationMessages.length];
 
@@ -191,15 +219,15 @@ export async function scheduleNotifications(): Promise<void> {
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.DAILY,
           hour: notificationHour,
-          minute: 0,
+          minute: notificationMinute,
           ...(channelId && { channelId }),
         },
       });
 
-      console.log(`Scheduled notification at ${notificationHour}:00`);
+      console.log(`✓ Notification ${i + 1}: ${notificationHour}:${notificationMinute.toString().padStart(2, '0')} - "${message.body}"`);
     }
 
-    console.log(`Scheduled ${notificationCount} daily notifications`);
+    console.log(`=== SCHEDULED ${notificationCount} DAILY NOTIFICATIONS ===`);
   } catch (error) {
     console.error('Error scheduling notifications:', error);
     await scheduleDefaultNotifications();
@@ -272,6 +300,21 @@ export async function cancelAllNotifications(): Promise<void> {
 // Get all scheduled notifications (for debugging)
 export async function getScheduledNotifications(): Promise<Notifications.NotificationRequest[]> {
   return await Notifications.getAllScheduledNotificationsAsync();
+}
+
+// Get scheduled notification times as formatted strings
+export async function getScheduledNotificationTimes(): Promise<string[]> {
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  
+  return scheduled.map(notification => {
+    const trigger = notification.trigger as any;
+    if (trigger?.hour !== undefined && trigger?.minute !== undefined) {
+      const hour = trigger.hour;
+      const minute = trigger.minute;
+      return `${hour}:${minute.toString().padStart(2, '0')}`;
+    }
+    return 'Unknown';
+  }).sort();
 }
 
 // Legacy function for backward compatibility
