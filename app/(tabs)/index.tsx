@@ -295,13 +295,34 @@ export default function HomeScreen() {
     return result;
   };
 
-  // Shuffle quotes when filters change or on first load
+  // Create a shuffle key that only changes when categories/filters change
+  // NOT when quotes are liked/unliked
+  const shuffleKey = `${selectedCategories.sort().join(',')}-${showFavorites}-${showMyQuotes}`;
+  
+  // Shuffle quotes ONLY when filters change or on first load
+  // Using shuffleKey ensures we don't reshuffle when liking quotes
   useEffect(() => {
     const rawQuotes = getFilteredQuotesRaw();
     const shuffled = shuffleArray(rawQuotes);
     setShuffledQuotes(shuffled);
     setCurrentIndex(0); // Reset to beginning when filters change
-  }, [quotes, customQuotes, showFavorites, showMyQuotes, selectedCategories]);
+  }, [shuffleKey]); // Only depends on filter changes, not quote state changes
+
+  // Update shuffled quotes when quote data changes (for liked state) WITHOUT reshuffling
+  useEffect(() => {
+    if (shuffledQuotes.length > 0) {
+      // Update liked states without changing order
+      const updatedShuffled = shuffledQuotes.map(sq => {
+        const updated = [...quotes, ...customQuotes].find(q => q.id === sq.id);
+        return updated || sq;
+      }).filter(sq => {
+        // Keep quote only if it still matches current filters
+        const allCurrentQuotes = [...quotes, ...customQuotes];
+        return allCurrentQuotes.some(q => q.id === sq.id);
+      });
+      setShuffledQuotes(updatedShuffled);
+    }
+  }, [quotes, customQuotes]);
 
   // Use shuffled quotes for display
   const filteredQuotes = shuffledQuotes;
