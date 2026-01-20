@@ -5,12 +5,12 @@
 
 import { Platform } from 'react-native';
 
-// Green & Gold theme matching "نور" Islamic branding
+// Green theme matching "نور" Islamic branding
 const primaryGreen = '#1B5E20'; // Deep Islamic green
 const darkGreen = '#0D3D14'; // Darker green
 const lightGreen = '#4CAF50'; // Light green
-const accentGold = '#C9A961'; // Golden accent (from icon)
-const lightGold = '#E8D5A3'; // Light gold
+const accentGreen = '#2E7D32'; // Medium green for accents
+const paleGreen = '#81C784'; // Pale green
 const creamBackground = '#F5F5F0'; // Subtle cream with green tint
 const white = '#FFFFFF';
 const darkText = '#1A1A1A'; // Almost black for text
@@ -24,20 +24,20 @@ export const Colors = {
     tabIconDefault: '#9CA3AF',
     tabIconSelected: primaryGreen,
     primary: primaryGreen,
-    secondary: accentGold,
-    accent: accentGold,
+    secondary: accentGreen,
+    accent: accentGreen,
     cardBackground: white,
   },
   dark: {
     text: white,
     background: darkGreen,
     tint: lightGreen,
-    icon: accentGold,
+    icon: paleGreen,
     tabIconDefault: '#9CA3AF',
-    tabIconSelected: accentGold,
+    tabIconSelected: paleGreen,
     primary: primaryGreen,
-    secondary: accentGold,
-    accent: accentGold,
+    secondary: accentGreen,
+    accent: accentGreen,
     cardBackground: '#2E5033',
   },
 };

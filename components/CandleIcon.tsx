@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   candleBody: {
     backgroundColor: '#FFFFFF',
     borderWidth: 4,
-    borderColor: '#1E3A8A',
+    borderColor: '#1B5E20',
     borderRadius: 8,
     position: 'relative',
     justifyContent: 'center',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#1E3A8A',
+    backgroundColor: '#1B5E20',
   },
   wick: {
     backgroundColor: '#FCD34D',
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginTop: -2,
     borderWidth: 3,
-    borderColor: '#1E3A8A',
+    borderColor: '#1B5E20',
     position: 'relative',
   },
 });

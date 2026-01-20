@@ -56,7 +56,7 @@ export function AdCard({
   onSwipeUp, 
   onSwipeDown, 
   canGoBack,
-  textColor = '#1E3A8A',
+  textColor = '#1B5E20',
   accentColor = '#8B5CF6',
 }: AdCardProps) {
   const translateY = useSharedValue(0);

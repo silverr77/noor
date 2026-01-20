@@ -217,7 +217,7 @@ export function CategoriesModal({
             {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#1E3A8A" />
+                <Ionicons name="close" size={24} color="#1B5E20" />
               </TouchableOpacity>
             </View>
 
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     marginBottom: 8,
   },
   title: {
@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     textAlign: 'right',
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'right',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   sectionSubtitle: {
     fontSize: 14,
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: 'right',
     opacity: 0.7,
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   categoriesGrid: {
     flexDirection: 'row',
@@ -581,7 +581,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     textAlign: 'right',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   categoryCount: {
     fontSize: 12,

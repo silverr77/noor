@@ -47,7 +47,7 @@ export const themes: Theme[] = [
     name: 'Classic',
     nameAr: 'كلاسيكي',
     textColor: '#1B5E20', // Deep Islamic green - matches نور theme
-    accentColor: '#C9A961', // Gold accent - matches نور branding
+    accentColor: '#2E7D32', // Medium green accent - matches نور branding
     headerBgColor: '#1B5E20', // Islamic green header
     backgroundColor: '#F5F5F0', // Subtle cream background
   },
@@ -227,7 +227,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
             {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#1E3A8A" />
+                <Ionicons name="close" size={24} color="#1B5E20" />
               </TouchableOpacity>
             </View>
 
@@ -242,7 +242,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
               style={styles.supportLink}
               onPress={handleSupportDevelopers}
             >
-              <Ionicons name="heart" size={14} color="#C9A961" />
+              <Ionicons name="heart" size={14} color="#2E7D32" />
               <Text style={styles.supportLinkText}>ادعم التطبيق بمشاهدة إعلان</Text>
             </TouchableOpacity>
 
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 12,
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   candleIcon: {
     fontSize: 48,
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
   sectionTitleFixed: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   themesGrid: {
     flexDirection: 'row',
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 10,
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   // Support Link - Subtle at top
   supportLink: {

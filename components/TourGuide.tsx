@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: '#8B7355',
+    color: '#2E7D32',
     textAlign: 'center',
     lineHeight: 24,
     marginBottom: 24,
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 28,
     borderRadius: 12,
     gap: 8,
-    shadowColor: '#B8860B',
+    shadowColor: '#1B5E20',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

@@ -236,7 +236,7 @@ export function ProfileModal({
             {/* Header */}
             <View style={styles.header}>
               <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                <Ionicons name="close" size={24} color="#1E3A8A" />
+                <Ionicons name="close" size={24} color="#1B5E20" />
               </TouchableOpacity>
             </View>
 
@@ -551,14 +551,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     textAlign: 'right',
   },
   titleFixed: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   closeButton: {
     padding: 4,
@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
   streakTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     textAlign: 'right',
     marginBottom: 16,
   },
@@ -662,7 +662,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'right',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   sectionTitle: {
     fontSize: 18,
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 12,
     textAlign: 'right',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   settingRow: {
     flexDirection: 'row',
@@ -695,7 +695,7 @@ const styles = StyleSheet.create({
   settingLabelFixed: {
     fontSize: 16,
     textAlign: 'right',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   // About Modal Styles
   aboutOverlay: {
@@ -727,7 +727,7 @@ const styles = StyleSheet.create({
   aboutAppName: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     marginBottom: 4,
   },
   aboutAppTagline: {
@@ -759,7 +759,7 @@ const styles = StyleSheet.create({
   },
   aboutFeatureText: {
     fontSize: 14,
-    color: '#1E3A8A',
+    color: '#1B5E20',
     flex: 1,
     textAlign: 'right',
   },

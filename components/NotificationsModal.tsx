@@ -308,7 +308,7 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                         }
                       }}
                       themeVariant="light"
-                      textColor="#1E3A8A"
+                      textColor="#1B5E20"
                       style={{ width: 300, height: 216 }}
                     />
                   </View>
@@ -346,7 +346,7 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                         }
                       }}
                       themeVariant="light"
-                      textColor="#1E3A8A"
+                      textColor="#1B5E20"
                       style={{ width: 300, height: 216 }}
                     />
                   </View>
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   previewCard: {
     backgroundColor: '#FFFFFF',
@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
   previewAppName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   previewTime: {
     fontSize: 12,
@@ -490,13 +490,13 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    color: '#1E3A8A',
+    color: '#1B5E20',
     fontWeight: '500',
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     textAlign: 'right',
     marginBottom: 16,
   },
@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
   countText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     minWidth: 50,
     textAlign: 'center',
   },
@@ -606,7 +606,7 @@ const styles = StyleSheet.create({
   pickerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   pickerDone: {
     fontSize: 16,

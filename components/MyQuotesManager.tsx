@@ -303,7 +303,7 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor:
                             style={[styles.iconBtn, { backgroundColor: '#E5E7EB' }]}
                             onPress={handleCancelEdit}
                           >
-                            <Ionicons name="close" size={20} color="#1E3A8A" />
+                            <Ionicons name="close" size={20} color="#1B5E20" />
                           </TouchableOpacity>
                         </View>
                       </View>
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   subtitle: {
     fontSize: 14,
@@ -463,7 +463,7 @@ const styles = StyleSheet.create({
     minHeight: 100,
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   formBtnTextDark: {
-    color: '#1E3A8A',
+    color: '#1B5E20',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginTop: 16,
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   emptySubtext: {
     fontSize: 14,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     textAlign: 'right',
     marginBottom: 12,
-    color: '#1E3A8A',
+    color: '#1B5E20',
   },
   quoteActions: {
     flexDirection: 'row',
@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
     backgroundColor: '#FFFFFF',
-    color: '#1E3A8A',
+    color: '#1B5E20',
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
