@@ -269,45 +269,55 @@ export default function HomeScreen() {
     }
     
     let result: Quote[] = [];
+    const addedIds = new Set<string>(); // Track added quote IDs to avoid duplicates
     
-    // EXCLUSIVE MODE: If ONLY favorites is selected (no myQuotes, no categories toggle active)
-    // Show only liked quotes
-    if (showFavorites && !showMyQuotes) {
+    // ADDITIVE MODE: Combine all selected sources
+    
+    // Add favorites if selected
+    if (showFavorites) {
       const allQuotes = [...quotes, ...customQuotes];
       const likedQuotes = allQuotes.filter(q => q.isLiked);
-      
-      // If categories are also selected, filter favorites by those categories
-      if (selectedCategories.length > 0) {
-        return likedQuotes.filter(q => 
-          selectedCategories.includes(q.category) || q.category === 'my-quotes'
-        );
-      }
-      
-      // Return all favorites
-      return likedQuotes;
+      likedQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
     }
     
-    // EXCLUSIVE MODE: If ONLY myQuotes is selected
-    if (showMyQuotes && !showFavorites) {
-      // If categories are also selected, this doesn't apply to myQuotes
-      // Just return all custom quotes
-      return customQuotes;
+    // Add my quotes if selected
+    if (showMyQuotes) {
+      customQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
     }
     
-    // COMBINED MODE: Both favorites and myQuotes selected
-    if (showFavorites && showMyQuotes) {
-      const allQuotes = [...quotes, ...customQuotes];
-      const likedQuotes = allQuotes.filter(q => q.isLiked);
-      result = [...likedQuotes];
-      
-      // Add custom quotes that aren't already liked
-      const newCustom = customQuotes.filter(q => !q.isLiked);
-      result = [...result, ...newCustom];
-      
+    // Add quotes from selected categories
+    if (selectedCategories.length > 0) {
+      const categoryQuotes = quotes.filter(q => selectedCategories.includes(q.category));
+      categoryQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
+    }
+    
+    // If we have results from any selection, return them
+    if (result.length > 0) {
       return result;
     }
     
-    // CATEGORIES ONLY: Neither favorites nor myQuotes, just categories
+    // Fallback: If favorites/myQuotes selected but empty, and no categories selected,
+    // show empty (user explicitly wants favorites/myQuotes only)
+    if ((showFavorites || showMyQuotes) && selectedCategories.length === 0) {
+      return [];
+    }
+    
+    // Default: show quotes from selected categories (should not reach here)
     if (selectedCategories.length > 0) {
       return quotes.filter(q => selectedCategories.includes(q.category));
     }
@@ -320,7 +330,7 @@ export default function HomeScreen() {
   // Use spread to avoid mutating the original array
   const shuffleKey = `${[...selectedCategories].sort().join(',')}-${showFavorites}-${showMyQuotes}`;
   
-  // Helper function to filter quotes based on current selections
+  // Helper function to filter quotes based on current selections (ADDITIVE logic)
   const filterQuotes = (allQuotes: Quote[], allCustomQuotes: Quote[]): Quote[] => {
     const hasAnySelection = showFavorites || showMyQuotes || selectedCategories.length > 0;
     
@@ -328,30 +338,50 @@ export default function HomeScreen() {
       return allQuotes;
     }
     
-    if (showFavorites && !showMyQuotes) {
+    let result: Quote[] = [];
+    const addedIds = new Set<string>();
+    
+    // Add favorites if selected
+    if (showFavorites) {
       const combined = [...allQuotes, ...allCustomQuotes];
       const likedQuotes = combined.filter(q => q.isLiked);
-      if (selectedCategories.length > 0) {
-        return likedQuotes.filter(q => 
-          selectedCategories.includes(q.category) || q.category === 'my-quotes'
-        );
-      }
-      return likedQuotes;
+      likedQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
     }
     
-    if (showMyQuotes && !showFavorites) {
-      return allCustomQuotes;
+    // Add my quotes if selected
+    if (showMyQuotes) {
+      allCustomQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
     }
     
-    if (showFavorites && showMyQuotes) {
-      const combined = [...allQuotes, ...allCustomQuotes];
-      const likedQuotes = combined.filter(q => q.isLiked);
-      const newCustom = allCustomQuotes.filter(q => !q.isLiked);
-      return [...likedQuotes, ...newCustom];
-    }
-    
+    // Add quotes from selected categories
     if (selectedCategories.length > 0) {
-      return allQuotes.filter(q => selectedCategories.includes(q.category));
+      const categoryQuotes = allQuotes.filter(q => selectedCategories.includes(q.category));
+      categoryQuotes.forEach(q => {
+        if (!addedIds.has(q.id)) {
+          result.push(q);
+          addedIds.add(q.id);
+        }
+      });
+    }
+    
+    // If we have results, return them
+    if (result.length > 0) {
+      return result;
+    }
+    
+    // Fallback: If favorites/myQuotes selected but empty, and no categories
+    if ((showFavorites || showMyQuotes) && selectedCategories.length === 0) {
+      return [];
     }
     
     return allQuotes;
