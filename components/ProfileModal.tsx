@@ -4,6 +4,7 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { showRewardedAd } from '@/services/ads';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -28,7 +29,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import { NotificationsModal } from './NotificationsModal';
 
-const APP_VERSION = '1.0.0';
+// Get version from app.json via Expo config
+const APP_VERSION = Constants.expoConfig?.version || Constants.manifest?.version || '1.0.0';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -413,11 +415,6 @@ export function ProfileModal({
       >
         <View style={styles.aboutOverlay}>
           <View style={styles.aboutContainer}>
-            {/* App Icon */}
-            <View style={[styles.aboutAppIcon, { backgroundColor: accentColor }]}>
-              <Text style={styles.aboutAppIconText}>🕯️</Text>
-            </View>
-
             {/* App Name */}
             <Text style={styles.aboutAppName}>نور</Text>
             <Text style={styles.aboutAppTagline}>أذكار وأدعية المسلم</Text>
