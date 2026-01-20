@@ -1,33 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import { Colors } from '@/constants/theme';
+import { useUser } from '@/context/UserContext';
+import { useColorScheme } from '@/hooks/use-color-scheme';
+import { showRewardedAd } from '@/services/ads';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 import {
-  View,
+  Alert,
+  Dimensions,
+  Modal,
+  ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
-  Modal,
-  ScrollView,
-  Dimensions,
-  Share,
-  Linking,
-  Alert,
+  View
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useUser } from '@/context/UserContext';
-import Animated, { 
-  SlideInDown, 
-  SlideOutDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
-import { useRouter } from 'expo-router';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, {
+  runOnJS,
+  SlideInDown,
+  SlideOutDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 import { NotificationsModal } from './NotificationsModal';
-import { showRewardedAd, isAdsAvailable } from '@/services/ads';
 
 const APP_VERSION = '1.0.0';
 
@@ -391,45 +390,6 @@ export function ProfileModal({
                   <Ionicons name="information-circle-outline" size={20} color={accentColor} />
                 </View>
               </TouchableOpacity>
-
-              {/* Dev Mode: Reset Tour */}
-              {__DEV__ && (
-                <TouchableOpacity
-                  style={styles.settingRow}
-                  onPress={async () => {
-                    await AsyncStorage.removeItem('hasSeenTour');
-                    onClose();
-                  }}
-                >
-                  <Ionicons name="chevron-back" size={20} color="#6B7280" />
-                  <View style={styles.settingInfo}>
-                    <Text style={[styles.settingLabelFixed, { color: '#F59E0B' }]}>
-                      إعادة جولة التعريف (Dev Mode)
-                    </Text>
-                    <Ionicons name="help-circle-outline" size={20} color="#F59E0B" />
-                  </View>
-                </TouchableOpacity>
-              )}
-
-              {/* Dev Mode: Reset Onboarding */}
-              {__DEV__ && (
-                <TouchableOpacity
-                  style={styles.settingRow}
-                  onPress={() => {
-                    resetOnboarding();
-                    onClose();
-                    router.replace('/onboarding/welcome');
-                  }}
-                >
-                  <Ionicons name="chevron-back" size={20} color="#6B7280" />
-                  <View style={styles.settingInfo}>
-                    <Text style={[styles.settingLabelFixed, { color: '#EF4444' }]}>
-                      إعادة تشغيل التعريف (Dev Mode)
-                    </Text>
-                    <Ionicons name="refresh-outline" size={20} color="#EF4444" />
-                  </View>
-                </TouchableOpacity>
-              )}
             </View>
           </ScrollView>
 
