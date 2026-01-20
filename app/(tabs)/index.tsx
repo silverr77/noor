@@ -522,6 +522,7 @@ export default function HomeScreen() {
             onLike={handleLike}
             index={0}
             canGoBack={currentIndex > 0}
+            canSwipe={filteredQuotes.length > 1}
             textColor={currentTheme.textColor}
             accentColor={currentTheme.accentColor}
             themeImage={currentTheme.image}

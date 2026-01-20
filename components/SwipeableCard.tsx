@@ -33,6 +33,7 @@ interface SwipeableCardProps {
   onLike: (id: string) => void;
   index: number;
   canGoBack: boolean;
+  canSwipe?: boolean; // Whether swiping is enabled (false when only 1 quote)
   textColor?: string;
   accentColor?: string;
   themeImage?: ImageSourcePropType;
@@ -46,6 +47,7 @@ export function SwipeableCard({
   onLike, 
   index, 
   canGoBack, 
+  canSwipe = true, // Default to true for backward compatibility
   textColor, 
   accentColor,
   themeImage,
@@ -99,6 +101,7 @@ export function SwipeableCard({
   };
 
   const panGesture = Gesture.Pan()
+    .enabled(canSwipe) // Disable swiping when only 1 quote
     .onUpdate((event) => {
       // Allow upward swipes (negative translationY)
       if (event.translationY < 0) {
