@@ -270,7 +270,7 @@ export default function WelcomeScreen() {
         >
           <Path
             d={`M 0 0 Q ${SCREEN_WIDTH / 2} 40 ${SCREEN_WIDTH} 0 L ${SCREEN_WIDTH} 60 L 0 60 Z`}
-            fill="#FEF7ED"
+            fill="#F5F5F0"
           />
         </Svg>
       </View>
@@ -309,11 +309,11 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
   },
   topSection: {
     flex: 0.6,
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 0.4,
-    backgroundColor: '#FEF7ED',
+    backgroundColor: '#F5F5F0',
     marginTop: -1,
   },
   bottomContent: {
@@ -390,19 +390,19 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#5D4E37',
+    color: '#1B5E20',
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 20,
     textAlign: 'center',
-    color: '#5D4E37',
+    color: '#1B5E20',
     marginBottom: 16,
   },
   description: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#5D4E37',
+    color: '#1B5E20',
     marginBottom: 40,
     paddingHorizontal: 20,
     lineHeight: 24,
@@ -412,9 +412,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 16,
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
     minWidth: 200,
-    shadowColor: '#B8860B',
+    shadowColor: '#0D3D14',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,

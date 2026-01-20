@@ -10,9 +10,9 @@ import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { requestNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
 
-// Classic theme cream background
-const ONBOARDING_BG = '#FEF7ED';
-const ONBOARDING_TEXT = '#5D4E37';
+// Green theme - matches نور branding
+const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_TEXT = '#1B5E20';
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -213,7 +213,7 @@ export default function NotificationsScreen() {
                 is24Hour={false}
                 display="spinner"
                 themeVariant="light"
-                textColor="#5D4E37"
+                textColor="#1B5E20"
                 onChange={(event, selectedTime) => {
                   if (selectedTime) {
                     setStartTime(selectedTime);
@@ -256,7 +256,7 @@ export default function NotificationsScreen() {
                 is24Hour={false}
                 display="spinner"
                 themeVariant="light"
-                textColor="#5D4E37"
+                textColor="#1B5E20"
                 onChange={(event, selectedTime) => {
                   if (selectedTime) {
                     setEndTime(selectedTime);
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   pickerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#5D4E37',
+    color: '#1B5E20',
   },
   pickerButton: {
     paddingHorizontal: 16,

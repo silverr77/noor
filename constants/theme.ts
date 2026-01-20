@@ -5,38 +5,40 @@
 
 import { Platform } from 'react-native';
 
-// Gold theme matching "نور" (Light) branding
-const primaryGold = '#D4AF37'; // Classic gold
-const darkGold = '#B8860B'; // Dark goldenrod
-const lightGold = '#F5D06E'; // Light gold
-const creamBackground = '#FEF7ED'; // Warm cream background
+// Green & Gold theme matching "نور" Islamic branding
+const primaryGreen = '#1B5E20'; // Deep Islamic green
+const darkGreen = '#0D3D14'; // Darker green
+const lightGreen = '#4CAF50'; // Light green
+const accentGold = '#C9A961'; // Golden accent (from icon)
+const lightGold = '#E8D5A3'; // Light gold
+const creamBackground = '#F5F5F0'; // Subtle cream with green tint
 const white = '#FFFFFF';
-const darkBrown = '#5D4E37'; // Dark brown for text
+const darkText = '#1A1A1A'; // Almost black for text
 
 export const Colors = {
   light: {
-    text: darkBrown,
+    text: darkText,
     background: creamBackground,
-    tint: primaryGold,
-    icon: primaryGold,
+    tint: primaryGreen,
+    icon: primaryGreen,
     tabIconDefault: '#9CA3AF',
-    tabIconSelected: primaryGold,
-    primary: primaryGold,
-    secondary: lightGold,
-    accent: darkBrown,
+    tabIconSelected: primaryGreen,
+    primary: primaryGreen,
+    secondary: accentGold,
+    accent: accentGold,
     cardBackground: white,
   },
   dark: {
     text: white,
-    background: darkGold,
-    tint: lightGold,
-    icon: lightGold,
+    background: darkGreen,
+    tint: lightGreen,
+    icon: accentGold,
     tabIconDefault: '#9CA3AF',
-    tabIconSelected: lightGold,
-    primary: primaryGold,
-    secondary: lightGold,
-    accent: white,
-    cardBackground: '#8B7355',
+    tabIconSelected: accentGold,
+    primary: primaryGreen,
+    secondary: accentGold,
+    accent: accentGold,
+    cardBackground: '#2E5033',
   },
 };
 

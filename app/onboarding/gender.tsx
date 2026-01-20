@@ -8,8 +8,8 @@ import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF7ED';
-const ONBOARDING_TEXT = '#5D4E37';
+const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_TEXT = '#1B5E20';
 
 const genders = [
   { value: 'female', label: 'أنثى' },

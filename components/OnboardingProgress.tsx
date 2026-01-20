@@ -5,7 +5,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // Onboarding theme colors
-const ONBOARDING_TEXT = '#5D4E37';
+const ONBOARDING_TEXT = '#1B5E20';
 
 interface OnboardingProgressProps {
   currentStep: number;

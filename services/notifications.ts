@@ -72,7 +72,7 @@ export async function registerForPushNotificationsAsync(): Promise<string | unde
       name: 'نور - التذكيرات',
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#D4AF37',
+      lightColor: '#1B5E20',
       sound: 'default',
     });
   }

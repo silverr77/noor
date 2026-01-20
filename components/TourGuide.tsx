@@ -197,7 +197,7 @@ export function TourGuide({ visible, onComplete }: TourGuideProps) {
             {/* Icon */}
             <Animated.View style={[styles.iconContainer, pulseStyle]}>
               <View style={styles.iconBg}>
-                <Ionicons name={step.icon} size={40} color="#D4AF37" />
+                <Ionicons name={step.icon} size={40} color="#1B5E20" />
               </View>
             </Animated.View>
 
@@ -228,7 +228,7 @@ export function TourGuide({ visible, onComplete }: TourGuideProps) {
                   style={styles.backButton}
                   onPress={() => setCurrentStep(currentStep - 1)}
                 >
-                  <Ionicons name="arrow-forward" size={20} color="#5D4E37" />
+                  <Ionicons name="arrow-forward" size={20} color="#1B5E20" />
                   <Text style={styles.backButtonText}>السابق</Text>
                 </TouchableOpacity>
               )}
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
     borderRadius: 2,
   },
   progressText: {
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#5D4E37',
+    color: '#1B5E20',
     textAlign: 'center',
     marginBottom: 12,
   },
@@ -409,10 +409,10 @@ const styles = StyleSheet.create({
   },
   dotActive: {
     width: 24,
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
   },
   dotCompleted: {
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
   },
   buttonsContainer: {
     flexDirection: 'row-reverse',
@@ -430,13 +430,13 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     fontSize: 16,
-    color: '#5D4E37',
+    color: '#1B5E20',
     fontWeight: '500',
   },
   nextButton: {
     flexDirection: 'row-reverse',
     alignItems: 'center',
-    backgroundColor: '#D4AF37',
+    backgroundColor: '#1B5E20',
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 12,

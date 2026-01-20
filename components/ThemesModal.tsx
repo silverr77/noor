@@ -46,10 +46,10 @@ export const themes: Theme[] = [
     id: 'classic',
     name: 'Classic',
     nameAr: 'كلاسيكي',
-    textColor: '#5D4E37', // Dark brown - matches نور theme
-    accentColor: '#D4AF37', // Gold - matches نور branding
-    headerBgColor: '#8B7355', // Warm brown header
-    backgroundColor: '#FEF7ED', // Warm cream background
+    textColor: '#1B5E20', // Deep Islamic green - matches نور theme
+    accentColor: '#C9A961', // Gold accent - matches نور branding
+    headerBgColor: '#1B5E20', // Islamic green header
+    backgroundColor: '#F5F5F0', // Subtle cream background
   },
   {
     id: 'sky',
@@ -242,7 +242,7 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
               style={styles.supportLink}
               onPress={handleSupportDevelopers}
             >
-              <Ionicons name="heart" size={14} color="#D4AF37" />
+              <Ionicons name="heart" size={14} color="#C9A961" />
               <Text style={styles.supportLinkText}>ادعم التطبيق بمشاهدة إعلان</Text>
             </TouchableOpacity>
 
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   modalContent: {
-    backgroundColor: '#FEF7ED',
+    backgroundColor: '#F5F5F0',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     position: 'absolute',

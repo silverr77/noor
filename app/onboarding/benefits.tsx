@@ -6,9 +6,9 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
-// Classic theme cream background
-const ONBOARDING_BG = '#FEF7ED';
-const ONBOARDING_TEXT = '#5D4E37';
+// Green theme - matches نور branding
+const ONBOARDING_BG = '#F5F5F0';
+const ONBOARDING_TEXT = '#1B5E20';
 
 const benefits = [
   {
