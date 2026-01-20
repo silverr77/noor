@@ -3,6 +3,7 @@ import { CategoriesModal } from '@/components/CategoriesModal';
 import { ProfileModal } from '@/components/ProfileModal';
 import { SwipeableCard, SwipeIndicator } from '@/components/SwipeableCard';
 import { getThemeById, Theme, ThemesModal } from '@/components/ThemesModal';
+import { TourGuide, useTourGuide } from '@/components/TourGuide';
 import { Colors } from '@/constants/theme';
 import { useUser } from '@/context/UserContext';
 import { categories } from '@/data/categories';
@@ -37,6 +38,9 @@ export default function HomeScreen() {
   const [themesModalVisible, setThemesModalVisible] = useState(false);
   const [currentThemeId, setCurrentThemeId] = useState('classic');
   const [currentTheme, setCurrentTheme] = useState<Theme>(getThemeById('classic'));
+  
+  // Tour guide
+  const { showTour, completeTour } = useTourGuide();
   
   // Ad tracking - show ad every 3 swipes
   const [swipeCount, setSwipeCount] = useState(0);
@@ -447,6 +451,12 @@ export default function HomeScreen() {
         onClose={() => setThemesModalVisible(false)}
         currentTheme={currentThemeId}
         onThemeChange={handleThemeChange}
+      />
+
+      {/* Tour Guide - shows after first onboarding */}
+      <TourGuide
+        visible={showTour}
+        onComplete={completeTour}
       />
     </View>
   );

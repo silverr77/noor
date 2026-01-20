@@ -354,6 +354,25 @@ export function ProfileModal({
                 </View>
               </TouchableOpacity>
 
+              {/* Dev Mode: Reset Tour */}
+              {__DEV__ && (
+                <TouchableOpacity
+                  style={styles.settingRow}
+                  onPress={async () => {
+                    await AsyncStorage.removeItem('hasSeenTour');
+                    onClose();
+                  }}
+                >
+                  <Ionicons name="chevron-back" size={20} color="#6B7280" />
+                  <View style={styles.settingInfo}>
+                    <Text style={[styles.settingLabelFixed, { color: '#F59E0B' }]}>
+                      إعادة جولة التعريف (Dev Mode)
+                    </Text>
+                    <Ionicons name="help-circle-outline" size={20} color="#F59E0B" />
+                  </View>
+                </TouchableOpacity>
+              )}
+
               {/* Dev Mode: Reset Onboarding */}
               {__DEV__ && (
                 <TouchableOpacity
