@@ -42,10 +42,15 @@ export default function HomeScreen() {
   // Tour guide
   const { showTour, completeTour } = useTourGuide();
   
-  // Ad tracking - show ad every 3 swipes
+  // Ad tracking - improved strategy
   const [swipeCount, setSwipeCount] = useState(0);
   const [showingAd, setShowingAd] = useState(false);
-  const AD_FREQUENCY = 3; // Show ad every 3 swipes
+  const [sessionAdCount, setSessionAdCount] = useState(0);
+  
+  // Ad configuration
+  const AD_FREQUENCY = 6; // Show ad every 6 swipes (was 3)
+  const FIRST_AD_DELAY = 4; // Don't show ad until user has swiped at least 4 times
+  const MAX_ADS_PER_SESSION = 5; // Limit ads per session to avoid frustration
 
   useEffect(() => {
     loadLikedQuotes();
@@ -155,6 +160,7 @@ export default function HomeScreen() {
       // If currently showing an ad, move to next quote after ad
       if (showingAd) {
         setShowingAd(false);
+        setSessionAdCount(prev => prev + 1);
         if (currentIndex < filteredQuotes.length - 1) {
           setCurrentIndex(currentIndex + 1);
         } else {
@@ -167,8 +173,13 @@ export default function HomeScreen() {
       const newSwipeCount = swipeCount + 1;
       setSwipeCount(newSwipeCount);
       
-      // Check if it's time to show an ad
-      if (newSwipeCount > 0 && newSwipeCount % AD_FREQUENCY === 0) {
+      // Check if it's time to show an ad (improved logic)
+      const shouldShowAd = 
+        newSwipeCount >= FIRST_AD_DELAY && // Wait for user to engage first
+        newSwipeCount % AD_FREQUENCY === 0 && // Show at frequency intervals
+        sessionAdCount < MAX_ADS_PER_SESSION; // Don't exceed session limit
+      
+      if (shouldShowAd) {
         setShowingAd(true);
         return;
       }

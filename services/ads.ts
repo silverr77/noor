@@ -30,6 +30,10 @@ let interstitialAd: any = null;
 let isAdLoaded = false;
 let isAdLoading = false;
 
+// Cooldown management for interstitial ads
+const INTERSTITIAL_COOLDOWN_MS = 3 * 60 * 1000; // 3 minutes between interstitials
+let lastInterstitialTime = 0;
+
 // Initialize and load an interstitial ad
 export const loadInterstitialAd = (): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -100,10 +104,17 @@ export const loadInterstitialAd = (): Promise<void> => {
   });
 };
 
-// Show the interstitial ad
+// Show the interstitial ad (with cooldown protection)
 export const showInterstitialAd = async (): Promise<boolean> => {
   if (!isAdMobAvailable) {
     console.log('Interstitial ads not available in Expo Go');
+    return false;
+  }
+
+  // Check cooldown - don't show ads too frequently
+  const now = Date.now();
+  if (now - lastInterstitialTime < INTERSTITIAL_COOLDOWN_MS) {
+    console.log('Interstitial ad on cooldown, skipping...');
     return false;
   }
 
@@ -121,6 +132,7 @@ export const showInterstitialAd = async (): Promise<boolean> => {
     try {
       await interstitialAd.show();
       isAdLoaded = false;
+      lastInterstitialTime = Date.now(); // Update last shown time
       return true;
     } catch (error) {
       console.log('Error showing interstitial ad:', error);
