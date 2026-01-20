@@ -86,8 +86,8 @@ export function ProfileModal({
   const handleShareApp = async () => {
     try {
       await Share.share({
-        message: 'جرّب تطبيق أذكار - أقوال وأدعية يومية 🤲\nتطبيق رائع للأذكار والأدعية اليومية\n\nحمّله الآن!',
-        title: 'أذكار - أقوال وأدعية يومية',
+        message: 'جرّب تطبيق نور - أذكار وأدعية المسلم ✨\nتطبيق رائع للأذكار والأدعية والحكم اليومية\n\nحمّله الآن!',
+        title: 'نور - أذكار وأدعية المسلم',
       });
     } catch (error) {
       console.error('Error sharing:', error);
@@ -402,13 +402,13 @@ export function ProfileModal({
             </View>
 
             {/* App Name */}
-            <Text style={styles.aboutAppName}>أذكار</Text>
-            <Text style={styles.aboutAppTagline}>أقوال وأدعية يومية</Text>
+            <Text style={styles.aboutAppName}>نور</Text>
+            <Text style={styles.aboutAppTagline}>أذكار وأدعية المسلم</Text>
             <Text style={styles.aboutVersion}>الإصدار {APP_VERSION}</Text>
 
             {/* Description */}
             <Text style={styles.aboutDescription}>
-              تطبيق أذكار يقدم لك مجموعة مختارة من الأذكار والأدعية والحكم اليومية لتبدأ يومك بإيجابية وتقرب من الله.
+              تطبيق نور يقدم لك مجموعة مختارة من الأذكار والأدعية والحكم اليومية لتنير يومك وتقربك من الله.
             </Text>
 
             {/* Features */}
@@ -433,7 +433,7 @@ export function ProfileModal({
 
             {/* Made with love */}
             <Text style={styles.aboutMadeWith}>
-              صُنع بـ ❤️ لإحياء ذكر الله
+              صُنع بـ ❤️ لنشر النور والخير
             </Text>
 
             {/* Close Button */}

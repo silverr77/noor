@@ -20,8 +20,8 @@ export default function WelcomeScreen() {
       {/* Top Half - Purple Background */}
       <View style={styles.topSection}>
         <View style={styles.topContent}>
-          <Text style={styles.appTitle}>أذكار</Text>
-          <Text style={styles.appSubtitle}>أقوال وأدعية يومية</Text>
+          <Text style={styles.appTitle}>نور</Text>
+          <Text style={styles.appSubtitle}>أذكار وأدعية المسلم</Text>
         </View>
         
         {/* Curved Divider */}
@@ -33,7 +33,7 @@ export default function WelcomeScreen() {
         >
           <Path
             d={`M 0 0 Q ${SCREEN_WIDTH / 2} 40 ${SCREEN_WIDTH} 0 L ${SCREEN_WIDTH} 60 L 0 60 Z`}
-            fill="#FEF3E2"
+            fill="#FEF7ED"
           />
         </Svg>
       </View>
@@ -43,12 +43,12 @@ export default function WelcomeScreen() {
         <View style={styles.bottomContent}>
           {/* Title */}
           <Text style={styles.title}>
-            مرحباً بك في أذكار
+            مرحباً بك في نور
           </Text>
 
           {/* Subtitle */}
           <Text style={styles.subtitle}>
-            رفيقك اليومي للذكر والدعاء
+            نورٌ لقلبك كل يوم
           </Text>
 
           {/* Description */}
@@ -72,11 +72,11 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8B5CF6',
+    backgroundColor: '#D4AF37',
   },
   topSection: {
     flex: 0.6,
-    backgroundColor: '#8B5CF6',
+    backgroundColor: '#D4AF37',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 0.4,
-    backgroundColor: '#FEF3E2',
+    backgroundColor: '#FEF7ED',
     marginTop: -1,
   },
   bottomContent: {
@@ -123,19 +123,19 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#5D4E37',
     marginBottom: 12,
   },
   subtitle: {
     fontSize: 20,
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#5D4E37',
     marginBottom: 16,
   },
   description: {
     fontSize: 16,
     textAlign: 'center',
-    color: '#1E3A8A',
+    color: '#5D4E37',
     marginBottom: 40,
     paddingHorizontal: 20,
     lineHeight: 24,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 48,
     paddingVertical: 16,
     borderRadius: 12,
-    backgroundColor: '#8B5CF6',
+    backgroundColor: '#D4AF37',
     minWidth: 200,
   },
   buttonText: {

@@ -5,38 +5,38 @@
 
 import { Platform } from 'react-native';
 
-// Purple theme matching the logo
-const primaryPurple = '#8B5CF6'; // Main purple
-const darkPurple = '#6D28D9'; // Darker purple
-const lightPurple = '#A78BFA'; // Lighter purple
-const creamBackground = '#FEF3E2'; // Cream/beige background
+// Gold theme matching "نور" (Light) branding
+const primaryGold = '#D4AF37'; // Classic gold
+const darkGold = '#B8860B'; // Dark goldenrod
+const lightGold = '#F5D06E'; // Light gold
+const creamBackground = '#FEF7ED'; // Warm cream background
 const white = '#FFFFFF';
-const darkBlue = '#1E3A8A'; // Dark blue for text/outlines
+const darkBrown = '#5D4E37'; // Dark brown for text
 
 export const Colors = {
   light: {
-    text: darkBlue,
+    text: darkBrown,
     background: creamBackground,
-    tint: primaryPurple,
-    icon: primaryPurple,
+    tint: primaryGold,
+    icon: primaryGold,
     tabIconDefault: '#9CA3AF',
-    tabIconSelected: primaryPurple,
-    primary: primaryPurple,
-    secondary: lightPurple,
-    accent: darkBlue,
+    tabIconSelected: primaryGold,
+    primary: primaryGold,
+    secondary: lightGold,
+    accent: darkBrown,
     cardBackground: white,
   },
   dark: {
     text: white,
-    background: darkPurple,
-    tint: lightPurple,
-    icon: lightPurple,
+    background: darkGold,
+    tint: lightGold,
+    icon: lightGold,
     tabIconDefault: '#9CA3AF',
-    tabIconSelected: lightPurple,
-    primary: primaryPurple,
-    secondary: lightPurple,
+    tabIconSelected: lightGold,
+    primary: primaryGold,
+    secondary: lightGold,
     accent: white,
-    cardBackground: '#7C3AED',
+    cardBackground: '#8B7355',
   },
 };
 

@@ -7,24 +7,29 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF3E2';
-const ONBOARDING_TEXT = '#1E3A8A';
+const ONBOARDING_BG = '#FEF7ED';
+const ONBOARDING_TEXT = '#5D4E37';
 
 const benefits = [
   {
     icon: '🤲',
-    title: 'راحة البال والسكينة',
-    description: 'الأذكار تملأ قلبك بالطمأنينة وتبعد عنك الهموم والقلق',
+    title: 'أذكار وأدعية',
+    description: 'أذكار الصباح والمساء وأدعية مختارة تملأ قلبك بالسكينة',
   },
   {
-    icon: '💎',
-    title: 'تقوية الإيمان',
-    description: 'المداومة على ذكر الله تزيد إيمانك وتقربك من الله عز وجل',
+    icon: '📖',
+    title: 'آيات وأحاديث',
+    description: 'آيات قرآنية كريمة وأحاديث نبوية شريفة تنير دربك',
   },
   {
-    icon: '🛡️',
-    title: 'حماية وبركة',
-    description: 'الأذكار حصن للمسلم تحميه وتجلب البركة في يومه',
+    icon: '💡',
+    title: 'حِكَم واقتباسات',
+    description: 'حِكَم بليغة وأقوال الفلاسفة واقتباسات تحفيزية ملهمة',
+  },
+  {
+    icon: '✨',
+    title: 'نور يومي',
+    description: 'تذكيرات يومية تبقيك على صلة بذكر الله وتنشر الإيجابية',
   },
 ];
 
@@ -43,11 +48,11 @@ export default function BenefitsScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Title */}
         <Text style={[styles.title, { color: ONBOARDING_TEXT }]}>
-          لماذا أذكار؟
+          لماذا نور؟
         </Text>
         
         <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
-          فوائد المداومة على الذكر
+          كل ما تحتاجه في مكان واحد
         </Text>
 
         {/* Benefits List */}

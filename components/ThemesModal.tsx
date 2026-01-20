@@ -45,10 +45,10 @@ export const themes: Theme[] = [
     id: 'classic',
     name: 'Classic',
     nameAr: 'كلاسيكي',
-    textColor: '#1E3A8A', // Dark blue - original text color
-    accentColor: '#8B5CF6', // Primary purple
-    headerBgColor: '#374151', // Original header button color (dark gray)
-    backgroundColor: '#FEF3E2', // Original cream background
+    textColor: '#5D4E37', // Dark brown - matches نور theme
+    accentColor: '#D4AF37', // Gold - matches نور branding
+    headerBgColor: '#8B7355', // Warm brown header
+    backgroundColor: '#FEF7ED', // Warm cream background
   },
   {
     id: 'sky',

@@ -8,8 +8,8 @@ import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF3E2';
-const ONBOARDING_TEXT = '#1E3A8A';
+const ONBOARDING_BG = '#FEF7ED';
+const ONBOARDING_TEXT = '#5D4E37';
 
 const timeOptions = [
   { value: '5', label: '5 دقائق', minutes: 5 },

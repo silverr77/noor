@@ -9,8 +9,8 @@ import { categories } from '@/data/categories';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF3E2';
-const ONBOARDING_TEXT = '#1E3A8A';
+const ONBOARDING_BG = '#FEF7ED';
+const ONBOARDING_TEXT = '#5D4E37';
 
 export default function CategoriesScreen() {
   const router = useRouter();

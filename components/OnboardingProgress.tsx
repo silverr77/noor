@@ -5,7 +5,7 @@ import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 // Onboarding theme colors
-const ONBOARDING_TEXT = '#1E3A8A';
+const ONBOARDING_TEXT = '#5D4E37';
 
 interface OnboardingProgressProps {
   currentStep: number;
@@ -48,7 +48,7 @@ export function OnboardingProgress({
         <Text style={[styles.progressText, { color: ONBOARDING_TEXT }]}>
           {currentStep} / {totalSteps}
         </Text>
-        <View style={[styles.progressBar, { backgroundColor: 'rgba(30, 58, 138, 0.2)' }]}>
+        <View style={[styles.progressBar, { backgroundColor: 'rgba(93, 78, 55, 0.2)' }]}>
           <View
             style={[
               styles.progressFill,

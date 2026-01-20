@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "أذكار – أقوال وأدعية يومية",
+    "name": "نور - أذكار وأدعية المسلم",
     "slug": "daily-ramadane-quotes",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#8B5CF6",
+        "backgroundColor": "#D4AF37",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
@@ -35,9 +35,9 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 280,
           "resizeMode": "contain",
-          "backgroundColor": "#FEF3E2",
+          "backgroundColor": "#D4AF37",
           "dark": {
-            "backgroundColor": "#6D28D9",
+            "backgroundColor": "#B8860B",
             "image": "./assets/images/splash-icon.png"
           }
         }
@@ -46,7 +46,7 @@
         "expo-notifications",
         {
           "icon": "./assets/images/icon.png",
-          "color": "#8B5CF6",
+          "color": "#D4AF37",
           "sounds": []
         }
       ],

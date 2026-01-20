@@ -11,8 +11,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { registerForPushNotificationsAsync, scheduleDailyNotification } from '@/services/notifications';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF3E2';
-const ONBOARDING_TEXT = '#1E3A8A';
+const ONBOARDING_BG = '#FEF7ED';
+const ONBOARDING_TEXT = '#5D4E37';
 
 export default function NotificationsScreen() {
   const router = useRouter();
@@ -98,7 +98,7 @@ export default function NotificationsScreen() {
               <View style={[styles.notificationIcon, { backgroundColor: colors.primary }]}>
                 <Ionicons name="flame-outline" size={20} color="#FFFFFF" />
               </View>
-              <Text style={[styles.appName, { color: ONBOARDING_TEXT }]}>أذكار</Text>
+              <Text style={[styles.appName, { color: ONBOARDING_TEXT }]}>نور</Text>
               <Text style={styles.notificationTime}>الآن</Text>
             </View>
 <Text style={[styles.notificationText, { color: ONBOARDING_TEXT }]}>
@@ -201,7 +201,7 @@ export default function NotificationsScreen() {
                 is24Hour={false}
                 display="spinner"
                 themeVariant="light"
-                textColor="#1E3A8A"
+                textColor="#5D4E37"
                 onChange={(event, selectedTime) => {
                   if (selectedTime) {
                     setStartTime(selectedTime);
@@ -244,7 +244,7 @@ export default function NotificationsScreen() {
                 is24Hour={false}
                 display="spinner"
                 themeVariant="light"
-                textColor="#1E3A8A"
+                textColor="#5D4E37"
                 onChange={(event, selectedTime) => {
                   if (selectedTime) {
                     setEndTime(selectedTime);
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
   pickerTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#1E3A8A',
+    color: '#5D4E37',
   },
   pickerButton: {
     paddingHorizontal: 16,

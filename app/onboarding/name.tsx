@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Classic theme cream background
-const ONBOARDING_BG = '#FEF3E2';
+const ONBOARDING_BG = '#FEF7ED';
 
 export default function NameScreen() {
   const router = useRouter();
@@ -37,12 +37,12 @@ export default function NameScreen() {
       
       <View style={styles.content}>
         {/* Title */}
-        <Text style={[styles.title, { color: '#1E3A8A' }]}>
+        <Text style={[styles.title, { color: '#5D4E37' }]}>
           ما اسمك؟
         </Text>
 
         {/* Subtitle */}
-        <Text style={[styles.subtitle, { color: '#1E3A8A' }]}>
+        <Text style={[styles.subtitle, { color: '#5D4E37' }]}>
           أود أن أعرفك أكثر!
         </Text>
 
@@ -51,7 +51,7 @@ export default function NameScreen() {
           style={[styles.input, { 
             backgroundColor: '#FFFFFF',
             borderColor: colors.primary,
-            color: '#1E3A8A' 
+            color: '#5D4E37' 
           }]}
           placeholder="أدخل اسمك"
           placeholderTextColor="#9CA3AF"
