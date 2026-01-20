@@ -22,19 +22,19 @@ try {
   isAdMobAvailable = false;
 }
 
-// Ad unit IDs - Replace with your real ad unit IDs in production
+// Ad unit IDs - iOS only for now
 const INTERSTITIAL_AD_UNIT_ID = __DEV__
   ? (TestIds?.INTERSTITIAL || 'ca-app-pub-3940256099942544/1033173712') // Test ID
   : Platform.select({
-      ios: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your iOS ad unit ID
-      android: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your Android ad unit ID
+      ios: 'ca-app-pub-3002057065219882/5593684908', // iOS Interstitial
+      android: 'ca-app-pub-3940256099942544/1033173712', // Test ID (Android not configured yet)
     }) || 'ca-app-pub-3940256099942544/1033173712';
 
 const REWARDED_AD_UNIT_ID = __DEV__
   ? (TestIds?.REWARDED || 'ca-app-pub-3940256099942544/5224354917') // Test ID
   : Platform.select({
-      ios: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your iOS rewarded ad unit ID
-      android: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your Android rewarded ad unit ID
+      ios: 'ca-app-pub-3002057065219882/4743637669', // iOS Rewarded
+      android: 'ca-app-pub-3940256099942544/5224354917', // Test ID (Android not configured yet)
     }) || 'ca-app-pub-3940256099942544/5224354917';
 
 // Interstitial ad state

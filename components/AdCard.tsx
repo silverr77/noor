@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-    runOnJS,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-    withTiming,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -41,14 +41,14 @@ interface AdCardProps {
   accentColor?: string;
 }
 
-// Test ad unit IDs - Replace with your real ad unit IDs in production
+// Ad unit IDs - iOS only for now
 const getAdUnitId = () => {
   if (!isAdMobAvailable || !TestIds) return '';
   return __DEV__ 
     ? TestIds.ADAPTIVE_BANNER 
     : Platform.select({
-        ios: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your iOS ad unit ID
-        android: 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX', // Replace with your Android ad unit ID
+        ios: 'ca-app-pub-3002057065219882/1938538591', // iOS Banner
+        android: TestIds.ADAPTIVE_BANNER, // Test ID (Android not configured yet)
       }) || TestIds.ADAPTIVE_BANNER;
 };
 
