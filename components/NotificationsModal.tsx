@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useEffect, useState } from 'react';
 import {
+    Alert,
     Modal,
     Platform,
     ScrollView,
@@ -21,6 +22,13 @@ import Animated, {
     useSharedValue,
     withSpring,
 } from 'react-native-reanimated';
+import { 
+    requestNotificationPermissions, 
+    scheduleNotifications, 
+    cancelAllNotifications,
+    sendTestNotification,
+    checkNotificationPermissions 
+} from '@/services/notifications';
 
 interface NotificationsModalProps {
   visible: boolean;
@@ -77,15 +85,36 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
     }
   };
 
-  const handleNotificationToggle = (value: boolean) => {
-    setNotificationsEnabled(value);
-    saveNotificationSettings({ enabled: value });
+  const handleNotificationToggle = async (value: boolean) => {
+    if (value) {
+      // Request permissions when enabling
+      const hasPermission = await requestNotificationPermissions();
+      if (!hasPermission) {
+        // Permission denied, keep toggle off
+        return;
+      }
+      setNotificationsEnabled(true);
+      await saveNotificationSettings({ enabled: true });
+      // Schedule notifications with current settings
+      await scheduleNotifications();
+      // Send test notification to confirm it works
+      await sendTestNotification();
+    } else {
+      setNotificationsEnabled(false);
+      await saveNotificationSettings({ enabled: false });
+      // Cancel all notifications
+      await cancelAllNotifications();
+    }
   };
 
-  const handleCountChange = (delta: number) => {
+  const handleCountChange = async (delta: number) => {
     const newCount = Math.max(1, Math.min(10, notificationCount + delta));
     setNotificationCount(newCount);
-    saveNotificationSettings({ count: newCount });
+    await saveNotificationSettings({ count: newCount });
+    // Reschedule notifications with new count
+    if (notificationsEnabled) {
+      await scheduleNotifications();
+    }
   };
 
   const formatTime = (date: Date) => {
@@ -247,10 +276,14 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                       value={startTime}
                       mode="time"
                       display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                      onChange={(event, date) => {
+                      onChange={async (event, date) => {
                         if (date) {
                           setStartTime(date);
-                          saveNotificationSettings({ startTime: date });
+                          await saveNotificationSettings({ startTime: date });
+                          // Reschedule notifications with new time
+                          if (notificationsEnabled) {
+                            await scheduleNotifications();
+                          }
                         }
                         if (Platform.OS === 'android') {
                           setShowStartPicker(false);
@@ -279,10 +312,14 @@ export function NotificationsModal({ visible, onClose, accentColor }: Notificati
                       value={endTime}
                       mode="time"
                       display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                      onChange={(event, date) => {
+                      onChange={async (event, date) => {
                         if (date) {
                           setEndTime(date);
-                          saveNotificationSettings({ endTime: date });
+                          await saveNotificationSettings({ endTime: date });
+                          // Reschedule notifications with new time
+                          if (notificationsEnabled) {
+                            await scheduleNotifications();
+                          }
                         }
                         if (Platform.OS === 'android') {
                           setShowEndPicker(false);

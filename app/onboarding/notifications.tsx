@@ -8,7 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { registerForPushNotificationsAsync, scheduleDailyNotification } from '@/services/notifications';
+import { requestNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
 
 // Classic theme cream background
 const ONBOARDING_BG = '#FEF7ED';
@@ -26,9 +26,8 @@ export default function NotificationsScreen() {
   const [endTime, setEndTime] = useState(new Date());
 
   React.useEffect(() => {
-    // Set up notifications when component mounts
-    registerForPushNotificationsAsync();
-    scheduleDailyNotification();
+    // Request notification permissions when screen loads
+    requestNotificationPermissions();
   }, []);
 
   // Set default times
@@ -50,13 +49,26 @@ export default function NotificationsScreen() {
   };
 
   const handleNext = async () => {
-    await updateUser({
-      notificationSettings: {
-        count: notificationCount,
-        startTime: startTime.toISOString(),
-        endTime: endTime.toISOString(),
-      },
-    });
+    // Save notification settings
+    const notificationSettings = {
+      enabled: true,
+      count: notificationCount,
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+    };
+    
+    await updateUser({ notificationSettings });
+    
+    // Also save to AsyncStorage for the notification service
+    const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+    await AsyncStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
+    
+    // Schedule notifications with user settings
+    await scheduleNotifications();
+    
+    // Send a test notification to confirm setup
+    await sendTestNotification();
+    
     await completeOnboarding();
     setTimeout(() => {
       router.replace('/(tabs)');
