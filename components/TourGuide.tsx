@@ -253,12 +253,19 @@ export function TourGuide({ visible, onComplete }: TourGuideProps) {
 }
 
 // Hook to check if tour should be shown
+// TEMPORARILY DISABLED - set TOUR_ENABLED to true to re-enable
+const TOUR_ENABLED = false;
+
 export const useTourGuide = () => {
   const [showTour, setShowTour] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    checkTourStatus();
+    if (TOUR_ENABLED) {
+      checkTourStatus();
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const checkTourStatus = async () => {
@@ -282,6 +289,7 @@ export const useTourGuide = () => {
   };
 
   const resetTour = async () => {
+    if (!TOUR_ENABLED) return;
     try {
       await AsyncStorage.removeItem('hasSeenTour');
       setShowTour(true);
