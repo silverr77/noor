@@ -21,6 +21,16 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CARD_WIDTH = SCREEN_WIDTH - 40;
 const CARD_HEIGHT = SCREEN_HEIGHT * 0.6;
 
+// Fisher-Yates shuffle algorithm for randomizing quotes
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
@@ -28,6 +38,7 @@ export default function HomeScreen() {
   
   const [quotes, setQuotes] = useState<Quote[]>(sampleQuotes);
   const [customQuotes, setCustomQuotes] = useState<Quote[]>([]);
+  const [shuffledQuotes, setShuffledQuotes] = useState<Quote[]>([]); // Shuffled quotes for the session
   const [currentIndex, setCurrentIndex] = useState(0);
   const [profileModalVisible, setProfileModalVisible] = useState(false);
   const [categoriesModalVisible, setCategoriesModalVisible] = useState(false);
@@ -248,9 +259,8 @@ export default function HomeScreen() {
     setCurrentIndex(0);
   };
 
-  // Get filtered quotes based on selections
-  // Combines all selected sources: favorites, my quotes, and categories
-  const getFilteredQuotes = (): Quote[] => {
+  // Get filtered quotes based on selections (not shuffled - used for comparison)
+  const getFilteredQuotesRaw = (): Quote[] => {
     const hasAnySelection = showFavorites || showMyQuotes || selectedCategories.length > 0;
     
     // If no selections, show all regular quotes
@@ -285,7 +295,16 @@ export default function HomeScreen() {
     return result;
   };
 
-  const filteredQuotes = getFilteredQuotes();
+  // Shuffle quotes when filters change or on first load
+  useEffect(() => {
+    const rawQuotes = getFilteredQuotesRaw();
+    const shuffled = shuffleArray(rawQuotes);
+    setShuffledQuotes(shuffled);
+    setCurrentIndex(0); // Reset to beginning when filters change
+  }, [quotes, customQuotes, showFavorites, showMyQuotes, selectedCategories]);
+
+  // Use shuffled quotes for display
+  const filteredQuotes = shuffledQuotes;
   const currentQuote = filteredQuotes[currentIndex];
 
   // Get display category name - shows the current quote's category
