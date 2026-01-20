@@ -263,66 +263,133 @@ export default function HomeScreen() {
   const getFilteredQuotesRaw = (): Quote[] => {
     const hasAnySelection = showFavorites || showMyQuotes || selectedCategories.length > 0;
     
-    // If no selections, show all regular quotes
+    // If no selections, show all regular quotes from all categories
     if (!hasAnySelection) {
       return quotes;
     }
     
     let result: Quote[] = [];
     
-    // Add favorites if selected
-    if (showFavorites) {
+    // EXCLUSIVE MODE: If ONLY favorites is selected (no myQuotes, no categories toggle active)
+    // Show only liked quotes
+    if (showFavorites && !showMyQuotes) {
       const allQuotes = [...quotes, ...customQuotes];
       const likedQuotes = allQuotes.filter(q => q.isLiked);
-      result = [...result, ...likedQuotes];
+      
+      // If categories are also selected, filter favorites by those categories
+      if (selectedCategories.length > 0) {
+        return likedQuotes.filter(q => 
+          selectedCategories.includes(q.category) || q.category === 'my-quotes'
+        );
+      }
+      
+      // Return all favorites
+      return likedQuotes;
     }
     
-    // Add my quotes if selected
-    if (showMyQuotes) {
-      // Add custom quotes that aren't already included (from favorites)
-      const newQuotes = customQuotes.filter(q => !result.some(r => r.id === q.id));
-      result = [...result, ...newQuotes];
+    // EXCLUSIVE MODE: If ONLY myQuotes is selected
+    if (showMyQuotes && !showFavorites) {
+      // If categories are also selected, this doesn't apply to myQuotes
+      // Just return all custom quotes
+      return customQuotes;
     }
     
-    // Add quotes from selected categories
+    // COMBINED MODE: Both favorites and myQuotes selected
+    if (showFavorites && showMyQuotes) {
+      const allQuotes = [...quotes, ...customQuotes];
+      const likedQuotes = allQuotes.filter(q => q.isLiked);
+      result = [...likedQuotes];
+      
+      // Add custom quotes that aren't already liked
+      const newCustom = customQuotes.filter(q => !q.isLiked);
+      result = [...result, ...newCustom];
+      
+      return result;
+    }
+    
+    // CATEGORIES ONLY: Neither favorites nor myQuotes, just categories
     if (selectedCategories.length > 0) {
-      const categoryQuotes = quotes.filter(q => selectedCategories.includes(q.category));
-      // Add only quotes that aren't already included
-      const newQuotes = categoryQuotes.filter(q => !result.some(r => r.id === q.id));
-      result = [...result, ...newQuotes];
+      return quotes.filter(q => selectedCategories.includes(q.category));
     }
     
-    return result;
+    return quotes;
   };
 
   // Create a shuffle key that only changes when categories/filters change
   // NOT when quotes are liked/unliked
-  const shuffleKey = `${selectedCategories.sort().join(',')}-${showFavorites}-${showMyQuotes}`;
+  // Use spread to avoid mutating the original array
+  const shuffleKey = `${[...selectedCategories].sort().join(',')}-${showFavorites}-${showMyQuotes}`;
   
-  // Shuffle quotes ONLY when filters change or on first load
-  // Using shuffleKey ensures we don't reshuffle when liking quotes
-  useEffect(() => {
-    const rawQuotes = getFilteredQuotesRaw();
-    const shuffled = shuffleArray(rawQuotes);
-    setShuffledQuotes(shuffled);
-    setCurrentIndex(0); // Reset to beginning when filters change
-  }, [shuffleKey]); // Only depends on filter changes, not quote state changes
+  // Helper function to filter quotes based on current selections
+  const filterQuotes = (allQuotes: Quote[], allCustomQuotes: Quote[]): Quote[] => {
+    const hasAnySelection = showFavorites || showMyQuotes || selectedCategories.length > 0;
+    
+    if (!hasAnySelection) {
+      return allQuotes;
+    }
+    
+    if (showFavorites && !showMyQuotes) {
+      const combined = [...allQuotes, ...allCustomQuotes];
+      const likedQuotes = combined.filter(q => q.isLiked);
+      if (selectedCategories.length > 0) {
+        return likedQuotes.filter(q => 
+          selectedCategories.includes(q.category) || q.category === 'my-quotes'
+        );
+      }
+      return likedQuotes;
+    }
+    
+    if (showMyQuotes && !showFavorites) {
+      return allCustomQuotes;
+    }
+    
+    if (showFavorites && showMyQuotes) {
+      const combined = [...allQuotes, ...allCustomQuotes];
+      const likedQuotes = combined.filter(q => q.isLiked);
+      const newCustom = allCustomQuotes.filter(q => !q.isLiked);
+      return [...likedQuotes, ...newCustom];
+    }
+    
+    if (selectedCategories.length > 0) {
+      return allQuotes.filter(q => selectedCategories.includes(q.category));
+    }
+    
+    return allQuotes;
+  };
 
-  // Update shuffled quotes when quote data changes (for liked state) WITHOUT reshuffling
+  // Shuffle quotes ONLY when filters change
   useEffect(() => {
-    if (shuffledQuotes.length > 0) {
-      // Update liked states without changing order
-      const updatedShuffled = shuffledQuotes.map(sq => {
-        const updated = [...quotes, ...customQuotes].find(q => q.id === sq.id);
-        return updated || sq;
-      }).filter(sq => {
-        // Keep quote only if it still matches current filters
-        const allCurrentQuotes = [...quotes, ...customQuotes];
-        return allCurrentQuotes.some(q => q.id === sq.id);
-      });
+    const filteredResult = filterQuotes(quotes, customQuotes);
+    
+    console.log('=== SHUFFLE (filter changed) ===');
+    console.log('Selected categories:', selectedCategories);
+    console.log('Result count:', filteredResult.length);
+    
+    const shuffled = shuffleArray(filteredResult);
+    setShuffledQuotes(shuffled);
+    setCurrentIndex(0);
+  }, [shuffleKey]); // ONLY depends on filter key changes
+
+  // Update liked states WITHOUT reshuffling when quote data changes
+  useEffect(() => {
+    if (shuffledQuotes.length === 0) return;
+    
+    // Update the isLiked state for each quote in shuffledQuotes
+    const updatedShuffled = shuffledQuotes.map(sq => {
+      // Find the updated version of this quote
+      const updatedQuote = [...quotes, ...customQuotes].find(q => q.id === sq.id);
+      if (updatedQuote) {
+        return { ...sq, isLiked: updatedQuote.isLiked };
+      }
+      return sq;
+    });
+    
+    // Only update if something changed
+    const hasChanges = updatedShuffled.some((q, i) => q.isLiked !== shuffledQuotes[i]?.isLiked);
+    if (hasChanges) {
       setShuffledQuotes(updatedShuffled);
     }
-  }, [quotes, customQuotes]);
+  }, [quotes, customQuotes]); // Runs when quote data changes (like action)
 
   // Use shuffled quotes for display
   const filteredQuotes = shuffledQuotes;
