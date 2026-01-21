@@ -8,7 +8,8 @@ import 'react-native-reanimated';
 import { UserProvider, useUser } from '@/context/UserContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
-// Enable RTL for Arabic
+// Enable RTL for Arabic - called at module load time
+// The native iOS config (UIUserInterfaceLayoutDirection) handles RTL in production
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 
