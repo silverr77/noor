@@ -185,7 +185,7 @@ export async function scheduleNotifications(): Promise<void> {
     
     if (startTime) {
       const startDate = new Date(startTime);
-      if (!isNaN(startDate.getTime())) {
+      if (!Number.isNaN(startDate.getTime())) {
         startHour = startDate.getHours();
         startMinute = startDate.getMinutes();
       }
@@ -193,7 +193,7 @@ export async function scheduleNotifications(): Promise<void> {
     
     if (endTime) {
       const endDate = new Date(endTime);
-      if (!isNaN(endDate.getTime())) {
+      if (!Number.isNaN(endDate.getTime())) {
         endHour = endDate.getHours();
         endMinute = endDate.getMinutes();
       }
@@ -202,7 +202,7 @@ export async function scheduleNotifications(): Promise<void> {
     const notificationCount = Math.min(count || 3, 10); // Max 10 notifications
 
     // Validate hours are valid numbers
-    if (isNaN(startHour) || isNaN(endHour)) {
+    if (Number.isNaN(startHour) || Number.isNaN(endHour)) {
       console.log('Invalid time values, using defaults');
       startHour = 8;
       startMinute = 0;
@@ -362,7 +362,7 @@ export async function getScheduledNotificationTimes(): Promise<string[]> {
       return `${hour}:${minute.toString().padStart(2, '0')}`;
     }
     return 'Unknown';
-  }).sort();
+  }).sort((a, b) => a.localeCompare(b));
 }
 
 // Legacy function for backward compatibility

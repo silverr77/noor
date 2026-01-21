@@ -5,11 +5,9 @@ import { showRewardedAd } from '@/services/ads';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
-  Dimensions,
   Modal,
   ScrollView,
   Share,
@@ -20,7 +18,6 @@ import {
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  runOnJS,
   SlideInDown,
   SlideOutDown,
   useAnimatedStyle,
@@ -30,20 +27,17 @@ import Animated, {
 import { NotificationsModal } from './NotificationsModal';
 
 // Get version from app.json via Expo config
-const APP_VERSION = Constants.expoConfig?.version || Constants.manifest?.version || '1.0.0';
-
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+const APP_VERSION = Constants.expoConfig?.version || '1.0.0';
 
 // Days of the week in Arabic (starting from Saturday for Arabic calendar)
 const DAYS_AR = ['س', 'أ', 'إ', 'ث', 'أ', 'خ', 'ج'];
-const DAYS_FULL = ['السبت', 'الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
 
 interface ProfileModalProps {
-  visible: boolean;
-  onClose: () => void;
-  themeAccentColor?: string;
-  onOpenThemes?: () => void;
-  onOpenCategories?: () => void;
+  readonly visible: boolean;
+  readonly onClose: () => void;
+  readonly themeAccentColor?: string;
+  readonly onOpenThemes?: () => void;
+  readonly onOpenCategories?: () => void;
 }
 
 // Get greeting based on time of day
@@ -69,8 +63,7 @@ export function ProfileModal({
 }: ProfileModalProps) {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const router = useRouter();
-  const { user, resetOnboarding } = useUser();
+  useUser(); // Context hook - values not needed here
   
   // Streak state
   const [streakDays, setStreakDays] = useState<number[]>([]);
@@ -123,15 +116,16 @@ export function ProfileModal({
     }
   };
 
-  // Load streak data when modal opens
-  useEffect(() => {
-    if (visible) {
-      loadStreakData();
-      recordVisit();
-    }
-  }, [visible]);
+  const getWeekStart = useCallback(() => {
+    const today = new Date();
+    const day = today.getDay();
+    const diff = (day + 1) % 7; // Days since Saturday
+    const weekStart = new Date(today);
+    weekStart.setDate(today.getDate() - diff);
+    return weekStart.toISOString().split('T')[0];
+  }, []);
 
-  const loadStreakData = async () => {
+  const loadStreakData = useCallback(async () => {
     try {
       const data = await AsyncStorage.getItem('weeklyStreak');
       if (data) {
@@ -139,23 +133,23 @@ export function ProfileModal({
         const weekStart = getWeekStart();
         
         // Check if it's a new week
-        if (parsed.weekStart !== weekStart) {
+        if (parsed.weekStart === weekStart) {
+          setStreakDays(parsed.days || []);
+          setStreakCount(parsed.days?.length || 0);
+        } else {
           // Reset for new week
           const newData = { weekStart, days: [], count: 0 };
           await AsyncStorage.setItem('weeklyStreak', JSON.stringify(newData));
           setStreakDays([]);
           setStreakCount(0);
-        } else {
-          setStreakDays(parsed.days || []);
-          setStreakCount(parsed.days?.length || 0);
         }
       }
     } catch (error) {
       console.error('Error loading streak:', error);
     }
-  };
+  }, [getWeekStart]);
 
-  const recordVisit = async () => {
+  const recordVisit = useCallback(async () => {
     try {
       const today = new Date();
       const dayOfWeek = (today.getDay() + 1) % 7; // Shift to start from Saturday
@@ -179,16 +173,15 @@ export function ProfileModal({
     } catch (error) {
       console.error('Error recording visit:', error);
     }
-  };
+  }, [getWeekStart]);
 
-  const getWeekStart = () => {
-    const today = new Date();
-    const day = today.getDay();
-    const diff = (day + 1) % 7; // Days since Saturday
-    const weekStart = new Date(today);
-    weekStart.setDate(today.getDate() - diff);
-    return weekStart.toISOString().split('T')[0];
-  };
+  // Load streak data when modal opens
+  useEffect(() => {
+    if (visible) {
+      loadStreakData();
+      recordVisit();
+    }
+  }, [visible, loadStreakData, recordVisit]);
 
   // Swipe to close gesture
   const translateY = useSharedValue(0);
@@ -201,7 +194,7 @@ export function ProfileModal({
     })
     .onEnd((event) => {
       if (event.translationY > 100 || event.velocityY > 500) {
-        runOnJS(onClose)();
+        onClose();
       }
       translateY.value = withSpring(0);
     });
@@ -260,7 +253,7 @@ export function ProfileModal({
                     const isActive = streakDays.includes(index);
                     const isToday = index === (new Date().getDay() + 1) % 7;
                     return (
-                      <View key={index} style={styles.dayColumn}>
+                      <View key={`day-${day}-${index}`} style={styles.dayColumn}>
                         <Text style={styles.dayLabel}>{day}</Text>
                         <View
                           style={[

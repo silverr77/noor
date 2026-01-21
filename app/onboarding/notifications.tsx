@@ -8,6 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { requestNotificationPermissions, checkNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
 
 // Green theme - matches نور branding
@@ -88,7 +89,6 @@ export default function NotificationsScreen() {
     await updateUser({ notificationSettings });
     
     // Also save to AsyncStorage for the notification service
-    const AsyncStorage = require('@react-native-async-storage/async-storage').default;
     await AsyncStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
     
     // Schedule notifications with user settings only if permission is granted
