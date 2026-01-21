@@ -195,8 +195,8 @@ export function SwipeableCard({
 
           {/* App Branding at bottom */}
           <View style={styles.shareBranding}>
-            <Text style={[styles.shareAppName, { color: quoteTextColor }]}>أذكار</Text>
-            <Text style={[styles.shareAppTagline, { color: quoteTextColor }]}>أقوال وأدعية يومية</Text>
+            <Text style={[styles.shareAppName, { color: quoteTextColor }]}>نور</Text>
+            <Text style={[styles.shareAppTagline, { color: quoteTextColor }]}>أذكار وأدعية المسلم</Text>
           </View>
         </ViewShot>
       </View>
