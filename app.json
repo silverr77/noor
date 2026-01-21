@@ -16,6 +16,8 @@
         "CFBundleDisplayName": "نور",
         "NSUserNotificationsUsageDescription": "نحتاج إلى إذنك لإرسال تذكيرات يومية بالأذكار والأدعية",
         "NSUserTrackingUsageDescription": "نستخدم هذا لتحسين تجربتك في التطبيق",
+        "NSPhotoLibraryUsageDescription": "نحتاج إلى إذنك لحفظ ومشاركة الاقتباسات كصور",
+        "NSPhotoLibraryAddUsageDescription": "نحتاج إلى إذنك لحفظ الاقتباسات في معرض الصور",
         "ITSAppUsesNonExemptEncryption": false
       },
       "config": {
