@@ -1,8 +1,7 @@
-import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
-import { Platform, Alert } from 'react-native';
-import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import { Alert, Linking, Platform } from 'react-native';
 
 // Configure how notifications are handled when app is in foreground
 Notifications.setNotificationHandler({
@@ -10,6 +9,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -27,40 +28,87 @@ const notificationMessages = [
 
 // Check if notifications are enabled
 export async function checkNotificationPermissions(): Promise<boolean> {
-  if (!Device.isDevice) {
-    console.log('Notifications require a physical device');
+  try {
+    const { status } = await Notifications.getPermissionsAsync();
+    console.log('Checking notification permission status:', status);
+    return status === 'granted';
+  } catch (error) {
+    console.error('Error checking notification permissions:', error);
     return false;
   }
-
-  const { status } = await Notifications.getPermissionsAsync();
-  return status === 'granted';
 }
 
 // Request notification permissions
 export async function requestNotificationPermissions(): Promise<boolean> {
-  if (!Device.isDevice) {
-    console.log('Notifications require a physical device');
-    return false;
-  }
+  try {
+    // Check current permission status first
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    
+    console.log('Current notification permission status:', existingStatus);
+    
+    if (existingStatus === 'granted') {
+      console.log('Notification permission already granted');
+      return true;
+    }
 
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  
-  if (existingStatus === 'granted') {
-    return true;
-  }
+    // If permission was previously denied, we need to guide user to Settings
+    if (existingStatus === 'denied') {
+      Alert.alert(
+        'الإشعارات معطلة',
+        'تم رفض الإشعارات مسبقاً. يرجى تفعيلها من إعدادات الجهاز.',
+        [
+          { text: 'إلغاء', style: 'cancel' },
+          { 
+            text: 'فتح الإعدادات', 
+            style: 'default',
+            onPress: () => {
+              // Open app settings
+              Linking.openSettings().catch((error) => {
+                console.error('Error opening settings:', error);
+              });
+            }
+          }
+        ]
+      );
+      return false;
+    }
 
-  const { status } = await Notifications.requestPermissionsAsync();
-  
-  if (status !== 'granted') {
+    // Request permission - this will show the system dialog if not previously denied
+    console.log('Requesting notification permissions...');
+    const { status } = await Notifications.requestPermissionsAsync({
+      ios: {
+        allowAlert: true,
+        allowBadge: true,
+        allowSound: true,
+      },
+    });
+    
+    console.log('Permission request result:', status);
+    
+    if (status === 'granted') {
+      console.log('Notification permission granted successfully');
+      return true;
+    } else if (status === 'denied') {
+      Alert.alert(
+        'الإشعارات معطلة',
+        'للحصول على تذكيرات يومية، يرجى تفعيل الإشعارات من إعدادات الجهاز',
+        [{ text: 'حسناً', style: 'default' }]
+      );
+      return false;
+    } else {
+      // undetermined or other status
+      console.log('Permission status is:', status);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error requesting notification permissions:', error);
     Alert.alert(
-      'الإشعارات معطلة',
-      'للحصول على تذكيرات يومية، يرجى تفعيل الإشعارات من إعدادات الجهاز',
+      'خطأ',
+      'حدث خطأ أثناء طلب إذن الإشعارات. يرجى المحاولة مرة أخرى.',
       [{ text: 'حسناً', style: 'default' }]
     );
     return false;
   }
-
-  return true;
 }
 
 // Register for push notifications (for remote notifications if needed)

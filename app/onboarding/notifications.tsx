@@ -8,7 +8,7 @@ import { useUser } from '@/context/UserContext';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { requestNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
+import { requestNotificationPermissions, checkNotificationPermissions, scheduleNotifications, sendTestNotification } from '@/services/notifications';
 
 // Green theme - matches نور branding
 const ONBOARDING_BG = '#E8F5E9';
@@ -24,11 +24,32 @@ export default function NotificationsScreen() {
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [hasPermission, setHasPermission] = useState(false);
+  const [isCheckingPermission, setIsCheckingPermission] = useState(true);
 
   React.useEffect(() => {
-    // Request notification permissions when screen loads
-    requestNotificationPermissions();
+    // Check notification permissions when screen loads
+    checkPermissionStatus();
   }, []);
+
+  const checkPermissionStatus = async () => {
+    setIsCheckingPermission(true);
+    const hasPerm = await checkNotificationPermissions();
+    setHasPermission(hasPerm);
+    setIsCheckingPermission(false);
+  };
+
+  const handleRequestPermission = async () => {
+    console.log('Permission button clicked, requesting permissions...');
+    const granted = await requestNotificationPermissions();
+    console.log('Permission request result:', granted);
+    setHasPermission(granted);
+    
+    // Re-check permission status to ensure state is updated
+    if (granted) {
+      await checkPermissionStatus();
+    }
+  };
 
   // Set default times
   React.useEffect(() => {
@@ -49,9 +70,16 @@ export default function NotificationsScreen() {
   };
 
   const handleNext = async () => {
+    // Check permission before proceeding (in case user skipped the button)
+    let finalPermissionStatus = hasPermission;
+    if (!hasPermission) {
+      finalPermissionStatus = await requestNotificationPermissions();
+      setHasPermission(finalPermissionStatus);
+    }
+
     // Save notification settings
     const notificationSettings = {
-      enabled: true,
+      enabled: finalPermissionStatus,
       count: notificationCount,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
@@ -63,11 +91,12 @@ export default function NotificationsScreen() {
     const AsyncStorage = require('@react-native-async-storage/async-storage').default;
     await AsyncStorage.setItem('notificationSettings', JSON.stringify(notificationSettings));
     
-    // Schedule notifications with user settings
-    await scheduleNotifications();
-    
-    // Send a test notification to confirm setup
-    await sendTestNotification();
+    // Schedule notifications with user settings only if permission is granted
+    if (finalPermissionStatus) {
+      await scheduleNotifications();
+      // Send a test notification to confirm setup
+      await sendTestNotification();
+    }
     
     await completeOnboarding();
     setTimeout(() => {
@@ -102,6 +131,34 @@ export default function NotificationsScreen() {
         <Text style={[styles.subtitle, { color: ONBOARDING_TEXT }]}>
           اختر أوقات التذكير المناسبة لك
         </Text>
+
+        {/* Permission Request Button */}
+        {!hasPermission && !isCheckingPermission && (
+          <View style={styles.permissionSection}>
+            <TouchableOpacity
+              style={[styles.permissionButton, { backgroundColor: colors.primary }]}
+              onPress={handleRequestPermission}
+            >
+              <Ionicons name="notifications-outline" size={24} color="#FFFFFF" />
+              <Text style={styles.permissionButtonText}>تفعيل الإشعارات</Text>
+            </TouchableOpacity>
+            <Text style={[styles.permissionHint, { color: ONBOARDING_TEXT }]}>
+              نحتاج إلى إذنك لإرسال التذكيرات اليومية
+            </Text>
+          </View>
+        )}
+
+        {/* Permission Granted Indicator */}
+        {hasPermission && (
+          <View style={styles.permissionGrantedSection}>
+            <View style={[styles.permissionGrantedBadge, { backgroundColor: '#D1FAE5' }]}>
+              <Ionicons name="checkmark-circle" size={20} color="#059669" />
+              <Text style={[styles.permissionGrantedText, { color: '#059669' }]}>
+                تم تفعيل الإشعارات ✓
+              </Text>
+            </View>
+          </View>
+        )}
 
         {/* Notification Preview */}
         <View style={styles.previewContainer}>
@@ -382,6 +439,53 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     opacity: 0.7,
     lineHeight: 20,
+  },
+  permissionSection: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  permissionButton: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    paddingHorizontal: 32,
+    paddingVertical: 16,
+    borderRadius: 12,
+    minWidth: 280,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  permissionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  permissionHint: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 12,
+    opacity: 0.7,
+  },
+  permissionGrantedSection: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  permissionGrantedBadge: {
+    flexDirection: 'row-reverse',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  permissionGrantedText: {
+    fontSize: 16,
+    fontWeight: '600',
   },
   buttonContainer: {
     position: 'absolute',
