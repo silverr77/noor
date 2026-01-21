@@ -165,6 +165,13 @@ export function MyQuotesManager({ visible, onClose, onQuotesChange, accentColor:
   // Swipe to close gesture (swipe right to close since it slides from right)
   const translateX = useSharedValue(0);
   
+  // Reset translateX when modal becomes visible
+  useEffect(() => {
+    if (visible) {
+      translateX.value = 0;
+    }
+  }, [visible]);
+  
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
       if (event.translationX > 0) {

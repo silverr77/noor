@@ -183,6 +183,13 @@ export function ThemesModal({ visible, onClose, currentTheme, onThemeChange }: T
   // Swipe to close gesture
   const translateY = useSharedValue(0);
   
+  // Reset translateY when modal becomes visible
+  useEffect(() => {
+    if (visible) {
+      translateY.value = 0;
+    }
+  }, [visible]);
+  
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
       if (event.translationY > 0) {

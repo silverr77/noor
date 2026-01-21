@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
+  runOnJS,
   SlideInDown,
   SlideOutDown,
   useAnimatedStyle,
@@ -186,6 +187,13 @@ export function ProfileModal({
   // Swipe to close gesture
   const translateY = useSharedValue(0);
   
+  // Reset translateY when modal becomes visible
+  useEffect(() => {
+    if (visible) {
+      translateY.value = 0;
+    }
+  }, [visible]);
+  
   const panGesture = Gesture.Pan()
     .onUpdate((event) => {
       if (event.translationY > 0) {
@@ -194,7 +202,7 @@ export function ProfileModal({
     })
     .onEnd((event) => {
       if (event.translationY > 100 || event.velocityY > 500) {
-        onClose();
+        runOnJS(onClose)(); // Use runOnJS to call JS function from UI thread
       }
       translateY.value = withSpring(0);
     });
