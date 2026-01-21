@@ -10,7 +10,20 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.dailyramadanequotes.app"
+      "bundleIdentifier": "com.dailyramadanequotes.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleDisplayName": "نور",
+        "NSUserNotificationsUsageDescription": "نحتاج إلى إذنك لإرسال تذكيرات يومية بالأذكار والأدعية",
+        "NSUserTrackingUsageDescription": "نستخدم هذا لتحسين تجربتك في التطبيق",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": []
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -36,7 +49,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon.png",
           "imageWidth": 280,
           "resizeMode": "contain",
           "backgroundColor": "#FFFFFF"
@@ -61,6 +74,13 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "bfda7512-5a6c-48b3-979f-094b53eaad71"
+      }
+    },
+    "owner": "codmaker"
   }
 }
